@@ -6,6 +6,14 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		639759A82E34D7A6007A8ECC /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 639759A72E34D7A6007A8ECC /* Alamofire */; };
+		639759AD2E34D7C2007A8ECC /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = 639759AC2E34D7C2007A8ECC /* Swinject */; };
+		639759B22E34D7E4007A8ECC /* RxBlocking in Frameworks */ = {isa = PBXBuildFile; productRef = 639759B12E34D7E4007A8ECC /* RxBlocking */; };
+		639759B62E34D7E4007A8ECC /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 639759B52E34D7E4007A8ECC /* RxCocoa */; };
+		639759BA2E34D7E4007A8ECC /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = 639759B92E34D7E4007A8ECC /* RxRelay */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		6397597C2E34D744007A8ECC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +60,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				639759BA2E34D7E4007A8ECC /* RxRelay in Frameworks */,
+				639759A82E34D7A6007A8ECC /* Alamofire in Frameworks */,
+				639759B62E34D7E4007A8ECC /* RxCocoa in Frameworks */,
+				639759AD2E34D7C2007A8ECC /* Swinject in Frameworks */,
+				639759B22E34D7E4007A8ECC /* RxBlocking in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +125,11 @@
 			);
 			name = PokedexPocket;
 			packageProductDependencies = (
+				639759A72E34D7A6007A8ECC /* Alamofire */,
+				639759AC2E34D7C2007A8ECC /* Swinject */,
+				639759B12E34D7E4007A8ECC /* RxBlocking */,
+				639759B52E34D7E4007A8ECC /* RxCocoa */,
+				639759B92E34D7E4007A8ECC /* RxRelay */,
 			);
 			productName = PokedexPocket;
 			productReference = 6397596C2E34D742007A8ECC /* PokedexPocket.app */;
@@ -195,6 +213,12 @@
 			);
 			mainGroup = 639759632E34D742007A8ECC;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				639759A62E34D7A6007A8ECC /* XCRemoteSwiftPackageReference "Alamofire" */,
+				639759AB2E34D7C1007A8ECC /* XCRemoteSwiftPackageReference "Swinject" */,
+				639759B02E34D7E4007A8ECC /* XCRemoteSwiftPackageReference "RxSwift" */,
+				639759BB2E34D7FE007A8ECC /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6397596D2E34D742007A8ECC /* Products */;
 			projectDirPath = "";
@@ -558,6 +582,69 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		639759A62E34D7A6007A8ECC /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.10.2;
+			};
+		};
+		639759AB2E34D7C1007A8ECC /* XCRemoteSwiftPackageReference "Swinject" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Swinject/Swinject.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.9.1;
+			};
+		};
+		639759B02E34D7E4007A8ECC /* XCRemoteSwiftPackageReference "RxSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ReactiveX/RxSwift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.9.0;
+			};
+		};
+		639759BB2E34D7FE007A8ECC /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SimplyDanny/SwiftLintPlugins";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.59.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		639759A72E34D7A6007A8ECC /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 639759A62E34D7A6007A8ECC /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		639759AC2E34D7C2007A8ECC /* Swinject */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 639759AB2E34D7C1007A8ECC /* XCRemoteSwiftPackageReference "Swinject" */;
+			productName = Swinject;
+		};
+		639759B12E34D7E4007A8ECC /* RxBlocking */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 639759B02E34D7E4007A8ECC /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxBlocking;
+		};
+		639759B52E34D7E4007A8ECC /* RxCocoa */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 639759B02E34D7E4007A8ECC /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxCocoa;
+		};
+		639759B92E34D7E4007A8ECC /* RxRelay */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 639759B02E34D7E4007A8ECC /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxRelay;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 639759642E34D742007A8ECC /* Project object */;
 }
