@@ -83,7 +83,7 @@ The app follows **Clean Architecture** principles with clear separation of conce
 
 ```
 ┌─────────────────────────────────────────┐
-│              Presentation Layer          │
+│              Presentation Layer         │
 │  ┌─────────────┐    ┌─────────────────┐ │
 │  │    Views    │◄──►│  ViewModels     │ │
 │  │  (SwiftUI)  │    │   (RxSwift)     │ │
@@ -102,19 +102,19 @@ The app follows **Clean Architecture** principles with clear separation of conce
 │         │            │  Repository   │  │
 │         │            │  Protocols    │  │
 │         │            └───────────────┘  │
-└─────────┼────────────────────┬─────────┘
+└─────────┼────────────────────┬──────────┘
           │                    │
-┌─────────▼────────────────────▼─────────┐
-│                Data Layer              │
+┌─────────▼────────────────────▼──────────┐
+│                Data Layer               │
 │  ┌─────────────┐    ┌─────────────────┐ │
 │  │ Repository  │    │   Network       │ │
 │  │Implementatn │    │   Service       │ │
 │  └─────────────┘    └─────────────────┘ │
 │         ▲                    ▲          │
-│  ┌──────┴──────┐    ┌────────┴───────┐  │
-│  │   Models    │    │   Alamofire    │  │
-│  │(API Response│    │   Manager      │  │
-│  └─────────────┘    └────────────────┘  │
+│  ┌──────┴───────┐    ┌────────┴───────┐ │
+│  │   Models     │    │   Alamofire    │ │
+│  │(API Response)│    │   Manager      │ │
+│  └──────────────┘    └────────────────┘ │
 └─────────────────────────────────────────┘
 ```
 
