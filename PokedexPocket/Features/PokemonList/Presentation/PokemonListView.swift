@@ -39,7 +39,7 @@ struct PokemonListView: View {
         }
         .navigationTitle("Pokédex")
         .navigationBarTitleDisplayMode(.large)
-        .background(Color(.systemGroupedBackground))
+        .background(Color(.systemBackground))
         .onAppear {
             if viewModel.pokemonList.isEmpty && !viewModel.isLoading {
                 viewModel.loadInitialData()
@@ -65,8 +65,12 @@ struct PokemonListView: View {
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
-            .background(Color(.systemBackground))
+            .background(Color(.secondarySystemBackground))
             .cornerRadius(12)
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(Color(.separator), lineWidth: 0.5)
+            )
         }
         .padding(.horizontal, 16)
         .padding(.top, 8)
