@@ -21,7 +21,7 @@ class PokemonListViewModel: ObservableObject {
     private let disposeBag = DisposeBag()
     
     private var currentOffset = 0
-    private let pageSize = 20
+    private let pageSize = 1302
     private var hasMoreData = true
     private var allPokemon: [PokemonListItem] = []
     
@@ -50,20 +50,13 @@ class PokemonListViewModel: ObservableObject {
     
     func loadInitialData() {
         currentOffset = 0
-        hasMoreData = true
+        hasMoreData = false
         loadPokemonList()
     }
     
     func loadMoreIfNeeded(currentItem: PokemonListItem) {
-        guard !isLoading,
-              hasMoreData,
-              searchText.isEmpty,
-              let lastItem = pokemonList.last,
-              lastItem.id == currentItem.id else {
-            return
-        }
-        
-        loadPokemonList()
+        // No pagination needed since we load all Pokemon at once
+        return
     }
     
     private func loadPokemonList() {
@@ -79,16 +72,9 @@ class PokemonListViewModel: ObservableObject {
                 onNext: { [weak self] pokemonListResponse in
                     guard let self = self else { return }
                     
-                    if self.currentOffset == 0 {
-                        self.allPokemon = pokemonListResponse.results
-                        self.pokemonList = pokemonListResponse.results
-                    } else {
-                        self.allPokemon.append(contentsOf: pokemonListResponse.results)
-                        self.pokemonList.append(contentsOf: pokemonListResponse.results)
-                    }
-                    
-                    self.currentOffset += self.pageSize
-                    self.hasMoreData = pokemonListResponse.hasNext
+                    self.allPokemon = pokemonListResponse.results
+                    self.pokemonList = pokemonListResponse.results
+                    self.hasMoreData = false
                     self.isLoading = false
                 },
                 onError: { [weak self] error in

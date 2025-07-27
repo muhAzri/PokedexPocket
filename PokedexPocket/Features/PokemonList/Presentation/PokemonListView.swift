@@ -89,7 +89,7 @@ struct PokemonListView: View {
                     // Show actual Pokemon cards
                     ForEach(viewModel.pokemonList) { pokemon in
                         PokemonCard(pokemon: pokemon) {
-                            coordinator.navigate(to: .pokemonDetail(pokemonName: pokemon.name))
+                            coordinator.navigate(to: .pokemonDetail(pokemonId: pokemon.pokemonId, pokemonName: pokemon.name))
                         }
                         .onAppear {
                             viewModel.loadMoreIfNeeded(currentItem: pokemon)

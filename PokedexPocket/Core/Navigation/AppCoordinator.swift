@@ -10,7 +10,7 @@ import Combine
 
 enum AppDestination: Hashable {
     case pokemonList
-    case pokemonDetail(pokemonName: String)
+    case pokemonDetail(pokemonId: Int, pokemonName: String)
     case favouritePokemon
     case aboutDev
 }
@@ -88,8 +88,8 @@ class AppCoordinator: ObservableObject {
         selectedTab = tab
     }
     
-    func navigateToPokemonDetail(pokemonName: String) {
-        navigate(to: .pokemonDetail(pokemonName: pokemonName))
+    func navigateToPokemonDetail(pokemonId: Int, pokemonName: String) {
+        navigate(to: .pokemonDetail(pokemonId: pokemonId, pokemonName: pokemonName))
     }
 }
 

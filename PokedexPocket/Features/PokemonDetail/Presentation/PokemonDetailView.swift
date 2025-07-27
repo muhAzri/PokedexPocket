@@ -11,6 +11,7 @@ import RxSwift
 import Combine
 
 struct PokemonDetailView: View {
+    let pokemonId: Int
     let pokemonName: String
     @EnvironmentObject private var coordinator: AppCoordinator
     @StateObject private var viewModel: PokemonDetailViewModel
@@ -58,9 +59,10 @@ struct PokemonDetailView: View {
         case abilities = "Abilities"
     }
     
-    init(pokemonName: String, getPokemonDetailUseCase: GetPokemonDetailUseCaseProtocol) {
+    init(pokemonId: Int, pokemonName: String, getPokemonDetailUseCase: GetPokemonDetailUseCaseProtocol) {
+        self.pokemonId = pokemonId
         self.pokemonName = pokemonName
-        self._viewModel = StateObject(wrappedValue: PokemonDetailViewModel(pokemonName: pokemonName, getPokemonDetailUseCase: getPokemonDetailUseCase))
+        self._viewModel = StateObject(wrappedValue: PokemonDetailViewModel(pokemonId: pokemonId, getPokemonDetailUseCase: getPokemonDetailUseCase))
     }
     
     var body: some View {
@@ -528,6 +530,7 @@ struct PokemonDetailView: View {
 #Preview("Pokemon Detail View") {
     NavigationView {
         PokemonDetailView(
+            pokemonId: 25,
             pokemonName: "pikachu",
             getPokemonDetailUseCase: DIContainer.shared.resolve(GetPokemonDetailUseCaseProtocol.self)
         )

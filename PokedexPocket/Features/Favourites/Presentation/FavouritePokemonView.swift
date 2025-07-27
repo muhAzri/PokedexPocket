@@ -25,7 +25,7 @@ struct FavouritePokemonView: View {
                         LazyVGrid(columns: gridColumns, spacing: 16, pinnedViews: []) {
                             ForEach(favouritePokemon, id: \.pokemonId) { pokemon in
                                 FavouritePokemonCard(pokemon: pokemon) {
-                                    coordinator.navigateToPokemonDetail(pokemonName: pokemon.name)
+                                    coordinator.navigateToPokemonDetail(pokemonId: pokemon.pokemonId, pokemonName: pokemon.name)
                                 } onRemove: {
                                     removeFavourite(pokemon)
                                 }
