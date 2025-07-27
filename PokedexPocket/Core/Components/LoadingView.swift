@@ -128,3 +128,13 @@ struct ShimmerModifier: ViewModifier {
             }
     }
 }
+
+#Preview("Loading View") {
+    LoadingView()
+}
+
+#Preview("Pokemon Loading Card") {
+    PokemonLoadingCard()
+        .frame(width: 160, height: 200)
+        .padding()
+}

@@ -111,3 +111,16 @@ struct PokemonCardButtonStyle: ButtonStyle {
     }
 }
 
+#Preview("Pokemon Card") {
+    let samplePokemon = PokemonListItem(
+        name: "pikachu", 
+        url: "https://pokeapi.co/api/v2/pokemon/25/"
+    )
+    
+    PokemonCard(pokemon: samplePokemon) {
+        print("Pokemon card tapped")
+    }
+    .frame(width: 160, height: 200)
+    .padding()
+}
+

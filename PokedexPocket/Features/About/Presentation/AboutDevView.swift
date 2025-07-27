@@ -124,79 +124,9 @@ struct AboutDevView: View {
     }
 }
 
-struct SkillBadge: View {
-    let skill: String
-    let color: Color
-    
-    var body: some View {
-        Text(skill)
-            .font(.caption)
-            .fontWeight(.semibold)
-            .padding(.horizontal, 16)
-            .padding(.vertical, 8)
-            .background(color.opacity(0.2))
-            .foregroundColor(color)
-            .cornerRadius(20)
-    }
-}
 
-struct FeatureRow: View {
-    let icon: String
-    let title: String
-    let description: String
-    
-    var body: some View {
-        HStack(spacing: 12) {
-            Image(systemName: icon)
-                .font(.title3)
-                .foregroundColor(.blue)
-                .frame(width: 20)
-            
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title)
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
-                
-                Text(description)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            
-            Spacer()
-        }
-        .padding(12)
-        .background(Color(.systemGray6))
-        .cornerRadius(10)
-    }
-}
-
-struct SocialButton: View {
-    let icon: String
-    let title: String
-    let url: String
-    
-    var body: some View {
-        Button(action: {
-            if let url = URL(string: url) {
-                UIApplication.shared.open(url)
-            }
-        }) {
-            VStack(spacing: 8) {
-                Image(systemName: icon)
-                    .font(.title2)
-                
-                Text(title)
-                    .font(.caption)
-                    .fontWeight(.medium)
-            }
-            .padding()
-            .background(Color.blue.opacity(0.1))
-            .foregroundColor(.blue)
-            .cornerRadius(12)
-        }
-        .accessibilityLabel("\(title) - Opens \(title.lowercased()) app or website")
-        .accessibilityHint("Double tap to open \(title.lowercased())")
-        .accessibilityAddTraits(.isButton)
+#Preview("About Dev View") {
+    NavigationView {
+        AboutDevView()
     }
 }

@@ -40,6 +40,11 @@ struct PokemonListView: View {
         .navigationTitle("Pokédex")
         .navigationBarTitleDisplayMode(.large)
         .background(Color(.systemGroupedBackground))
+        .onAppear {
+            if viewModel.pokemonList.isEmpty && !viewModel.isLoading {
+                viewModel.loadInitialData()
+            }
+        }
     }
     
     private var searchBar: some View {
@@ -71,18 +76,27 @@ struct PokemonListView: View {
     private var pokemonGrid: some View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: 16) {
-                ForEach(viewModel.pokemonList) { pokemon in
-                    PokemonCard(pokemon: pokemon) {
-                        coordinator.navigate(to: .pokemonDetail(pokemonName: pokemon.name))
-                    }
-                    .onAppear {
-                        viewModel.loadMoreIfNeeded(currentItem: pokemon)
-                    }
-                }
-                
-                if viewModel.isLoading {
-                    ForEach(0..<6, id: \.self) { _ in
+                if viewModel.pokemonList.isEmpty && viewModel.isLoading {
+                    // Initial loading state - show skeleton grid
+                    ForEach(0..<12, id: \.self) { _ in
                         PokemonLoadingCard()
+                    }
+                } else {
+                    // Show actual Pokemon cards
+                    ForEach(viewModel.pokemonList) { pokemon in
+                        PokemonCard(pokemon: pokemon) {
+                            coordinator.navigate(to: .pokemonDetail(pokemonName: pokemon.name))
+                        }
+                        .onAppear {
+                            viewModel.loadMoreIfNeeded(currentItem: pokemon)
+                        }
+                    }
+                    
+                    // Pagination loading - show additional skeleton cards
+                    if viewModel.isLoading && !viewModel.pokemonList.isEmpty {
+                        ForEach(0..<6, id: \.self) { _ in
+                            PokemonLoadingCard()
+                        }
                     }
                 }
             }
@@ -105,5 +119,12 @@ struct PokemonListView: View {
             
             Spacer()
         }
+    }
+}
+
+#Preview("Pokemon List View") {
+    NavigationView {
+        PokemonListView()
+            .environmentObject(AppCoordinator())
     }
 }
