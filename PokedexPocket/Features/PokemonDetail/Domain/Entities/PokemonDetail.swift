@@ -106,6 +106,8 @@ struct PokemonMove: Identifiable, Equatable, Codable {
 struct PokemonDetailSprites: Equatable, Codable {
     let frontDefault: String?
     let frontShiny: String?
+    let backDefault: String?
+    let backShiny: String?
     let officialArtwork: String?
     let officialArtworkShiny: String?
     let dreamWorld: String?
@@ -118,6 +120,62 @@ struct PokemonDetailSprites: Equatable, Codable {
     
     var bestQualityShinyImage: String {
         return officialArtworkShiny ?? homeShiny ?? frontShiny ?? bestQualityImage
+    }
+    
+    var bestQualityBackImage: String {
+        return backDefault ?? frontDefault ?? ""
+    }
+    
+    var bestQualityBackShinyImage: String {
+        return backShiny ?? frontShiny ?? bestQualityBackImage
+    }
+    
+    var allSprites: [String] {
+        return [bestQualityImage, bestQualityShinyImage, bestQualityBackImage, bestQualityBackShinyImage]
+            .compactMap { $0.isEmpty ? nil : $0 }
+    }
+    
+    func getCurrentSprite(isShiny: Bool, isFront: Bool) -> String {
+        switch (isShiny, isFront) {
+        case (false, true):
+            return bestQualityImage
+        case (true, true):
+            return bestQualityShinyImage
+        case (false, false):
+            return bestQualityBackImage
+        case (true, false):
+            return bestQualityBackShinyImage
+        }
+    }
+    
+    func getSpriteForStyle(_ style: String, isShiny: Bool, isFront: Bool) -> String {
+        switch style {
+        case "Official Artwork":
+            if isShiny {
+                return officialArtworkShiny ?? officialArtwork ?? bestQualityShinyImage
+            } else {
+                return officialArtwork ?? bestQualityImage
+            }
+        case "Home Style":
+            if isShiny {
+                return homeShiny ?? home ?? bestQualityShinyImage
+            } else {
+                return home ?? bestQualityImage
+            }
+        case "Game Sprites":
+            switch (isShiny, isFront) {
+            case (false, true):
+                return frontDefault ?? bestQualityImage
+            case (true, true):
+                return frontShiny ?? frontDefault ?? bestQualityShinyImage
+            case (false, false):
+                return backDefault ?? frontDefault ?? bestQualityImage
+            case (true, false):
+                return backShiny ?? backDefault ?? frontShiny ?? bestQualityBackShinyImage
+            }
+        default:
+            return bestQualityImage
+        }
     }
 }
 

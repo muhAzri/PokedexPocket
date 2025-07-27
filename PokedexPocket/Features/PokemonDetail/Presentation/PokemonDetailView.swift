@@ -7,12 +7,35 @@ struct PokemonDetailView: View {
     @EnvironmentObject private var coordinator: AppCoordinator
     @StateObject private var viewModel: PokemonDetailViewModel
     @State private var isFavourite = false
-    @State private var selectedSpriteMode: SpriteMode = .normal
+    @State private var selectedSpriteStyle: SpriteStyle = .officialArtwork
+    @State private var isShinyVariant = false
     @State private var selectedTab: DetailTab = .about
+    @State private var currentSpriteIndex = 0
+    @State private var isRotating = false
+    @State private var rotationAngle: Double = 0
+    @State private var isFrontView = true
+    @State private var spriteScale: CGFloat = 1.0
+    @State private var animationTimer: Timer?
     
-    enum SpriteMode: String, CaseIterable {
-        case normal = "Normal"
-        case shiny = "Shiny"
+    enum SpriteStyle: String, CaseIterable {
+        case officialArtwork = "Official Artwork"
+        case homeStyle = "Home Style"
+        case gameSprites = "Game Sprites"
+        
+        var supportsBackView: Bool {
+            return self == .gameSprites
+        }
+        
+        var description: String {
+            switch self {
+            case .officialArtwork:
+                return "High-quality official artwork"
+            case .homeStyle:
+                return "Pokemon Home style sprites"
+            case .gameSprites:
+                return "Classic pixelated game sprites"
+            }
+        }
     }
     
     enum DetailTab: String, CaseIterable {
@@ -88,34 +111,108 @@ struct PokemonDetailView: View {
             .padding(.horizontal)
             
             ZStack {
-                Circle()
-                    .fill(
-                        RadialGradient(
-                            colors: [primaryTypeColor(pokemon: pokemon).opacity(0.3), primaryTypeColor(pokemon: pokemon).opacity(0.1)],
-                            center: .center,
-                            startRadius: 50,
-                            endRadius: 150
+                ForEach(0..<3, id: \.self) { index in
+                    Circle()
+                        .fill(
+                            RadialGradient(
+                                colors: [primaryTypeColor(pokemon: pokemon).opacity(0.2 - Double(index) * 0.05), primaryTypeColor(pokemon: pokemon).opacity(0.05)],
+                                center: .center,
+                                startRadius: 50,
+                                endRadius: 150
+                            )
                         )
-                    )
-                    .frame(width: 280, height: 280)
-                
-                AsyncImage(url: URL(string: selectedSpriteMode == .normal ? pokemon.sprites.bestQualityImage : pokemon.sprites.bestQualityShinyImage)) { image in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 200, height: 200)
-                } placeholder: {
-                    ProgressView()
-                        .frame(width: 200, height: 200)
+                        .frame(width: CGFloat(280 + index * 40), height: CGFloat(280 + index * 40))
+                        .scaleEffect(spriteScale)
+                        .rotationEffect(.degrees(Double(index) * 120 + rotationAngle * 0.1))
+                        .animation(.easeInOut(duration: 2.0 + Double(index) * 0.5).repeatForever(autoreverses: true), value: spriteScale)
+                        .animation(.linear(duration: 20).repeatForever(autoreverses: false), value: rotationAngle)
                 }
+                
+                AnimatedSpriteView(
+                    pokemon: pokemon,
+                    selectedStyle: selectedSpriteStyle,
+                    isShiny: isShinyVariant,
+                    isFrontView: $isFrontView,
+                    rotationAngle: $rotationAngle,
+                    onTap: {
+                        if selectedSpriteStyle.supportsBackView {
+                            withAnimation(.easeInOut(duration: 0.6)) {
+                                isFrontView.toggle()
+                                rotationAngle += 180
+                            }
+                        }
+                    }
+                )
+                .frame(width: 200, height: 200)
+                .zIndex(10)
+            }
+            .onAppear {
+                spriteScale = 1.05
+                startSpriteAnimation()
+            }
+            .onDisappear {
+                stopSpriteAnimation()
             }
             
-            Picker("Sprite Mode", selection: $selectedSpriteMode) {
-                ForEach(SpriteMode.allCases, id: \.self) { mode in
-                    Text(mode.rawValue).tag(mode)
+            VStack(spacing: 12) {
+                Picker("Sprite Style", selection: $selectedSpriteStyle) {
+                    ForEach(SpriteStyle.allCases, id: \.self) { style in
+                        Text(style.rawValue).tag(style)
+                    }
                 }
+                .pickerStyle(SegmentedPickerStyle())
+                .onChange(of: selectedSpriteStyle) { _, newStyle in
+                    if !newStyle.supportsBackView && !isFrontView {
+                        withAnimation(.easeInOut(duration: 0.6)) {
+                            isFrontView = true
+                            rotationAngle = 0
+                        }
+                    }
+                }
+                
+                HStack {
+                    HStack(spacing: 8) {
+                        Text("Shiny")
+                            .font(.caption)
+                            .foregroundColor(.primary)
+                        Toggle("", isOn: $isShinyVariant)
+                            .toggleStyle(SwitchToggleStyle(tint: primaryTypeColor(pokemon: pokemon)))
+                            .labelsHidden()
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(Color(.secondarySystemBackground))
+                    .cornerRadius(12)
+                    .frame(maxWidth: .infinity)
+                    
+                    if selectedSpriteStyle.supportsBackView {
+                        Button(action: {
+                            withAnimation(.easeInOut(duration: 0.6)) {
+                                isFrontView.toggle()
+                                rotationAngle += 180
+                            }
+                        }) {
+                            HStack(spacing: 6) {
+                                Image(systemName: "arrow.triangle.2.circlepath")
+                                    .font(.caption)
+                                Text(isFrontView ? "Back" : "Front")
+                                    .font(.caption)
+                            }
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                            .background(primaryTypeColor(pokemon: pokemon).opacity(0.2))
+                            .foregroundColor(primaryTypeColor(pokemon: pokemon))
+                            .cornerRadius(12)
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                }
+                
+                Text(selectedSpriteStyle.description + (selectedSpriteStyle.supportsBackView ? " • Tap to flip" : ""))
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
             }
-            .pickerStyle(SegmentedPickerStyle())
             .padding(.horizontal)
         }
         .padding(.vertical)
@@ -284,6 +381,23 @@ struct PokemonDetailView: View {
         guard let firstType = pokemon.types.first else { return Color.gray }
         return Color(hex: firstType.color)
     }
+    
+    private func startSpriteAnimation() {
+        animationTimer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
+            withAnimation(.easeInOut(duration: 0.5)) {
+                if currentSpriteIndex < 3 {
+                    currentSpriteIndex += 1
+                } else {
+                    currentSpriteIndex = 0
+                }
+            }
+        }
+    }
+    
+    private func stopSpriteAnimation() {
+        animationTimer?.invalidate()
+        animationTimer = nil
+    }
 }
 
 struct TypeBadge: View {
@@ -411,6 +525,62 @@ extension Color {
             blue:  Double(b) / 255,
             opacity: Double(a) / 255
         )
+    }
+}
+
+struct AnimatedSpriteView: View {
+    let pokemon: PokemonDetail
+    let selectedStyle: PokemonDetailView.SpriteStyle
+    let isShiny: Bool
+    @Binding var isFrontView: Bool
+    @Binding var rotationAngle: Double
+    let onTap: () -> Void
+    
+    @State private var bounceScale: CGFloat = 1.0
+    @State private var floatOffset: CGFloat = 0
+    
+    var body: some View {
+        let currentImageURL = pokemon.sprites.getSpriteForStyle(
+            selectedStyle.rawValue,
+            isShiny: isShiny,
+            isFront: isFrontView
+        )
+        
+        AsyncImage(url: URL(string: currentImageURL)) { image in
+            image
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .scaleEffect(bounceScale)
+                .offset(y: floatOffset)
+                .rotation3DEffect(
+                    .degrees(rotationAngle),
+                    axis: (x: 0, y: 1, z: 0),
+                    perspective: 0.5
+                )
+                .onTapGesture {
+                    withAnimation(.bouncy(duration: 0.3)) {
+                        bounceScale = 1.2
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                        withAnimation(.bouncy(duration: 0.3)) {
+                            bounceScale = 1.0
+                        }
+                    }
+                    onTap()
+                }
+                .onAppear {
+                    startFloatingAnimation()
+                }
+        } placeholder: {
+            ProgressView()
+                .scaleEffect(1.5)
+        }
+    }
+    
+    private func startFloatingAnimation() {
+        withAnimation(.easeInOut(duration: 2.0).repeatForever(autoreverses: true)) {
+            floatOffset = -10
+        }
     }
 }
 

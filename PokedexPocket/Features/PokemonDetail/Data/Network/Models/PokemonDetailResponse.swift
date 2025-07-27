@@ -213,6 +213,8 @@ extension PokemonDetailResponse {
             sprites: PokemonDetailSprites(
                 frontDefault: sprites.frontDefault,
                 frontShiny: sprites.frontShiny,
+                backDefault: sprites.backDefault,
+                backShiny: sprites.backShiny,
                 officialArtwork: sprites.other?.officialArtwork?.frontDefault,
                 officialArtworkShiny: sprites.other?.officialArtwork?.frontShiny,
                 dreamWorld: sprites.other?.dreamWorld?.frontDefault,
