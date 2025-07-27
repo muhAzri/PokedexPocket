@@ -12,28 +12,22 @@ struct AboutDevView: View {
         ScrollView {
             VStack(spacing: 20) {
                 VStack(spacing: 16) {
-                    Circle()
-                        .fill(
-                            LinearGradient(
-                                colors: [Color.blue, Color.purple],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        )
+                    Image("About")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
                         .frame(width: 100, height: 100)
+                        .clipShape(Circle())
                         .overlay(
-                            Text("AZ")
-                                .font(.title)
-                                .fontWeight(.bold)
-                                .foregroundColor(.white)
+                            Circle()
+                                .stroke(Color.primary.opacity(0.1), lineWidth: 2)
                         )
                     
                     VStack(spacing: 4) {
-                        Text("Azri")
+                        Text("Muhammad Azri Fatihah Susanto")
                             .font(.title2)
                             .fontWeight(.bold)
                         
-                        Text("iOS Developer")
+                        Text("Mobile App Developer")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                     }
@@ -48,7 +42,7 @@ struct AboutDevView: View {
                         Spacer()
                     }
                     
-                    Text("Passionate iOS developer who loves creating beautiful and functional mobile applications. This Pokédex app showcases clean architecture principles and modern SwiftUI development practices.")
+                    Text("Passionate mobile app developer with expertise in cross-platform development. Specialized in Android Native (Kotlin & Jetpack Compose), iOS (Swift & SwiftUI), and Flutter. This Pokédex app showcases clean architecture principles and modern mobile development practices.")
                         .font(.body)
                         .foregroundColor(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -65,11 +59,11 @@ struct AboutDevView: View {
                     
                     LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 2), spacing: 8) {
                         SkillBadge(skill: "SwiftUI", color: .blue)
-                        SkillBadge(skill: "UIKit", color: .orange)
-                        SkillBadge(skill: "Combine", color: .green)
-                        SkillBadge(skill: "Core Data", color: .purple)
+                        SkillBadge(skill: "Kotlin", color: .orange)
+                        SkillBadge(skill: "Jetpack Compose", color: .green)
+                        SkillBadge(skill: "Flutter", color: .cyan)
                         SkillBadge(skill: "REST APIs", color: .red)
-                        SkillBadge(skill: "MVVM", color: .cyan)
+                        SkillBadge(skill: "Clean Architecture", color: .purple)
                     }
                 }
                 .padding(.horizontal)
