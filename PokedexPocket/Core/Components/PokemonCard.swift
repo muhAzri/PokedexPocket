@@ -12,64 +12,94 @@ struct PokemonCard: View {
     let onTap: () -> Void
     
     var body: some View {
-        Button(action: onTap) {
-            VStack(spacing: 12) {
-                AsyncImage(url: URL(string: pokemon.imageURL)) { image in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                } placeholder: {
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.gray.opacity(0.2))
-                        .overlay(
-                            ProgressView()
-                                .scaleEffect(0.8)
-                        )
-                }
-                .frame(width: 100, height: 100)
-                .background(
-                    Circle()
-                        .fill(
-                            LinearGradient(
-                                colors: [Color.white.opacity(0.9), Color.gray.opacity(0.1)],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        )
-                        .scaleEffect(1.2)
-                )
-                
-                VStack(spacing: 4) {
-                    Text(pokemon.pokemonNumber)
-                        .font(.caption2)
-                        .fontWeight(.medium)
-                        .foregroundColor(.secondary)
-                    
-                    Text(pokemon.formattedName)
-                        .font(.subheadline)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.primary)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.8)
-                }
-            }
-            .padding(16)
-            .background(
+        VStack(spacing: 0) {
+            ZStack {
                 RoundedRectangle(cornerRadius: 16)
-                    .fill(Color(.systemBackground))
-                    .shadow(
-                        color: Color.black.opacity(0.1),
-                        radius: 8,
-                        x: 0,
-                        y: 4
+                    .fill(
+                        LinearGradient(
+                            colors: [primaryTypeColor.opacity(0.1), primaryTypeColor.opacity(0.05)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
                     )
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(Color.gray.opacity(0.2), lineWidth: 1)
-            )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(primaryTypeColor.opacity(0.3), lineWidth: 1)
+                    )
+                
+                VStack(spacing: 12) {
+                    HStack {
+                        Spacer()
+                    }
+                    .padding(.top, 8)
+                    .padding(.trailing, 8)
+                    
+                    Spacer()
+                    
+                    AsyncImage(url: URL(string: pokemon.imageURL), transaction: Transaction(animation: .easeInOut(duration: 0.3))) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .transition(.opacity)
+                        case .failure(_):
+                            Circle()
+                                .fill(primaryTypeColor.opacity(0.2))
+                                .overlay(
+                                    Image(systemName: "photo")
+                                        .foregroundColor(.secondary)
+                                )
+                        case .empty:
+                            Circle()
+                                .fill(primaryTypeColor.opacity(0.2))
+                                .overlay(
+                                    ProgressView()
+                                        .scaleEffect(0.7)
+                                )
+                        @unknown default:
+                            EmptyView()
+                        }
+                    }
+                    .frame(width: 80, height: 80)
+                    .id(pokemon.imageURL)
+                    
+                    VStack(spacing: 6) {
+                        Text(pokemon.pokemonNumber)
+                            .font(.caption2)
+                            .fontWeight(.medium)
+                            .foregroundColor(.secondary)
+                        
+                        Text(pokemon.formattedName)
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.primary)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.8)
+                        
+                        Text("Pokémon")
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 3)
+                            .background(primaryTypeColor.opacity(0.2))
+                            .foregroundColor(primaryTypeColor)
+                            .cornerRadius(8)
+                    }
+                    
+                    Spacer()
+                }
+                .padding(.bottom, 16)
+            }
+            .aspectRatio(0.8, contentMode: .fit)
         }
-        .buttonStyle(PokemonCardButtonStyle())
+        .onTapGesture {
+            onTap()
+        }
+    }
+    
+    private var primaryTypeColor: Color {
+        return Color.gray
     }
 }
 
@@ -80,3 +110,4 @@ struct PokemonCardButtonStyle: ButtonStyle {
             .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
     }
 }
+

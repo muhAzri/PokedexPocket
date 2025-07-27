@@ -22,7 +22,10 @@ struct PokemonListView: View {
         ))
     }
     
-    private let columns = Array(repeating: GridItem(.flexible(), spacing: 16), count: 2)
+    private let columns = [
+        GridItem(.flexible()),
+        GridItem(.flexible())
+    ]
     
     var body: some View {
         VStack(spacing: 0) {
@@ -83,8 +86,7 @@ struct PokemonListView: View {
                     }
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.bottom, 20)
+            .padding(.horizontal)
         }
         .refreshable {
             viewModel.loadInitialData()
