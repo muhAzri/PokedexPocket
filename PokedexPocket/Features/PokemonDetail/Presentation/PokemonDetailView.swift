@@ -31,38 +31,15 @@ struct PokemonDetailView: View {
     @State private var heartRotation: Double = 0
     @State private var showHeartBurst = false
 
-    enum SpriteStyle: String, CaseIterable {
-        case officialArtwork = "Official Artwork"
-        case homeStyle = "Home Style"
-        case gameSprites = "Game Sprites"
-
-        var supportsBackView: Bool {
-            return self == .gameSprites
-        }
-
-        var description: String {
-            switch self {
-            case .officialArtwork:
-                return "High-quality official artwork"
-            case .homeStyle:
-                return "Pokemon Home style sprites"
-            case .gameSprites:
-                return "Classic pixelated game sprites"
-            }
-        }
-    }
-
-    enum DetailTab: String, CaseIterable {
-        case about = "About"
-        case stats = "Stats"
-        case moves = "Moves"
-        case abilities = "Abilities"
-    }
-
     init(pokemonId: Int, pokemonName: String, getPokemonDetailUseCase: GetPokemonDetailUseCaseProtocol) {
         self.pokemonId = pokemonId
         self.pokemonName = pokemonName
-        self._viewModel = StateObject(wrappedValue: PokemonDetailViewModel(pokemonId: pokemonId, getPokemonDetailUseCase: getPokemonDetailUseCase))
+        self._viewModel = StateObject(
+            wrappedValue: PokemonDetailViewModel(
+                pokemonId: pokemonId,
+                getPokemonDetailUseCase: getPokemonDetailUseCase
+            )
+        )
     }
 
     var body: some View {
@@ -96,304 +73,34 @@ struct PokemonDetailView: View {
         }
     }
 
+    // MARK: - Header Section Components
+
     private func headerSection(pokemon: PokemonDetail, geometry: GeometryProxy) -> some View {
-        VStack(spacing: 16) {
-            HStack {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(pokemon.formattedName)
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .foregroundColor(.primary)
-
-                    Text(pokemon.pokemonNumber)
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.secondary)
-                }
-
-                Spacer()
-
-                Button(action: {
-                    toggleFavourite(pokemon: pokemon)
-                }) {
-                    ZStack {
-                        Image(systemName: isFavourite ? "heart.fill" : "heart")
-                            .font(.title2)
-                            .foregroundColor(isFavourite ? .red : .gray)
-                            .scaleEffect(heartScale)
-                            .rotationEffect(.degrees(heartRotation))
-                            .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isFavourite)
-
-                        if showHeartBurst {
-                            ForEach(0..<8, id: \.self) { index in
-                                Image(systemName: "heart.fill")
-                                    .font(.caption2)
-                                    .foregroundColor(.red)
-                                    .offset(
-                                        x: cos(Double(index) * .pi / 4) * 30,
-                                        y: sin(Double(index) * .pi / 4) * 30
-                                    )
-                                    .scaleEffect(showHeartBurst ? 0.3 : 1.0)
-                                    .opacity(showHeartBurst ? 0.0 : 1.0)
-                                    .animation(.easeOut(duration: 0.6).delay(Double(index) * 0.05), value: showHeartBurst)
-                            }
-                        }
-                    }
-                }
-            }
-            .padding(.horizontal)
-
-            HStack(spacing: 12) {
-                ForEach(pokemon.types) { type in
-                    TypeBadge(type: type.name, color: Color(hex: type.color))
-                }
-                Spacer()
-            }
-            .padding(.horizontal)
-
-            ZStack {
-                ForEach(0..<3, id: \.self) { index in
-                    Circle()
-                        .fill(
-                            RadialGradient(
-                                colors: [primaryTypeColor(pokemon: pokemon).opacity(0.2 - Double(index) * 0.05), primaryTypeColor(pokemon: pokemon).opacity(0.05)],
-                                center: .center,
-                                startRadius: 50,
-                                endRadius: 150
-                            )
-                        )
-                        .frame(width: CGFloat(280 + index * 40), height: CGFloat(280 + index * 40))
-                        .scaleEffect(spriteScale)
-                        .rotationEffect(.degrees(Double(index) * 120 + rotationAngle * 0.1))
-                        .animation(.easeInOut(duration: 2.0 + Double(index) * 0.5).repeatForever(autoreverses: true), value: spriteScale)
-                        .animation(.linear(duration: 20).repeatForever(autoreverses: false), value: rotationAngle)
-                }
-
-                AnimatedSpriteView(
-                    pokemon: pokemon,
-                    selectedStyle: selectedSpriteStyle,
-                    isShiny: isShinyVariant,
-                    isFrontView: $isFrontView,
-                    rotationAngle: $rotationAngle,
-                    onTap: {
-                        if selectedSpriteStyle.supportsBackView {
-                            withAnimation(.easeInOut(duration: 0.6)) {
-                                isFrontView.toggle()
-                                rotationAngle += 180
-                            }
-                        }
-                    }
-                )
-                .frame(width: 200, height: 200)
-                .zIndex(10)
-            }
-            .onAppear {
+        PokemonDetailHeaderSection(
+            pokemon: pokemon,
+            geometry: geometry,
+            selectedSpriteStyle: $selectedSpriteStyle,
+            isShinyVariant: $isShinyVariant,
+            isFrontView: $isFrontView,
+            rotationAngle: $rotationAngle,
+            spriteScale: $spriteScale,
+            isFavourite: $isFavourite,
+            heartScale: $heartScale,
+            heartRotation: $heartRotation,
+            showHeartBurst: $showHeartBurst,
+            onToggleFavourite: { toggleFavourite(pokemon: pokemon) },
+            onSpriteAppear: {
                 spriteScale = 1.05
                 startSpriteAnimation()
-            }
-            .onDisappear {
+            },
+            onSpriteDisappear: {
                 stopSpriteAnimation()
             }
-
-            VStack(spacing: 12) {
-                Picker("Sprite Style", selection: $selectedSpriteStyle) {
-                    ForEach(SpriteStyle.allCases, id: \.self) { style in
-                        Text(style.rawValue).tag(style)
-                    }
-                }
-                .pickerStyle(SegmentedPickerStyle())
-                .onChange(of: selectedSpriteStyle) { _, newStyle in
-                    if !newStyle.supportsBackView && !isFrontView {
-                        withAnimation(.easeInOut(duration: 0.6)) {
-                            isFrontView = true
-                            rotationAngle = 0
-                        }
-                    }
-                }
-
-                HStack {
-                    HStack(spacing: 8) {
-                        Text("Shiny")
-                            .font(.caption)
-                            .foregroundColor(.primary)
-                        Toggle("", isOn: $isShinyVariant)
-                            .toggleStyle(SwitchToggleStyle(tint: primaryTypeColor(pokemon: pokemon)))
-                            .labelsHidden()
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
-                    .background(Color(.secondarySystemBackground))
-                    .cornerRadius(12)
-                    .frame(maxWidth: .infinity)
-
-                    if selectedSpriteStyle.supportsBackView {
-                        Button(action: {
-                            withAnimation(.easeInOut(duration: 0.6)) {
-                                isFrontView.toggle()
-                                rotationAngle += 180
-                            }
-                        }) {
-                            HStack(spacing: 6) {
-                                Image(systemName: "arrow.triangle.2.circlepath")
-                                    .font(.caption)
-                                Text(isFrontView ? "Back" : "Front")
-                                    .font(.caption)
-                            }
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 8)
-                            .background(primaryTypeColor(pokemon: pokemon).opacity(0.2))
-                            .foregroundColor(primaryTypeColor(pokemon: pokemon))
-                            .cornerRadius(12)
-                        }
-                        .frame(maxWidth: .infinity)
-                    }
-                }
-
-                Text(selectedSpriteStyle.description + (selectedSpriteStyle.supportsBackView ? " • Tap to flip" : ""))
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
-                    .multilineTextAlignment(.center)
-            }
-            .padding(.horizontal)
-        }
-        .padding(.vertical)
+        )
     }
 
     private func contentSection(pokemon: PokemonDetail) -> some View {
-        VStack(spacing: 0) {
-            Picker("Detail Tab", selection: $selectedTab) {
-                ForEach(DetailTab.allCases, id: \.self) { tab in
-                    Text(tab.rawValue).tag(tab)
-                }
-            }
-            .pickerStyle(SegmentedPickerStyle())
-            .padding(.horizontal)
-            .padding(.bottom, 20)
-
-            switch selectedTab {
-            case .about:
-                aboutSection(pokemon: pokemon)
-            case .stats:
-                statsSection(pokemon: pokemon)
-            case .moves:
-                movesSection(pokemon: pokemon)
-            case .abilities:
-                abilitiesSection(pokemon: pokemon)
-            }
-        }
-        .background(Color(.systemBackground))
-        .cornerRadius(30, corners: [.topLeft, .topRight])
-    }
-
-    private func aboutSection(pokemon: PokemonDetail) -> some View {
-        VStack(alignment: .leading, spacing: 20) {
-            HStack(spacing: 40) {
-                VStack(spacing: 8) {
-                    Text("Height")
-                        .font(.caption)
-                        .fontWeight(.medium)
-                        .foregroundColor(.secondary)
-                    Text("\(pokemon.heightInMeters, specifier: "%.1f") m")
-                        .font(.body)
-                        .fontWeight(.semibold)
-                }
-
-                VStack(spacing: 8) {
-                    Text("Weight")
-                        .font(.caption)
-                        .fontWeight(.medium)
-                        .foregroundColor(.secondary)
-                    Text("\(pokemon.weightInKilograms, specifier: "%.1f") kg")
-                        .font(.body)
-                        .fontWeight(.semibold)
-                }
-
-                VStack(spacing: 8) {
-                    Text("Base EXP")
-                        .font(.caption)
-                        .fontWeight(.medium)
-                        .foregroundColor(.secondary)
-                    Text("\(pokemon.baseExperience)")
-                        .font(.body)
-                        .fontWeight(.semibold)
-                }
-
-                Spacer()
-            }
-            .padding(.horizontal)
-
-            VStack(alignment: .leading, spacing: 12) {
-                Text("Species")
-                    .font(.title3)
-                    .fontWeight(.semibold)
-
-                Text(pokemon.species.capitalized)
-                    .font(.body)
-                    .foregroundColor(.secondary)
-            }
-            .padding(.horizontal)
-
-            Spacer(minLength: 40)
-        }
-        .padding(.vertical)
-    }
-
-    private func statsSection(pokemon: PokemonDetail) -> some View {
-        VStack(alignment: .leading, spacing: 16) {
-            ForEach(pokemon.stats) { stat in
-                StatRow(
-                    name: stat.name.replacingOccurrences(of: "-", with: " ").capitalized,
-                    value: stat.value,
-                    maxValue: 200,
-                    color: primaryTypeColor(pokemon: pokemon)
-                )
-            }
-
-            Spacer(minLength: 40)
-        }
-        .padding(.horizontal)
-        .padding(.vertical)
-    }
-
-    private func movesSection(pokemon: PokemonDetail) -> some View {
-        LazyVStack(alignment: .leading, spacing: 12) {
-            ForEach(Array(pokemon.moves.prefix(20))) { move in
-                MoveRow(move: move)
-            }
-
-            if pokemon.moves.count > 20 {
-                Text("... and \(pokemon.moves.count - 20) more moves")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                    .padding(.horizontal)
-            }
-
-            Spacer(minLength: 40)
-        }
-        .padding(.horizontal)
-        .padding(.vertical)
-    }
-
-    private func abilitiesSection(pokemon: PokemonDetail) -> some View {
-        VStack(alignment: .leading, spacing: 16) {
-            ForEach(pokemon.abilities) { ability in
-                AbilityRow(ability: ability)
-            }
-
-            Spacer(minLength: 40)
-        }
-        .padding(.horizontal)
-        .padding(.vertical)
-    }
-
-    private var loadingView: some View {
-        VStack(spacing: 20) {
-            ProgressView()
-                .scaleEffect(1.5)
-            Text("Loading \(pokemonName.capitalized)...")
-                .font(.headline)
-                .foregroundColor(.secondary)
-        }
+        PokemonDetailContentSection(pokemon: pokemon, selectedTab: $selectedTab)
     }
 
     private func errorView(error: Error) -> some View {

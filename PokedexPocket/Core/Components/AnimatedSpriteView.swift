@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AnimatedSpriteView: View {
     let pokemon: PokemonDetail
-    let selectedStyle: PokemonDetailView.SpriteStyle
+    let selectedStyle: SpriteStyle
     let isShiny: Bool
     @Binding var isFrontView: Bool
     @Binding var rotationAngle: Double

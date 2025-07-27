@@ -29,7 +29,10 @@ class PokemonListRepository: PokemonListRepositoryProtocol {
     }
 
     private func getCachedOrFetchPokemonList() -> Observable<PokemonList> {
-        if cacheManager.isCacheValid(forKey: CacheManager.CacheKey.pokemonList, maxAge: CacheManager.CacheMaxAge.pokemonList),
+        if cacheManager.isCacheValid(
+            forKey: CacheManager.CacheKey.pokemonList,
+            maxAge: CacheManager.CacheMaxAge.pokemonList
+        ),
            let cachedList = cacheManager.get(CacheManager.CacheKey.pokemonList, type: PokemonList.self) {
             return Observable.just(cachedList)
         }

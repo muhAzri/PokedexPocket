@@ -57,7 +57,10 @@ struct PokemonDetailSkeletonView: View {
                         .fill(Color.gray.opacity(0.1))
                         .frame(width: CGFloat(280 + index * 40), height: CGFloat(280 + index * 40))
                         .scaleEffect(isAnimating ? 1.05 : 1.0)
-                        .animation(.easeInOut(duration: 2.0 + Double(index) * 0.5).repeatForever(autoreverses: true), value: isAnimating)
+                        .animation(
+                            .easeInOut(duration: 2.0 + Double(index) * 0.5).repeatForever(autoreverses: true),
+                            value: isAnimating
+                        )
                 }
 
                 SkeletonView(width: 200, height: 200)

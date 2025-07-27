@@ -13,11 +13,13 @@ struct SocialButton: View {
     let url: String
 
     var body: some View {
-        Button(action: {
-            if let url = URL(string: url) {
-                UIApplication.shared.open(url)
-            }
-        }) {
+        Button(
+            action: {
+                if let url = URL(string: url) {
+                    UIApplication.shared.open(url)
+                }
+            },
+            label: {
             VStack(spacing: 8) {
                 Image(systemName: icon)
                     .font(.title2)
@@ -31,6 +33,7 @@ struct SocialButton: View {
             .foregroundColor(.blue)
             .cornerRadius(12)
         }
+    )
         .accessibilityLabel("\(title) - Opens \(title.lowercased()) app or website")
         .accessibilityHint("Double tap to open \(title.lowercased())")
         .accessibilityAddTraits(.isButton)

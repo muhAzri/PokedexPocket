@@ -201,7 +201,13 @@ extension PokemonDetailResponse {
         let pokemonTypes = types.map { PokemonType(name: $0.type.name) }
         let pokemonStats = stats.map { PokemonStat(name: $0.stat.name, value: $0.baseStat) }
         let pokemonAbilities = abilities.map { PokemonAbility(name: $0.ability.name, isHidden: $0.isHidden) }
-        let pokemonMoves = moves.map { PokemonMove(name: $0.move.name, learnMethod: $0.versionGroupDetails.first?.moveLearnMethod.name ?? "unknown", level: $0.versionGroupDetails.first?.levelLearnedAt ?? 0) }
+        let pokemonMoves = moves.map {
+            PokemonMove(
+                name: $0.move.name,
+                learnMethod: $0.versionGroupDetails.first?.moveLearnMethod.name ?? "unknown",
+                level: $0.versionGroupDetails.first?.levelLearnedAt ?? 0
+            )
+        }
 
         return PokemonDetail(
             id: id,

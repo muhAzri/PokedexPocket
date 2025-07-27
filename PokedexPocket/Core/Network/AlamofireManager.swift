@@ -29,7 +29,11 @@ final class AlamofireManager {
 }
 
 final class NetworkInterceptor: Interceptor, @unchecked Sendable {
-    override func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {
+    override func adapt(
+        _ urlRequest: URLRequest,
+        for session: Session,
+        completion: @escaping (Result<URLRequest, Error>) -> Void
+    ) {
         var adaptedRequest = urlRequest
 
         adaptedRequest.setValue("application/json", forHTTPHeaderField: "Accept")
@@ -38,7 +42,12 @@ final class NetworkInterceptor: Interceptor, @unchecked Sendable {
         completion(.success(adaptedRequest))
     }
 
-    override func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
+    override func retry(
+        _ request: Request,
+        for session: Session,
+        dueTo error: Error,
+        completion: @escaping (RetryResult) -> Void
+    ) {
         guard request.retryCount < 3 else {
             completion(.doNotRetry)
             return

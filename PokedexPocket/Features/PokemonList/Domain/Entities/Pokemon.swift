@@ -17,7 +17,16 @@ struct Pokemon: Identifiable, Equatable {
     let weight: Int
     let stats: [PokemonStat]
 
-    init(id: Int, name: String, url: String, imageURL: String = "", types: [PokemonType] = [], height: Int = 0, weight: Int = 0, stats: [PokemonStat] = []) {
+    init(
+        id: Int,
+        name: String,
+        url: String,
+        imageURL: String = "",
+        types: [PokemonType] = [],
+        height: Int = 0,
+        weight: Int = 0,
+        stats: [PokemonStat] = []
+    ) {
         self.id = id
         self.name = name
         self.url = url
@@ -57,28 +66,42 @@ struct PokemonType: Identifiable, Equatable, Codable {
     }
 
     static func colorForType(_ type: String) -> String {
-        switch type.lowercased() {
-        case "fire": return "#F08030"
-        case "water": return "#6890F0"
-        case "grass": return "#78C850"
-        case "electric": return "#F8D030"
-        case "psychic": return "#F85888"
-        case "ice": return "#98D8D8"
-        case "dragon": return "#7038F8"
-        case "dark": return "#705848"
-        case "fairy": return "#EE99AC"
-        case "normal": return "#A8A878"
-        case "fighting": return "#C03028"
-        case "poison": return "#A040A0"
-        case "ground": return "#E0C068"
-        case "flying": return "#A890F0"
-        case "bug": return "#A8B820"
-        case "rock": return "#B8A038"
-        case "ghost": return "#705898"
-        case "steel": return "#B8B8D0"
-        default: return "#68A090"
+        let lowercasedType = type.lowercased()
+
+        if let color = primaryTypeColors[lowercasedType] {
+            return color
         }
+
+        if let color = secondaryTypeColors[lowercasedType] {
+            return color
+        }
+
+        return "#68A090"
     }
+
+    private static let primaryTypeColors: [String: String] = [
+        "fire": "#F08030",
+        "water": "#6890F0",
+        "grass": "#78C850",
+        "electric": "#F8D030",
+        "psychic": "#F85888",
+        "ice": "#98D8D8",
+        "dragon": "#7038F8",
+        "dark": "#705848",
+        "fairy": "#EE99AC"
+    ]
+
+    private static let secondaryTypeColors: [String: String] = [
+        "normal": "#A8A878",
+        "fighting": "#C03028",
+        "poison": "#A040A0",
+        "ground": "#E0C068",
+        "flying": "#A890F0",
+        "bug": "#A8B820",
+        "rock": "#B8A038",
+        "ghost": "#705898",
+        "steel": "#B8B8D0"
+    ]
 }
 
 struct PokemonStat: Identifiable, Equatable, Codable {

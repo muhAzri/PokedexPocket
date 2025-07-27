@@ -44,7 +44,8 @@ struct PokemonListItem: Identifiable, Codable, Equatable {
     }
 
     var imageURL: String {
-        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/\(pokemonId).png"
+        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" +
+        "other/official-artwork/\(pokemonId).png"
     }
 
     var formattedName: String {

@@ -93,7 +93,13 @@ struct NetworkErrorView: View {
 }
 
 #Preview("Error View") {
-    ErrorView(error: NSError(domain: "TestError", code: 1, userInfo: [NSLocalizedDescriptionKey: "This is a sample error message for preview purposes."])) {
+    ErrorView(
+        error: NSError(
+            domain: "TestError",
+            code: 1,
+            userInfo: [NSLocalizedDescriptionKey: "This is a sample error message for preview purposes."]
+        )
+    ) {
         print("Retry tapped")
     }
 }

@@ -10,7 +10,8 @@ import SwiftData
 
 struct FavouritePokemonView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: [SortDescriptor(\FavouritePokemon.dateAdded, order: .reverse)]) private var favouritePokemon: [FavouritePokemon]
+    @Query(sort: [SortDescriptor(\FavouritePokemon.dateAdded, order: .reverse)])
+    private var favouritePokemon: [FavouritePokemon]
     @EnvironmentObject private var coordinator: AppCoordinator
     @State private var showClearAllAlert = false
     @State private var isClearingAll = false
@@ -24,11 +25,18 @@ struct FavouritePokemonView: View {
                     ScrollView {
                         LazyVGrid(columns: gridColumns, spacing: 16, pinnedViews: []) {
                             ForEach(favouritePokemon, id: \.pokemonId) { pokemon in
-                                FavouritePokemonCard(pokemon: pokemon) {
-                                    coordinator.navigateToPokemonDetail(pokemonId: pokemon.pokemonId, pokemonName: pokemon.name)
-                                } onRemove: {
-                                    removeFavourite(pokemon)
-                                }
+                                FavouritePokemonCard(
+                                    pokemon: pokemon,
+                                    onTap: {
+                                        coordinator.navigateToPokemonDetail(
+                                            pokemonId: pokemon.pokemonId,
+                                            pokemonName: pokemon.name
+                                        )
+                                    },
+                                    onRemove: {
+                                        removeFavourite(pokemon)
+                                    }
+                                )
                                 .scaleEffect(isClearingAll ? 0.0 : 1.0)
                                 .opacity(isClearingAll ? 0.0 : 1.0)
                                 .animation(.spring(response: 0.6, dampingFraction: 0.8), value: isClearingAll)
@@ -56,7 +64,10 @@ struct FavouritePokemonView: View {
                     clearAllFavourites()
                 }
             } message: {
-                Text("Are you sure you want to remove all \(favouritePokemon.count) favourite Pokémon? This action cannot be undone.")
+                Text(
+                    "Are you sure you want to remove all \(favouritePokemon.count) favourite Pokémon? " +
+                    "This action cannot be undone."
+                )
             }
         }
     }
@@ -107,7 +118,10 @@ struct EmptyFavouritesView: View {
                     .font(.title3)
                     .fontWeight(.semibold)
 
-                Text("Start exploring Pokémon and add your favorites by tapping the heart icon on any Pokémon detail page.")
+                Text(
+                    "Start exploring Pokémon and add your favorites by tapping the heart icon on " +
+                    "any Pokémon detail page."
+                )
                     .font(.body)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
@@ -115,23 +129,26 @@ struct EmptyFavouritesView: View {
                     .padding(.horizontal, 24)
             }
 
-            Button(action: {
-                coordinator.switchTab(to: .home)
-            }) {
-                Text("Explore Pokémon")
-                    .font(.subheadline)
-                    .fontWeight(.medium)
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 12)
-                    .background(Color.blue)
-                    .cornerRadius(10)
-            }
+            Button(
+                action: {
+                    coordinator.switchTab(to: .home)
+                },
+                label: {
+                    Text("Explore Pokémon")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 12)
+                        .background(Color.blue)
+                        .cornerRadius(10)
+                }
+            )
 
             Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(.systemGroupedBackground))
+        .background(Color(.systemBackground))
     }
 }
 

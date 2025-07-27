@@ -39,7 +39,22 @@ struct PokemonDetail: Identifiable, Equatable {
         Double(weight) / 10.0
     }
 
-    init(id: Int, name: String, height: Int, weight: Int, baseExperience: Int, order: Int? = nil, types: [PokemonType], stats: [PokemonStat], abilities: [PokemonAbility], moves: [PokemonMove] = [], imageURL: String, sprites: PokemonDetailSprites, cries: PokemonDetailCries? = nil, species: String) {
+    init(
+        id: Int,
+        name: String,
+        height: Int,
+        weight: Int,
+        baseExperience: Int,
+        order: Int? = nil,
+        types: [PokemonType],
+        stats: [PokemonStat],
+        abilities: [PokemonAbility],
+        moves: [PokemonMove] = [],
+        imageURL: String,
+        sprites: PokemonDetailSprites,
+        cries: PokemonDetailCries? = nil,
+        species: String
+    ) {
         self.id = id
         self.name = name
         self.height = height

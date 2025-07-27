@@ -42,7 +42,14 @@ struct AboutDevView: View {
                         Spacer()
                     }
 
-                    Text("Passionate mobile app developer with expertise in cross-platform development. Specialized in Android Native (Kotlin & Jetpack Compose), iOS (Swift & SwiftUI), and Flutter. This Pokédex app showcases clean architecture principles and modern mobile development practices.")
+                    Text(
+                        """
+                        Passionate mobile app developer with expertise in cross-platform development. \
+                        Specialized in Android Native (Kotlin & Jetpack Compose), iOS (Swift & SwiftUI), \
+                        and Flutter. This Pokédex app showcases clean architecture principles and modern \
+                        mobile development practices.
+                        """
+                    )
                         .font(.body)
                         .foregroundColor(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -77,8 +84,16 @@ struct AboutDevView: View {
                     }
 
                     VStack(spacing: 8) {
-                        FeatureRow(icon: "list.bullet", title: "Browse Pokémon", description: "Explore a comprehensive list of Pokémon")
-                        FeatureRow(icon: "info.circle", title: "Detailed Info", description: "View stats, types, and descriptions")
+                        FeatureRow(
+                            icon: "list.bullet",
+                            title: "Browse Pokémon",
+                            description: "Explore a comprehensive list of Pokémon"
+                        )
+                        FeatureRow(
+                            icon: "info.circle",
+                            title: "Detailed Info",
+                            description: "View stats, types, and descriptions"
+                        )
                         FeatureRow(icon: "heart", title: "Favorites", description: "Save your favorite Pokémon")
                         FeatureRow(icon: "paintbrush", title: "Clean UI", description: "Modern and intuitive design")
                     }

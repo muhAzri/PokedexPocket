@@ -57,10 +57,13 @@ struct PokemonListView: View {
                     .textFieldStyle(PlainTextFieldStyle())
 
                 if !viewModel.searchText.isEmpty {
-                    Button(action: { viewModel.searchText = "" }) {
-                        Image(systemName: "xmark.circle.fill")
-                            .foregroundColor(.secondary)
-                    }
+                    Button(
+                        action: { viewModel.searchText = "" },
+                        label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundColor(.secondary)
+                        }
+                    )
                 }
             }
             .padding(.horizontal, 12)
@@ -86,9 +89,17 @@ struct PokemonListView: View {
                     }
                 } else {
                     ForEach(viewModel.pokemonList) { pokemon in
-                        PokemonCard(pokemon: pokemon) {
-                            coordinator.navigate(to: .pokemonDetail(pokemonId: pokemon.pokemonId, pokemonName: pokemon.name))
-                        }
+                        PokemonCard(
+                            pokemon: pokemon,
+                            onTap: {
+                                coordinator.navigate(
+                                    to: .pokemonDetail(
+                                        pokemonId: pokemon.pokemonId,
+                                        pokemonName: pokemon.name
+                                    )
+                                )
+                            }
+                        )
                         .onAppear {
                             viewModel.loadMoreIfNeeded(currentItem: pokemon)
                         }

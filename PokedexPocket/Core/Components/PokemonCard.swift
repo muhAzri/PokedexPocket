@@ -36,7 +36,10 @@ struct PokemonCard: View {
 
                     Spacer()
 
-                    AsyncImage(url: URL(string: pokemon.imageURL), transaction: Transaction(animation: .easeInOut(duration: 0.3))) { phase in
+                    AsyncImage(
+                        url: URL(string: pokemon.imageURL),
+                        transaction: Transaction(animation: .easeInOut(duration: 0.3))
+                    ) { phase in
                         switch phase {
                         case .success(let image):
                             image

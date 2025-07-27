@@ -113,7 +113,6 @@
 			buildConfigurationList = 6397598F2E34D744007A8ECC /* Build configuration list for PBXNativeTarget "PokedexPocket" */;
 			buildPhases = (
 				639759682E34D742007A8ECC /* Sources */,
-				63975B492E362611007A8ECC /* Lint Project */,
 				639759692E34D742007A8ECC /* Frameworks */,
 				6397596A2E34D742007A8ECC /* Resources */,
 			);
@@ -256,27 +255,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		63975B492E362611007A8ECC /* Lint Project */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Lint Project";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if which swiftlint > /dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed or not in PATH\"\nfi\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		639759682E34D742007A8ECC /* Sources */ = {
