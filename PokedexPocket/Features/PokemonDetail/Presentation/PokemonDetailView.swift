@@ -1,4 +1,12 @@
+//
+//  PokemonDetailView.swift
+//  PokedexPocket
+//
+//  Created by Azri on 26/07/25.
+//
+
 import SwiftUI
+import SwiftData
 import RxSwift
 import Combine
 
@@ -6,6 +14,8 @@ struct PokemonDetailView: View {
     let pokemonName: String
     @EnvironmentObject private var coordinator: AppCoordinator
     @StateObject private var viewModel: PokemonDetailViewModel
+    @Environment(\.modelContext) private var modelContext
+    @Query private var favourites: [FavouritePokemon]
     @State private var isFavourite = false
     @State private var selectedSpriteStyle: SpriteStyle = .officialArtwork
     @State private var isShinyVariant = false
@@ -72,6 +82,12 @@ struct PokemonDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             viewModel.loadPokemonDetail()
+            updateFavouriteStatus()
+        }
+        .onChange(of: viewModel.pokemon) { _, newPokemon in
+            if newPokemon != nil {
+                updateFavouriteStatus()
+            }
         }
     }
     
@@ -93,11 +109,13 @@ struct PokemonDetailView: View {
                 Spacer()
                 
                 Button(action: {
-                    isFavourite.toggle()
+                    toggleFavourite(pokemon: pokemon)
                 }) {
                     Image(systemName: isFavourite ? "heart.fill" : "heart")
                         .font(.title2)
                         .foregroundColor(isFavourite ? .red : .gray)
+                        .scaleEffect(isFavourite ? 1.2 : 1.0)
+                        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isFavourite)
                 }
             }
             .padding(.horizontal)
@@ -397,6 +415,55 @@ struct PokemonDetailView: View {
     private func stopSpriteAnimation() {
         animationTimer?.invalidate()
         animationTimer = nil
+    }
+    
+    private func updateFavouriteStatus() {
+        guard let pokemon = viewModel.pokemon else { return }
+        isFavourite = favourites.contains { $0.pokemonId == pokemon.id }
+    }
+    
+    private func toggleFavourite(pokemon: PokemonDetail) {
+        if isFavourite {
+            removeFavourite(pokemon: pokemon)
+        } else {
+            addFavourite(pokemon: pokemon)
+        }
+    }
+    
+    private func addFavourite(pokemon: PokemonDetail) {
+        let favourite = FavouritePokemon(
+            pokemonId: pokemon.id,
+            name: pokemon.name,
+            primaryType: pokemon.types.first?.name ?? "Unknown",
+            imageURL: pokemon.sprites.bestQualityImage
+        )
+        
+        
+        modelContext.insert(favourite)
+        
+        do {
+            try modelContext.save()
+            withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                isFavourite = true
+            }
+        } catch {
+            print("Failed to save favourite: \(error)")
+        }
+    }
+    
+    private func removeFavourite(pokemon: PokemonDetail) {
+        if let favouriteToRemove = favourites.first(where: { $0.pokemonId == pokemon.id }) {
+            modelContext.delete(favouriteToRemove)
+            
+            do {
+                try modelContext.save()
+                withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                    isFavourite = false
+                }
+            } catch {
+                print("Failed to remove favourite: \(error)")
+            }
+        }
     }
 }
 

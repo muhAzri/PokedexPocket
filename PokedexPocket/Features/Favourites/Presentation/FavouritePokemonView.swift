@@ -1,24 +1,36 @@
+//
+//  FavouritePokemonView.swift
+//  PokedexPocket
+//
+//  Created by Azri on 26/07/25.
+//
+
 import SwiftUI
+import SwiftData
 
 struct FavouritePokemonView: View {
-    @State private var favouritePokemon: [FavouritePokemon] = [
-        FavouritePokemon(id: 1, name: "Bulbasaur", type: "Grass"),
-        FavouritePokemon(id: 25, name: "Pikachu", type: "Electric"),
-        FavouritePokemon(id: 6, name: "Charizard", type: "Fire"),
-    ]
+    @Environment(\.modelContext) private var modelContext
+    @Query(sort: [SortDescriptor(\FavouritePokemon.dateAdded, order: .reverse)]) private var favouritePokemon: [FavouritePokemon]
+    @EnvironmentObject private var coordinator: AppCoordinator
+    @State private var showClearAllAlert = false
     
     var body: some View {
         NavigationView {
             Group {
                 if favouritePokemon.isEmpty {
-                    EmptyFavouritesView()
+                    EmptyFavouritesView(coordinator: coordinator)
                 } else {
-                    List {
-                        ForEach(favouritePokemon) { pokemon in
-                            FavouritePokemonRow(pokemon: pokemon) {
-                                removeFavourite(pokemon)
+                    ScrollView {
+                        LazyVGrid(columns: gridColumns, spacing: 16, pinnedViews: []) {
+                            ForEach(favouritePokemon, id: \.pokemonId) { pokemon in
+                                FavouritePokemonCard(pokemon: pokemon) {
+                                    coordinator.navigateToPokemonDetail(pokemonName: pokemon.name)
+                                } onRemove: {
+                                    removeFavourite(pokemon)
+                                }
                             }
                         }
+                        .padding(.horizontal)
                     }
                 }
             }
@@ -28,23 +40,48 @@ struct FavouritePokemonView: View {
                 if !favouritePokemon.isEmpty {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button("Clear All") {
-                            favouritePokemon.removeAll()
+                            showClearAllAlert = true
                         }
                         .foregroundColor(.red)
                     }
                 }
             }
+            .alert("Clear All Favourites", isPresented: $showClearAllAlert) {
+                Button("Cancel", role: .cancel) { }
+                Button("Clear All", role: .destructive) {
+                    clearAllFavourites()
+                }
+            } message: {
+                Text("Are you sure you want to remove all \(favouritePokemon.count) favourite Pokémon? This action cannot be undone.")
+            }
         }
     }
     
+    private let gridColumns = [
+        GridItem(.flexible()),
+        GridItem(.flexible())
+    ]
+    
     private func removeFavourite(_ pokemon: FavouritePokemon) {
-        withAnimation {
-            favouritePokemon.removeAll { $0.id == pokemon.id }
+        withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+            modelContext.delete(pokemon)
+            try? modelContext.save()
+        }
+    }
+    
+    private func clearAllFavourites() {
+        withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+            for pokemon in favouritePokemon {
+                modelContext.delete(pokemon)
+            }
+            try? modelContext.save()
         }
     }
 }
 
 struct EmptyFavouritesView: View {
+    let coordinator: AppCoordinator
+    
     var body: some View {
         VStack(spacing: 20) {
             Spacer()
@@ -67,7 +104,7 @@ struct EmptyFavouritesView: View {
             }
             
             Button(action: {
-                // This would navigate to Pokemon list in a real app
+                coordinator.switchTab(to: .home)
             }) {
                 Text("Explore Pokémon")
                     .font(.subheadline)
@@ -86,76 +123,156 @@ struct EmptyFavouritesView: View {
     }
 }
 
-struct FavouritePokemonRow: View {
+struct FavouritePokemonCard: View {
     let pokemon: FavouritePokemon
+    let onTap: () -> Void
     let onRemove: () -> Void
+    @State private var isRemoving = false
+    
     
     var body: some View {
-        HStack(spacing: 16) {
-            Circle()
-                .fill(typeColor(for: pokemon.type).opacity(0.3))
-                .frame(width: 60, height: 60)
-                .overlay(
-                    Text("#\(String(format: "%03d", pokemon.id))")
-                        .font(.caption)
-                        .fontWeight(.semibold)
-                        .foregroundColor(typeColor(for: pokemon.type))
-                )
-            
-            VStack(alignment: .leading, spacing: 4) {
-                Text(pokemon.name)
-                    .font(.headline)
-                    .fontWeight(.semibold)
+        VStack(spacing: 0) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(
+                        LinearGradient(
+                            colors: [typeColor(for: pokemon.primaryType).opacity(0.1), typeColor(for: pokemon.primaryType).opacity(0.05)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(typeColor(for: pokemon.primaryType).opacity(0.3), lineWidth: 1)
+                    )
                 
-                Text(pokemon.type)
-                    .font(.caption)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 2)
-                    .background(typeColor(for: pokemon.type).opacity(0.2))
-                    .foregroundColor(typeColor(for: pokemon.type))
-                    .cornerRadius(8)
+                VStack(spacing: 12) {
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                                isRemoving = true
+                            }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                onRemove()
+                            }
+                        }) {
+                            Image(systemName: "heart.fill")
+                                .font(.caption)
+                                .foregroundColor(.red)
+                                .scaleEffect(isRemoving ? 0.8 : 1.0)
+                        }
+                    }
+                    .padding(.top, 8)
+                    .padding(.trailing, 8)
+                    
+                    Spacer()
+                    
+                    AsyncImage(url: URL(string: pokemon.imageURL), transaction: Transaction(animation: .easeInOut(duration: 0.3))) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .transition(.opacity)
+                        case .failure(_):
+                            Circle()
+                                .fill(typeColor(for: pokemon.primaryType).opacity(0.2))
+                                .overlay(
+                                    Image(systemName: "photo")
+                                        .foregroundColor(.secondary)
+                                )
+                        case .empty:
+                            Circle()
+                                .fill(typeColor(for: pokemon.primaryType).opacity(0.2))
+                                .overlay(
+                                    ProgressView()
+                                        .scaleEffect(0.7)
+                                )
+                        @unknown default:
+                            EmptyView()
+                        }
+                    }
+                    .frame(width: 80, height: 80)
+                    .id(pokemon.imageURL) // Force refresh when URL changes
+                    
+                    VStack(spacing: 6) {
+                        Text("#\(String(format: "%03d", pokemon.pokemonId))")
+                            .font(.caption2)
+                            .fontWeight(.medium)
+                            .foregroundColor(.secondary)
+                        
+                        Text(pokemon.name.capitalized)
+                            .font(.subheadline)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.primary)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.8)
+                        
+                        Text(pokemon.primaryType.capitalized)
+                            .font(.caption)
+                            .fontWeight(.medium)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 3)
+                            .background(typeColor(for: pokemon.primaryType).opacity(0.2))
+                            .foregroundColor(typeColor(for: pokemon.primaryType))
+                            .cornerRadius(8)
+                    }
+                    
+                    Spacer()
+                }
+                .padding(.bottom, 16)
             }
-            
-            Spacer()
-            
-            Button(action: onRemove) {
-                Image(systemName: "heart.fill")
-                    .font(.title2)
-                    .foregroundColor(.red)
-            }
+            .aspectRatio(0.8, contentMode: .fit)
         }
-        .padding(.vertical, 8)
-        .contentShape(Rectangle())
+        .onTapGesture {
+            onTap()
+        }
+        .scaleEffect(isRemoving ? 0.95 : 1.0)
     }
     
     private func typeColor(for type: String) -> Color {
         switch type.lowercased() {
         case "grass":
-            return .green
+            return Color(red: 0.48, green: 0.78, blue: 0.36)
         case "fire":
-            return .red
+            return Color(red: 0.93, green: 0.41, blue: 0.26)
         case "water":
-            return .blue
+            return Color(red: 0.39, green: 0.56, blue: 0.89)
         case "electric":
-            return .yellow
+            return Color(red: 0.98, green: 0.81, blue: 0.16)
         case "psychic":
-            return .purple
+            return Color(red: 0.98, green: 0.41, blue: 0.68)
         case "ice":
-            return .cyan
+            return Color(red: 0.58, green: 0.89, blue: 0.89)
         case "dragon":
-            return .indigo
+            return Color(red: 0.45, green: 0.31, blue: 0.97)
         case "dark":
-            return .black
+            return Color(red: 0.43, green: 0.33, blue: 0.25)
         case "fairy":
-            return .pink
+            return Color(red: 0.84, green: 0.51, blue: 0.84)
+        case "poison":
+            return Color(red: 0.64, green: 0.35, blue: 0.68)
+        case "ground":
+            return Color(red: 0.89, green: 0.75, blue: 0.42)
+        case "flying":
+            return Color(red: 0.66, green: 0.73, blue: 0.89)
+        case "bug":
+            return Color(red: 0.64, green: 0.73, blue: 0.18)
+        case "rock":
+            return Color(red: 0.71, green: 0.63, blue: 0.42)
+        case "ghost":
+            return Color(red: 0.43, green: 0.35, blue: 0.60)
+        case "steel":
+            return Color(red: 0.69, green: 0.69, blue: 0.81)
+        case "fighting":
+            return Color(red: 0.75, green: 0.19, blue: 0.16)
+        case "normal":
+            return Color(red: 0.66, green: 0.66, blue: 0.47)
         default:
-            return .gray
+            return Color.gray
         }
     }
 }
 
-struct FavouritePokemon: Identifiable {
-    let id: Int
-    let name: String
-    let type: String
-}
+

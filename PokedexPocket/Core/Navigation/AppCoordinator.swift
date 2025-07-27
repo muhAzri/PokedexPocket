@@ -1,3 +1,10 @@
+//
+//  AppCoordinator.swift
+//  PokedexPocket
+//
+//  Created by Azri on 26/07/25.
+//
+
 import SwiftUI
 import Combine
 
@@ -79,6 +86,10 @@ class AppCoordinator: ObservableObject {
     
     func switchTab(to tab: AppTab) {
         selectedTab = tab
+    }
+    
+    func navigateToPokemonDetail(pokemonName: String) {
+        navigate(to: .pokemonDetail(pokemonName: pokemonName))
     }
 }
 

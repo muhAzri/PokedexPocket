@@ -1,3 +1,10 @@
+//
+//  PokemonEndpoints.swift
+//  PokedexPocket
+//
+//  Created by Azri on 26/07/25.
+//
+
 import Foundation
 import Alamofire
 
