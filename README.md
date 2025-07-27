@@ -574,9 +574,12 @@ class GetPokemonDetailUseCase: GetPokemonDetailUseCaseProtocol {
 
 ## 🧪 Testing
 
-### Test Structure
+📝 **TODO**: Testing is not yet implemented. This section will include unit and integration tests for core services and features once available.
 
-```
+
+<!-- ### Test Structure -->
+
+<!-- ```
 PokedexPocketTests/
 ├── 📁 Core/
 │   ├── NetworkServiceTests.swift
@@ -593,9 +596,9 @@ PokedexPocketTests/
     ├── MockNetworkService.swift
     ├── MockPokemonRepository.swift
     └── MockData.swift
-```
+``` -->
 
-### Running Tests
+<!-- ### Running Tests
 
 ```bash
 # Run all tests
@@ -608,7 +611,7 @@ xcodebuild test -scheme PokedexPocket -destination 'platform=iOS Simulator,name=
 ### Test Coverage Goals
 - **Unit Tests**: >80% code coverage
 - **Integration Tests**: Key user flows
-- **UI Tests**: Critical user interactions
+- **UI Tests**: Critical user interactions -->
 
 ## 📝 Development Guidelines
 
