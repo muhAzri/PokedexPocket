@@ -11,23 +11,74 @@ enum AppDestination: Hashable {
 @MainActor
 class AppCoordinator: ObservableObject {
     @Published var navigationPath = NavigationPath()
+    @Published var favouritesNavigationPath = NavigationPath()
+    @Published var aboutNavigationPath = NavigationPath()
     @Published var selectedTab: AppTab = .home
     
+    private var currentNavigationPath: NavigationPath {
+        get {
+            switch selectedTab {
+            case .home:
+                return navigationPath
+            case .favourites:
+                return favouritesNavigationPath
+            case .about:
+                return aboutNavigationPath
+            }
+        }
+        set {
+            switch selectedTab {
+            case .home:
+                navigationPath = newValue
+            case .favourites:
+                favouritesNavigationPath = newValue
+            case .about:
+                aboutNavigationPath = newValue
+            }
+        }
+    }
+    
     func navigate(to destination: AppDestination) {
-        navigationPath.append(destination)
+        switch selectedTab {
+        case .home:
+            navigationPath.append(destination)
+        case .favourites:
+            favouritesNavigationPath.append(destination)
+        case .about:
+            aboutNavigationPath.append(destination)
+        }
     }
     
     func navigateBack() {
-        navigationPath.removeLast()
+        switch selectedTab {
+        case .home:
+            if !navigationPath.isEmpty {
+                navigationPath.removeLast()
+            }
+        case .favourites:
+            if !favouritesNavigationPath.isEmpty {
+                favouritesNavigationPath.removeLast()
+            }
+        case .about:
+            if !aboutNavigationPath.isEmpty {
+                aboutNavigationPath.removeLast()
+            }
+        }
     }
     
     func navigateToRoot() {
-        navigationPath.removeLast(navigationPath.count)
+        switch selectedTab {
+        case .home:
+            navigationPath.removeLast(navigationPath.count)
+        case .favourites:
+            favouritesNavigationPath.removeLast(favouritesNavigationPath.count)
+        case .about:
+            aboutNavigationPath.removeLast(aboutNavigationPath.count)
+        }
     }
     
     func switchTab(to tab: AppTab) {
         selectedTab = tab
-        navigateToRoot()
     }
 }
 

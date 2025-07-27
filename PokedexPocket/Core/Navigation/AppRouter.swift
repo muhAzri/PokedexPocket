@@ -9,6 +9,7 @@ struct AppRouter: View {
                 PokemonListView()
                     .navigationDestination(for: AppDestination.self) { destination in
                         destinationView(for: destination)
+                            .toolbar(.hidden, for: .tabBar)
                     }
             }
             .tabItem {
@@ -17,8 +18,12 @@ struct AppRouter: View {
             }
             .tag(AppTab.home)
             
-            NavigationStack {
+            NavigationStack(path: $coordinator.favouritesNavigationPath) {
                 FavouritePokemonView()
+                    .navigationDestination(for: AppDestination.self) { destination in
+                        destinationView(for: destination)
+                            .toolbar(.hidden, for: .tabBar)
+                    }
             }
             .tabItem {
                 Image(systemName: AppTab.favourites.icon)
@@ -26,8 +31,12 @@ struct AppRouter: View {
             }
             .tag(AppTab.favourites)
             
-            NavigationStack {
+            NavigationStack(path: $coordinator.aboutNavigationPath) {
                 AboutDevView()
+                    .navigationDestination(for: AppDestination.self) { destination in
+                        destinationView(for: destination)
+                            .toolbar(.hidden, for: .tabBar)
+                    }
             }
             .tabItem {
                 Image(systemName: AppTab.about.icon)
