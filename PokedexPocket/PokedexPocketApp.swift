@@ -10,18 +10,18 @@ import SwiftData
 
 @main
 struct PokedexPocketApp: App {
-    
+
     init() {
         configureImageCache()
     }
-    
+
     var body: some Scene {
         WindowGroup {
             AppRouter()
                 .modelContainer(for: FavouritePokemon.self)
         }
     }
-    
+
     private func configureImageCache() {
         let cache = URLCache(
             memoryCapacity: 50 * 1024 * 1024,

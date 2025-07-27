@@ -9,7 +9,7 @@ import SwiftUI
 
 struct AppRouter: View {
     @StateObject private var coordinator = AppCoordinator()
-    
+
     var body: some View {
         TabView(selection: $coordinator.selectedTab) {
             NavigationStack(path: $coordinator.navigationPath) {
@@ -24,7 +24,7 @@ struct AppRouter: View {
                 Text(AppTab.home.title)
             }
             .tag(AppTab.home)
-            
+
             NavigationStack(path: $coordinator.favouritesNavigationPath) {
                 FavouritePokemonView()
                     .navigationDestination(for: AppDestination.self) { destination in
@@ -37,7 +37,7 @@ struct AppRouter: View {
                 Text(AppTab.favourites.title)
             }
             .tag(AppTab.favourites)
-            
+
             NavigationStack(path: $coordinator.aboutNavigationPath) {
                 AboutDevView()
                     .navigationDestination(for: AppDestination.self) { destination in
@@ -53,7 +53,7 @@ struct AppRouter: View {
         }
         .environmentObject(coordinator)
     }
-    
+
     @ViewBuilder
     private func destinationView(for destination: AppDestination) -> some View {
         switch destination {

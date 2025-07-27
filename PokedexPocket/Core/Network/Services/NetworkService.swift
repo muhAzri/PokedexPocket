@@ -16,12 +16,12 @@ protocol NetworkServiceProtocol {
 class NetworkService: NetworkServiceProtocol {
     private let session: Session
     private let configuration: NetworkConfiguration
-    
+
     init(configuration: NetworkConfiguration) {
         self.configuration = configuration
         self.session = AlamofireManager.shared.session
     }
-    
+
     func request<T: Codable>(_ endpoint: APIEndpoint, responseType: T.Type) -> Observable<T> {
         return Observable.create { observer in
             let request = self.session.request(
@@ -41,7 +41,7 @@ class NetworkService: NetworkServiceProtocol {
                     observer.onError(NetworkError.from(afError: error))
                 }
             }
-            
+
             return Disposables.create {
                 request.cancel()
             }
@@ -57,7 +57,7 @@ enum NetworkError: Error, LocalizedError {
     case networkError(Error)
     case serverError(Int)
     case unknown
-    
+
     static func from(afError: AFError) -> NetworkError {
         switch afError {
         case .invalidURL:
@@ -76,7 +76,7 @@ enum NetworkError: Error, LocalizedError {
             return .networkError(afError)
         }
     }
-    
+
     var errorDescription: String? {
         switch self {
         case .invalidURL:

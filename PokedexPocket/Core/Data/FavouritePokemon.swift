@@ -15,7 +15,7 @@ final class FavouritePokemon {
     var primaryType: String
     var imageURL: String
     var dateAdded: Date
-    
+
     init(pokemonId: Int, name: String, primaryType: String, imageURL: String) {
         self.pokemonId = pokemonId
         self.name = name

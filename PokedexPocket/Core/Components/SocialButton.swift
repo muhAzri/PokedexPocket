@@ -11,7 +11,7 @@ struct SocialButton: View {
     let icon: String
     let title: String
     let url: String
-    
+
     var body: some View {
         Button(action: {
             if let url = URL(string: url) {
@@ -21,7 +21,7 @@ struct SocialButton: View {
             VStack(spacing: 8) {
                 Image(systemName: icon)
                     .font(.title2)
-                
+
                 Text(title)
                     .font(.caption)
                     .fontWeight(.medium)

@@ -9,19 +9,19 @@ import SwiftUI
 
 struct MoveRow: View {
     let move: PokemonMove
-    
+
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
                 Text(move.formattedName)
                     .font(.body)
                     .fontWeight(.medium)
-                
+
                 Text(move.formattedLearnMethod)
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
-            
+
             Spacer()
         }
         .padding(.vertical, 8)
@@ -37,7 +37,7 @@ struct MoveRow: View {
         learnMethod: "level-up",
         level: 15
     )
-    
+
     VStack {
         MoveRow(move: sampleMove)
         MoveRow(move: sampleMove)

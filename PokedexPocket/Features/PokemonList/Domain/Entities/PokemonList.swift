@@ -12,11 +12,11 @@ struct PokemonList: Codable, Equatable {
     let next: String?
     let previous: String?
     let results: [PokemonListItem]
-    
+
     var hasNext: Bool {
         next != nil
     }
-    
+
     var hasPrevious: Bool {
         previous != nil
     }
@@ -26,13 +26,13 @@ struct PokemonListItem: Identifiable, Codable, Equatable {
     let id: String
     let name: String
     let url: String
-    
+
     init(name: String, url: String) {
         self.id = name
         self.name = name
         self.url = url
     }
-    
+
     // Computed properties below will be ignored during encoding/decoding
     var pokemonId: Int {
         guard let urlComponents = URLComponents(string: url),

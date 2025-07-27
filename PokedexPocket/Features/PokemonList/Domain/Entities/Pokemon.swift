@@ -16,7 +16,7 @@ struct Pokemon: Identifiable, Equatable {
     let height: Int
     let weight: Int
     let stats: [PokemonStat]
-    
+
     init(id: Int, name: String, url: String, imageURL: String = "", types: [PokemonType] = [], height: Int = 0, weight: Int = 0, stats: [PokemonStat] = []) {
         self.id = id
         self.name = name
@@ -27,19 +27,19 @@ struct Pokemon: Identifiable, Equatable {
         self.weight = weight
         self.stats = stats
     }
-    
+
     var formattedName: String {
         name.capitalized
     }
-    
+
     var pokemonNumber: String {
         String(format: "#%03d", id)
     }
-    
+
     var heightInMeters: Double {
         Double(height) / 10.0
     }
-    
+
     var weightInKilograms: Double {
         Double(weight) / 10.0
     }
@@ -49,13 +49,13 @@ struct PokemonType: Identifiable, Equatable, Codable {
     let id: String
     let name: String
     let color: String
-    
+
     init(name: String) {
         self.id = name
         self.name = name
         self.color = PokemonType.colorForType(name)
     }
-    
+
     static func colorForType(_ type: String) -> String {
         switch type.lowercased() {
         case "fire": return "#F08030"
@@ -85,7 +85,7 @@ struct PokemonStat: Identifiable, Equatable, Codable {
     let id: String
     let name: String
     let value: Int
-    
+
     init(name: String, value: Int) {
         self.id = name
         self.name = name

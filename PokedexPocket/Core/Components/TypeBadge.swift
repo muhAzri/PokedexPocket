@@ -10,7 +10,7 @@ import SwiftUI
 struct TypeBadge: View {
     let type: String
     let color: Color
-    
+
     var body: some View {
         Text(type.capitalized)
             .font(.caption)

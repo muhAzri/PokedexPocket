@@ -10,7 +10,7 @@ import SwiftUI
 struct PokemonCard: View {
     let pokemon: PokemonListItem
     let onTap: () -> Void
-    
+
     var body: some View {
         VStack(spacing: 0) {
             ZStack {
@@ -26,16 +26,16 @@ struct PokemonCard: View {
                         RoundedRectangle(cornerRadius: 16)
                             .stroke(primaryTypeColor.opacity(0.3), lineWidth: 1)
                     )
-                
+
                 VStack(spacing: 12) {
                     HStack {
                         Spacer()
                     }
                     .padding(.top, 8)
                     .padding(.trailing, 8)
-                    
+
                     Spacer()
-                    
+
                     AsyncImage(url: URL(string: pokemon.imageURL), transaction: Transaction(animation: .easeInOut(duration: 0.3))) { phase in
                         switch phase {
                         case .success(let image):
@@ -43,7 +43,7 @@ struct PokemonCard: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .transition(.opacity)
-                        case .failure(_):
+                        case .failure:
                             Circle()
                                 .fill(primaryTypeColor.opacity(0.2))
                                 .overlay(
@@ -63,20 +63,20 @@ struct PokemonCard: View {
                     }
                     .frame(width: 80, height: 80)
                     .id(pokemon.imageURL)
-                    
+
                     VStack(spacing: 6) {
                         Text(pokemon.pokemonNumber)
                             .font(.caption2)
                             .fontWeight(.medium)
                             .foregroundColor(.secondary)
-                        
+
                         Text(pokemon.formattedName)
                             .font(.subheadline)
                             .fontWeight(.semibold)
                             .foregroundColor(.primary)
                             .lineLimit(1)
                             .minimumScaleFactor(0.8)
-                        
+
                         Text("Pokémon")
                             .font(.caption)
                             .fontWeight(.medium)
@@ -86,7 +86,7 @@ struct PokemonCard: View {
                             .foregroundColor(primaryTypeColor)
                             .cornerRadius(8)
                     }
-                    
+
                     Spacer()
                 }
                 .padding(.bottom, 16)
@@ -97,7 +97,7 @@ struct PokemonCard: View {
             onTap()
         }
     }
-    
+
     private var primaryTypeColor: Color {
         return Color.gray
     }
@@ -113,13 +113,12 @@ struct PokemonCardButtonStyle: ButtonStyle {
 
 #Preview("Pokemon Card") {
     let samplePokemon = PokemonListItem(
-        name: "pikachu", 
+        name: "pikachu",
         url: "https://pokeapi.co/api/v2/pokemon/25/"
     )
-    
+
     PokemonCard(pokemon: samplePokemon) {
     }
     .frame(width: 160, height: 200)
     .padding()
 }
-

@@ -9,14 +9,14 @@ import SwiftUI
 
 struct AbilityRow: View {
     let ability: PokemonAbility
-    
+
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
                 Text(ability.formattedName)
                     .font(.body)
                     .fontWeight(.medium)
-                
+
                 if ability.isHidden {
                     Text("Hidden Ability")
                         .font(.caption)
@@ -27,7 +27,7 @@ struct AbilityRow: View {
                         .cornerRadius(4)
                 }
             }
-            
+
             Spacer()
         }
         .padding(.vertical, 8)
@@ -42,12 +42,12 @@ struct AbilityRow: View {
         name: "static",
         isHidden: false
     )
-    
+
     let hiddenAbility = PokemonAbility(
         name: "lightning-rod",
         isHidden: true
     )
-    
+
     VStack {
         AbilityRow(ability: sampleAbility)
         AbilityRow(ability: hiddenAbility)

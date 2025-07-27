@@ -9,14 +9,14 @@ import SwiftUI
 
 struct LoadingView: View {
     @State private var isAnimating = false
-    
+
     var body: some View {
         VStack(spacing: 16) {
             ZStack {
                 Circle()
                     .stroke(Color.gray.opacity(0.3), lineWidth: 4)
                     .frame(width: 50, height: 50)
-                
+
                 Circle()
                     .trim(from: 0, to: 0.3)
                     .stroke(Color.red, lineWidth: 4)
@@ -28,7 +28,7 @@ struct LoadingView: View {
                         value: isAnimating
                     )
             }
-            
+
             Text("Loading Pokémon...")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
@@ -55,32 +55,32 @@ struct PokemonLoadingCard: View {
                         RoundedRectangle(cornerRadius: 16)
                             .stroke(Color.gray.opacity(0.3), lineWidth: 1)
                     )
-                
+
                 VStack(spacing: 12) {
                     Spacer()
-                    
+
                     Circle()
                         .fill(Color.gray.opacity(0.2))
                         .frame(width: 80, height: 80)
                         .shimmer()
-                    
+
                     VStack(spacing: 6) {
                         RoundedRectangle(cornerRadius: 4)
                             .fill(Color.gray.opacity(0.2))
                             .frame(width: 40, height: 12)
                             .shimmer()
-                        
+
                         RoundedRectangle(cornerRadius: 4)
                             .fill(Color.gray.opacity(0.2))
                             .frame(width: 80, height: 16)
                             .shimmer()
-                        
+
                         RoundedRectangle(cornerRadius: 8)
                             .fill(Color.gray.opacity(0.2))
                             .frame(width: 60, height: 20)
                             .shimmer()
                     }
-                    
+
                     Spacer()
                 }
                 .padding(.bottom, 16)
@@ -98,7 +98,7 @@ extension View {
 
 struct ShimmerModifier: ViewModifier {
     @State private var phase: CGFloat = 0
-    
+
     func body(content: Content) -> some View {
         content
             .overlay(

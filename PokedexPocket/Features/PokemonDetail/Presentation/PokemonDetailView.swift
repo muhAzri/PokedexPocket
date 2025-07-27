@@ -30,16 +30,16 @@ struct PokemonDetailView: View {
     @State private var heartScale: CGFloat = 1.0
     @State private var heartRotation: Double = 0
     @State private var showHeartBurst = false
-    
+
     enum SpriteStyle: String, CaseIterable {
         case officialArtwork = "Official Artwork"
         case homeStyle = "Home Style"
         case gameSprites = "Game Sprites"
-        
+
         var supportsBackView: Bool {
             return self == .gameSprites
         }
-        
+
         var description: String {
             switch self {
             case .officialArtwork:
@@ -51,20 +51,20 @@ struct PokemonDetailView: View {
             }
         }
     }
-    
+
     enum DetailTab: String, CaseIterable {
         case about = "About"
         case stats = "Stats"
         case moves = "Moves"
         case abilities = "Abilities"
     }
-    
+
     init(pokemonId: Int, pokemonName: String, getPokemonDetailUseCase: GetPokemonDetailUseCaseProtocol) {
         self.pokemonId = pokemonId
         self.pokemonName = pokemonName
         self._viewModel = StateObject(wrappedValue: PokemonDetailViewModel(pokemonId: pokemonId, getPokemonDetailUseCase: getPokemonDetailUseCase))
     }
-    
+
     var body: some View {
         ZStack {
             if let pokemon = viewModel.pokemon {
@@ -95,7 +95,7 @@ struct PokemonDetailView: View {
             }
         }
     }
-    
+
     private func headerSection(pokemon: PokemonDetail, geometry: GeometryProxy) -> some View {
         VStack(spacing: 16) {
             HStack {
@@ -104,15 +104,15 @@ struct PokemonDetailView: View {
                         .font(.largeTitle)
                         .fontWeight(.bold)
                         .foregroundColor(.primary)
-                    
+
                     Text(pokemon.pokemonNumber)
                         .font(.title2)
                         .fontWeight(.semibold)
                         .foregroundColor(.secondary)
                 }
-                
+
                 Spacer()
-                
+
                 Button(action: {
                     toggleFavourite(pokemon: pokemon)
                 }) {
@@ -123,7 +123,7 @@ struct PokemonDetailView: View {
                             .scaleEffect(heartScale)
                             .rotationEffect(.degrees(heartRotation))
                             .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isFavourite)
-                        
+
                         if showHeartBurst {
                             ForEach(0..<8, id: \.self) { index in
                                 Image(systemName: "heart.fill")
@@ -142,7 +142,7 @@ struct PokemonDetailView: View {
                 }
             }
             .padding(.horizontal)
-            
+
             HStack(spacing: 12) {
                 ForEach(pokemon.types) { type in
                     TypeBadge(type: type.name, color: Color(hex: type.color))
@@ -150,7 +150,7 @@ struct PokemonDetailView: View {
                 Spacer()
             }
             .padding(.horizontal)
-            
+
             ZStack {
                 ForEach(0..<3, id: \.self) { index in
                     Circle()
@@ -168,7 +168,7 @@ struct PokemonDetailView: View {
                         .animation(.easeInOut(duration: 2.0 + Double(index) * 0.5).repeatForever(autoreverses: true), value: spriteScale)
                         .animation(.linear(duration: 20).repeatForever(autoreverses: false), value: rotationAngle)
                 }
-                
+
                 AnimatedSpriteView(
                     pokemon: pokemon,
                     selectedStyle: selectedSpriteStyle,
@@ -194,7 +194,7 @@ struct PokemonDetailView: View {
             .onDisappear {
                 stopSpriteAnimation()
             }
-            
+
             VStack(spacing: 12) {
                 Picker("Sprite Style", selection: $selectedSpriteStyle) {
                     ForEach(SpriteStyle.allCases, id: \.self) { style in
@@ -210,7 +210,7 @@ struct PokemonDetailView: View {
                         }
                     }
                 }
-                
+
                 HStack {
                     HStack(spacing: 8) {
                         Text("Shiny")
@@ -225,7 +225,7 @@ struct PokemonDetailView: View {
                     .background(Color(.secondarySystemBackground))
                     .cornerRadius(12)
                     .frame(maxWidth: .infinity)
-                    
+
                     if selectedSpriteStyle.supportsBackView {
                         Button(action: {
                             withAnimation(.easeInOut(duration: 0.6)) {
@@ -248,7 +248,7 @@ struct PokemonDetailView: View {
                         .frame(maxWidth: .infinity)
                     }
                 }
-                
+
                 Text(selectedSpriteStyle.description + (selectedSpriteStyle.supportsBackView ? " • Tap to flip" : ""))
                     .font(.caption2)
                     .foregroundColor(.secondary)
@@ -258,7 +258,7 @@ struct PokemonDetailView: View {
         }
         .padding(.vertical)
     }
-    
+
     private func contentSection(pokemon: PokemonDetail) -> some View {
         VStack(spacing: 0) {
             Picker("Detail Tab", selection: $selectedTab) {
@@ -269,7 +269,7 @@ struct PokemonDetailView: View {
             .pickerStyle(SegmentedPickerStyle())
             .padding(.horizontal)
             .padding(.bottom, 20)
-            
+
             switch selectedTab {
             case .about:
                 aboutSection(pokemon: pokemon)
@@ -284,7 +284,7 @@ struct PokemonDetailView: View {
         .background(Color(.systemBackground))
         .cornerRadius(30, corners: [.topLeft, .topRight])
     }
-    
+
     private func aboutSection(pokemon: PokemonDetail) -> some View {
         VStack(alignment: .leading, spacing: 20) {
             HStack(spacing: 40) {
@@ -297,7 +297,7 @@ struct PokemonDetailView: View {
                         .font(.body)
                         .fontWeight(.semibold)
                 }
-                
+
                 VStack(spacing: 8) {
                     Text("Weight")
                         .font(.caption)
@@ -307,7 +307,7 @@ struct PokemonDetailView: View {
                         .font(.body)
                         .fontWeight(.semibold)
                 }
-                
+
                 VStack(spacing: 8) {
                     Text("Base EXP")
                         .font(.caption)
@@ -317,27 +317,27 @@ struct PokemonDetailView: View {
                         .font(.body)
                         .fontWeight(.semibold)
                 }
-                
+
                 Spacer()
             }
             .padding(.horizontal)
-            
+
             VStack(alignment: .leading, spacing: 12) {
                 Text("Species")
                     .font(.title3)
                     .fontWeight(.semibold)
-                
+
                 Text(pokemon.species.capitalized)
                     .font(.body)
                     .foregroundColor(.secondary)
             }
             .padding(.horizontal)
-            
+
             Spacer(minLength: 40)
         }
         .padding(.vertical)
     }
-    
+
     private func statsSection(pokemon: PokemonDetail) -> some View {
         VStack(alignment: .leading, spacing: 16) {
             ForEach(pokemon.stats) { stat in
@@ -348,44 +348,44 @@ struct PokemonDetailView: View {
                     color: primaryTypeColor(pokemon: pokemon)
                 )
             }
-            
+
             Spacer(minLength: 40)
         }
         .padding(.horizontal)
         .padding(.vertical)
     }
-    
+
     private func movesSection(pokemon: PokemonDetail) -> some View {
         LazyVStack(alignment: .leading, spacing: 12) {
             ForEach(Array(pokemon.moves.prefix(20))) { move in
                 MoveRow(move: move)
             }
-            
+
             if pokemon.moves.count > 20 {
                 Text("... and \(pokemon.moves.count - 20) more moves")
                     .font(.caption)
                     .foregroundColor(.secondary)
                     .padding(.horizontal)
             }
-            
+
             Spacer(minLength: 40)
         }
         .padding(.horizontal)
         .padding(.vertical)
     }
-    
+
     private func abilitiesSection(pokemon: PokemonDetail) -> some View {
         VStack(alignment: .leading, spacing: 16) {
             ForEach(pokemon.abilities) { ability in
                 AbilityRow(ability: ability)
             }
-            
+
             Spacer(minLength: 40)
         }
         .padding(.horizontal)
         .padding(.vertical)
     }
-    
+
     private var loadingView: some View {
         VStack(spacing: 20) {
             ProgressView()
@@ -395,21 +395,21 @@ struct PokemonDetailView: View {
                 .foregroundColor(.secondary)
         }
     }
-    
+
     private func errorView(error: Error) -> some View {
         VStack(spacing: 20) {
             Image(systemName: "exclamationmark.triangle")
                 .font(.system(size: 50))
                 .foregroundColor(.red)
-            
+
             Text("Oops! Something went wrong")
                 .font(.headline)
-            
+
             Text(error.localizedDescription)
                 .font(.body)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
-            
+
             Button("Try Again") {
                 viewModel.loadPokemonDetail()
             }
@@ -417,12 +417,12 @@ struct PokemonDetailView: View {
         }
         .padding()
     }
-    
+
     private func primaryTypeColor(pokemon: PokemonDetail) -> Color {
         guard let firstType = pokemon.types.first else { return Color.gray }
         return Color(hex: firstType.color)
     }
-    
+
     private func startSpriteAnimation() {
         animationTimer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
             withAnimation(.easeInOut(duration: 0.5)) {
@@ -434,17 +434,17 @@ struct PokemonDetailView: View {
             }
         }
     }
-    
+
     private func stopSpriteAnimation() {
         animationTimer?.invalidate()
         animationTimer = nil
     }
-    
+
     private func updateFavouriteStatus() {
         guard let pokemon = viewModel.pokemon else { return }
         isFavourite = favourites.contains { $0.pokemonId == pokemon.id }
     }
-    
+
     private func toggleFavourite(pokemon: PokemonDetail) {
         if isFavourite {
             removeFavourite(pokemon: pokemon)
@@ -452,7 +452,7 @@ struct PokemonDetailView: View {
             addFavourite(pokemon: pokemon)
         }
     }
-    
+
     private func addFavourite(pokemon: PokemonDetail) {
         let favourite = FavouritePokemon(
             pokemonId: pokemon.id,
@@ -460,35 +460,35 @@ struct PokemonDetailView: View {
             primaryType: pokemon.types.first?.name ?? "Unknown",
             imageURL: pokemon.sprites.bestQualityImage
         )
-        
+
         modelContext.insert(favourite)
-        
+
         do {
             try modelContext.save()
-            
+
             let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
             impactFeedback.impactOccurred()
-            
+
             withAnimation(.spring(response: 0.2, dampingFraction: 0.5)) {
                 heartScale = 1.4
                 heartRotation = 360
             }
-            
+
             withAnimation(.easeOut(duration: 0.6)) {
                 showHeartBurst = true
             }
-            
+
             withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
                 isFavourite = true
             }
-            
+
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
                     heartScale = 1.2
                     heartRotation = 0
                 }
             }
-            
+
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
                 showHeartBurst = false
             }
@@ -496,20 +496,20 @@ struct PokemonDetailView: View {
             print("Failed to save favourite: \(error)")
         }
     }
-    
+
     private func removeFavourite(pokemon: PokemonDetail) {
         if let favouriteToRemove = favourites.first(where: { $0.pokemonId == pokemon.id }) {
             let impactFeedback = UIImpactFeedbackGenerator(style: .light)
             impactFeedback.impactOccurred()
-            
+
             withAnimation(.easeInOut(duration: 0.2)) {
                 heartScale = 0.8
                 heartRotation = -15
             }
-            
+
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 modelContext.delete(favouriteToRemove)
-                
+
                 do {
                     try modelContext.save()
                     withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
@@ -524,8 +524,6 @@ struct PokemonDetailView: View {
         }
     }
 }
-
-
 
 #Preview("Pokemon Detail View") {
     NavigationView {

@@ -14,7 +14,7 @@ struct FavouritePokemonView: View {
     @EnvironmentObject private var coordinator: AppCoordinator
     @State private var showClearAllAlert = false
     @State private var isClearingAll = false
-    
+
     var body: some View {
         NavigationView {
             Group {
@@ -60,27 +60,27 @@ struct FavouritePokemonView: View {
             }
         }
     }
-    
+
     private let gridColumns = [
         GridItem(.flexible()),
         GridItem(.flexible())
     ]
-    
+
     private func removeFavourite(_ pokemon: FavouritePokemon) {
         withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
             modelContext.delete(pokemon)
             try? modelContext.save()
         }
     }
-    
+
     private func clearAllFavourites() {
         let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
         impactFeedback.impactOccurred()
-        
+
         withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
             isClearingAll = true
         }
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             for pokemon in favouritePokemon {
                 modelContext.delete(pokemon)
@@ -93,20 +93,20 @@ struct FavouritePokemonView: View {
 
 struct EmptyFavouritesView: View {
     let coordinator: AppCoordinator
-    
+
     var body: some View {
         VStack(spacing: 20) {
             Spacer()
-            
+
             Image(systemName: "heart.slash")
                 .font(.system(size: 60))
                 .foregroundColor(.gray.opacity(0.5))
-            
+
             VStack(spacing: 8) {
                 Text("No Favourites Yet")
                     .font(.title3)
                     .fontWeight(.semibold)
-                
+
                 Text("Start exploring Pokémon and add your favorites by tapping the heart icon on any Pokémon detail page.")
                     .font(.body)
                     .foregroundColor(.secondary)
@@ -114,7 +114,7 @@ struct EmptyFavouritesView: View {
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.horizontal, 24)
             }
-            
+
             Button(action: {
                 coordinator.switchTab(to: .home)
             }) {
@@ -127,7 +127,7 @@ struct EmptyFavouritesView: View {
                     .background(Color.blue)
                     .cornerRadius(10)
             }
-            
+
             Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -135,12 +135,8 @@ struct EmptyFavouritesView: View {
     }
 }
 
-
 #Preview("Favourite Pokemon View - Empty") {
     FavouritePokemonView()
         .environmentObject(AppCoordinator())
         .modelContainer(for: FavouritePokemon.self, inMemory: true)
 }
-
-
-

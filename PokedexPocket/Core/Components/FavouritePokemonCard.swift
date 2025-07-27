@@ -17,7 +17,7 @@ struct FavouritePokemonCard: View {
     @State private var showHeartBreak = false
     @State private var cardOpacity: Double = 1.0
     @State private var cardOffset: CGFloat = 0
-    
+
     var body: some View {
         VStack(spacing: 0) {
             ZStack {
@@ -33,7 +33,7 @@ struct FavouritePokemonCard: View {
                         RoundedRectangle(cornerRadius: 16)
                             .stroke(typeColor(for: pokemon.primaryType).opacity(0.3), lineWidth: 1)
                     )
-                
+
                 VStack(spacing: 12) {
                     HStack {
                         Spacer()
@@ -46,7 +46,7 @@ struct FavouritePokemonCard: View {
                                     .foregroundColor(.red)
                                     .scaleEffect(isRemoving ? 0.8 : 1.0)
                                     .opacity(showHeartBreak ? 0 : 1)
-                                
+
                                 if showHeartBreak {
                                     HStack(spacing: 1) {
                                         Image(systemName: "heart.slash")
@@ -54,7 +54,7 @@ struct FavouritePokemonCard: View {
                                             .foregroundColor(.red)
                                             .offset(x: -heartBreakOffset, y: heartBreakOffset)
                                             .rotationEffect(.degrees(-heartBreakRotation))
-                                        
+
                                         Image(systemName: "heart.slash")
                                             .font(.caption2)
                                             .foregroundColor(.red)
@@ -67,9 +67,9 @@ struct FavouritePokemonCard: View {
                     }
                     .padding(.top, 8)
                     .padding(.trailing, 8)
-                    
+
                     Spacer()
-                    
+
                     AsyncImage(url: URL(string: pokemon.imageURL), transaction: Transaction(animation: .easeInOut(duration: 0.3))) { phase in
                         switch phase {
                         case .success(let image):
@@ -77,7 +77,7 @@ struct FavouritePokemonCard: View {
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .transition(.opacity)
-                        case .failure(_):
+                        case .failure:
                             Circle()
                                 .fill(typeColor(for: pokemon.primaryType).opacity(0.2))
                                 .overlay(
@@ -97,20 +97,20 @@ struct FavouritePokemonCard: View {
                     }
                     .frame(width: 80, height: 80)
                     .id(pokemon.imageURL)
-                    
+
                     VStack(spacing: 6) {
                         Text("#\(String(format: "%03d", pokemon.pokemonId))")
                             .font(.caption2)
                             .fontWeight(.medium)
                             .foregroundColor(.secondary)
-                        
+
                         Text(pokemon.name.capitalized)
                             .font(.subheadline)
                             .fontWeight(.semibold)
                             .foregroundColor(.primary)
                             .lineLimit(1)
                             .minimumScaleFactor(0.8)
-                        
+
                         Text(pokemon.primaryType.capitalized)
                             .font(.caption)
                             .fontWeight(.medium)
@@ -120,7 +120,7 @@ struct FavouritePokemonCard: View {
                             .foregroundColor(typeColor(for: pokemon.primaryType))
                             .cornerRadius(8)
                     }
-                    
+
                     Spacer()
                 }
                 .padding(.bottom, 16)
@@ -135,33 +135,33 @@ struct FavouritePokemonCard: View {
         .offset(x: cardOffset)
         .rotationEffect(.degrees(isRemoving ? 5 : 0))
     }
-    
+
     private func performRemovalAnimation() {
         let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
         impactFeedback.impactOccurred()
-        
+
         withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
             isRemoving = true
         }
-        
+
         withAnimation(.easeOut(duration: 0.3)) {
             showHeartBreak = true
             heartBreakOffset = 10
             heartBreakRotation = 30
         }
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             withAnimation(.easeInOut(duration: 0.4)) {
                 cardOffset = -300
                 cardOpacity = 0.0
             }
         }
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             onRemove()
         }
     }
-    
+
     private func typeColor(for type: String) -> Color {
         switch type.lowercased() {
         case "grass":
@@ -213,7 +213,7 @@ struct FavouritePokemonCard: View {
         primaryType: "electric",
         imageURL: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png"
     )
-    
+
     FavouritePokemonCard(pokemon: samplePokemon, onTap: {
     }, onRemove: {
     })

@@ -10,7 +10,7 @@ import SwiftUI
 struct SkillBadge: View {
     let skill: String
     let color: Color
-    
+
     var body: some View {
         Text(skill)
             .font(.caption)

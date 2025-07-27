@@ -22,23 +22,23 @@ struct PokemonDetail: Identifiable, Equatable {
     let sprites: PokemonDetailSprites
     let cries: PokemonDetailCries?
     let species: String
-    
+
     var formattedName: String {
         name.capitalized
     }
-    
+
     var pokemonNumber: String {
         String(format: "#%03d", id)
     }
-    
+
     var heightInMeters: Double {
         Double(height) / 10.0
     }
-    
+
     var weightInKilograms: Double {
         Double(weight) / 10.0
     }
-    
+
     init(id: Int, name: String, height: Int, weight: Int, baseExperience: Int, order: Int? = nil, types: [PokemonType], stats: [PokemonStat], abilities: [PokemonAbility], moves: [PokemonMove] = [], imageURL: String, sprites: PokemonDetailSprites, cries: PokemonDetailCries? = nil, species: String) {
         self.id = id
         self.name = name
@@ -55,7 +55,7 @@ struct PokemonDetail: Identifiable, Equatable {
         self.cries = cries
         self.species = species
     }
-    
+
     static func == (lhs: PokemonDetail, rhs: PokemonDetail) -> Bool {
         return lhs.id == rhs.id
     }
@@ -65,13 +65,13 @@ struct PokemonAbility: Identifiable, Equatable, Codable {
     let id: String
     let name: String
     let isHidden: Bool
-    
+
     init(name: String, isHidden: Bool = false) {
         self.id = name
         self.name = name
         self.isHidden = isHidden
     }
-    
+
     var formattedName: String {
         name.replacingOccurrences(of: "-", with: " ").capitalized
     }
@@ -82,18 +82,18 @@ struct PokemonMove: Identifiable, Equatable, Codable {
     let name: String
     let learnMethod: String
     let level: Int
-    
+
     init(name: String, learnMethod: String, level: Int) {
         self.id = name
         self.name = name
         self.learnMethod = learnMethod
         self.level = level
     }
-    
+
     var formattedName: String {
         name.replacingOccurrences(of: "-", with: " ").capitalized
     }
-    
+
     var formattedLearnMethod: String {
         switch learnMethod {
         case "level-up":
@@ -120,28 +120,28 @@ struct PokemonDetailSprites: Equatable, Codable {
     let dreamWorld: String?
     let home: String?
     let homeShiny: String?
-    
+
     var bestQualityImage: String {
         return officialArtwork ?? home ?? dreamWorld ?? frontDefault ?? ""
     }
-    
+
     var bestQualityShinyImage: String {
         return officialArtworkShiny ?? homeShiny ?? frontShiny ?? bestQualityImage
     }
-    
+
     var bestQualityBackImage: String {
         return backDefault ?? frontDefault ?? ""
     }
-    
+
     var bestQualityBackShinyImage: String {
         return backShiny ?? frontShiny ?? bestQualityBackImage
     }
-    
+
     var allSprites: [String] {
         return [bestQualityImage, bestQualityShinyImage, bestQualityBackImage, bestQualityBackShinyImage]
             .compactMap { $0.isEmpty ? nil : $0 }
     }
-    
+
     func getCurrentSprite(isShiny: Bool, isFront: Bool) -> String {
         switch (isShiny, isFront) {
         case (false, true):
@@ -154,7 +154,7 @@ struct PokemonDetailSprites: Equatable, Codable {
             return bestQualityBackShinyImage
         }
     }
-    
+
     func getSpriteForStyle(_ style: String, isShiny: Bool, isFront: Bool) -> String {
         switch style {
         case "Official Artwork":
@@ -189,7 +189,7 @@ struct PokemonDetailSprites: Equatable, Codable {
 struct PokemonDetailCries: Equatable, Codable {
     let latest: String?
     let legacy: String?
-    
+
     var primaryCry: String? {
         return latest ?? legacy
     }

@@ -15,27 +15,27 @@ class PokemonListViewModel: ObservableObject {
     @Published var error: Error?
     @Published var searchText = ""
     @Published var isSearching = false
-    
+
     private let getPokemonListUseCase: GetPokemonListUseCaseProtocol
     private let searchPokemonUseCase: SearchPokemonUseCaseProtocol
     private let disposeBag = DisposeBag()
-    
+
     private var currentOffset = 0
     private let pageSize = 1302
     private var hasMoreData = true
     private var allPokemon: [PokemonListItem] = []
-    
+
     init(
         getPokemonListUseCase: GetPokemonListUseCaseProtocol,
         searchPokemonUseCase: SearchPokemonUseCaseProtocol
     ) {
         self.getPokemonListUseCase = getPokemonListUseCase
         self.searchPokemonUseCase = searchPokemonUseCase
-        
+
         setupSearchBinding()
         loadInitialData()
     }
-    
+
     private func setupSearchBinding() {
         $searchText
             .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
@@ -45,15 +45,15 @@ class PokemonListViewModel: ObservableObject {
             }
             .store(in: &cancellables)
     }
-    
+
     private var cancellables = Set<AnyCancellable>()
-    
+
     func loadInitialData() {
         currentOffset = 0
         hasMoreData = false
         loadPokemonList()
     }
-    
+
     func refreshData() {
         currentOffset = 0
         hasMoreData = false
@@ -61,25 +61,25 @@ class PokemonListViewModel: ObservableObject {
         pokemonList.removeAll()
         loadPokemonList()
     }
-    
+
     func loadMoreIfNeeded(currentItem: PokemonListItem) {
         // No pagination needed since we load all Pokemon at once
         return
     }
-    
+
     private func loadPokemonList() {
         guard !isLoading else { return }
-        
+
         isLoading = true
         error = nil
-        
+
         getPokemonListUseCase
             .execute(offset: currentOffset, limit: pageSize)
             .observe(on: MainScheduler.instance)
             .subscribe(
                 onNext: { [weak self] pokemonListResponse in
                     guard let self = self else { return }
-                    
+
                     self.allPokemon = pokemonListResponse.results
                     self.pokemonList = pokemonListResponse.results
                     self.hasMoreData = false
@@ -92,24 +92,24 @@ class PokemonListViewModel: ObservableObject {
             )
             .disposed(by: disposeBag)
     }
-    
+
     private func searchPokemon(query: String) {
         if query.isEmpty {
             pokemonList = allPokemon
             isSearching = false
             return
         }
-        
+
         isSearching = true
-        
+
         let filteredResults = allPokemon.filter { pokemon in
             pokemon.name.lowercased().contains(query.lowercased())
         }
-        
+
         pokemonList = filteredResults
         isSearching = false
     }
-    
+
     func retry() {
         error = nil
         if searchText.isEmpty {

@@ -12,19 +12,19 @@ struct StatRow: View {
     let value: Int
     let maxValue: Int
     let color: Color
-    
+
     var body: some View {
         HStack {
             Text(name)
                 .font(.body)
                 .fontWeight(.medium)
                 .frame(width: 80, alignment: .leading)
-            
+
             Text("\(value)")
                 .font(.body)
                 .fontWeight(.semibold)
                 .frame(width: 40, alignment: .trailing)
-            
+
             ProgressView(value: Double(value), total: Double(maxValue))
                 .progressViewStyle(LinearProgressViewStyle(tint: color))
                 .frame(height: 8)

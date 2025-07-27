@@ -14,17 +14,17 @@ struct AnimatedSpriteView: View {
     @Binding var isFrontView: Bool
     @Binding var rotationAngle: Double
     let onTap: () -> Void
-    
+
     @State private var bounceScale: CGFloat = 1.0
     @State private var floatOffset: CGFloat = 0
-    
+
     var body: some View {
         let currentImageURL = pokemon.sprites.getSpriteForStyle(
             selectedStyle.rawValue,
             isShiny: isShiny,
             isFront: isFrontView
         )
-        
+
         AsyncImage(url: URL(string: currentImageURL)) { image in
             image
                 .resizable()
@@ -55,11 +55,10 @@ struct AnimatedSpriteView: View {
                 .scaleEffect(1.5)
         }
     }
-    
+
     private func startFloatingAnimation() {
         withAnimation(.easeInOut(duration: 2.0).repeatForever(autoreverses: true)) {
             floatOffset = -10
         }
     }
 }
-

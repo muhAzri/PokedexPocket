@@ -13,22 +13,22 @@ class PokemonDetailViewModel: ObservableObject {
     @Published var pokemon: PokemonDetail?
     @Published var isLoading = false
     @Published var error: Error?
-    
+
     private let pokemonId: Int
     private let getPokemonDetailUseCase: GetPokemonDetailUseCaseProtocol
     private let disposeBag = DisposeBag()
-    
+
     init(pokemonId: Int, getPokemonDetailUseCase: GetPokemonDetailUseCaseProtocol) {
         self.pokemonId = pokemonId
         self.getPokemonDetailUseCase = getPokemonDetailUseCase
     }
-    
+
     func loadPokemonDetail() {
         guard !isLoading else { return }
-        
+
         isLoading = true
         error = nil
-        
+
         getPokemonDetailUseCase
             .execute(id: pokemonId)
             .observe(on: MainScheduler.instance)

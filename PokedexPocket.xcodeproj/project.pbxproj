@@ -113,13 +113,14 @@
 			buildConfigurationList = 6397598F2E34D744007A8ECC /* Build configuration list for PBXNativeTarget "PokedexPocket" */;
 			buildPhases = (
 				639759682E34D742007A8ECC /* Sources */,
-				63975B492E362611007A8ECC /* Run Script */,
+				63975B492E362611007A8ECC /* Lint Project */,
 				639759692E34D742007A8ECC /* Frameworks */,
 				6397596A2E34D742007A8ECC /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				63975C562E362B16007A8ECC /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				6397596E2E34D742007A8ECC /* PokedexPocket */,
@@ -257,7 +258,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		63975B492E362611007A8ECC /* Run Script */ = {
+		63975B492E362611007A8ECC /* Lint Project */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -311,6 +312,10 @@
 			isa = PBXTargetDependency;
 			target = 6397596B2E34D742007A8ECC /* PokedexPocket */;
 			targetProxy = 639759862E34D744007A8ECC /* PBXContainerItemProxy */;
+		};
+		63975C562E362B16007A8ECC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 63975C552E362B16007A8ECC /* SwiftLintBuildToolPlugin */;
 		};
 /* End PBXTargetDependency section */
 
@@ -665,6 +670,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 639759B02E34D7E4007A8ECC /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxRelay;
+		};
+		63975C552E362B16007A8ECC /* SwiftLintBuildToolPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 639759BB2E34D7FE007A8ECC /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
+			productName = "plugin:SwiftLintBuildToolPlugin";
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

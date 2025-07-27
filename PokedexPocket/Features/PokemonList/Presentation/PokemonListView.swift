@@ -10,27 +10,27 @@ import SwiftUI
 struct PokemonListView: View {
     @EnvironmentObject private var coordinator: AppCoordinator
     @StateObject private var viewModel: PokemonListViewModel
-    
+
     init() {
         let container = DIContainer.shared
         let getPokemonListUseCase = container.resolve(GetPokemonListUseCaseProtocol.self)
         let searchPokemonUseCase = container.resolve(SearchPokemonUseCaseProtocol.self)
-        
+
         _viewModel = StateObject(wrappedValue: PokemonListViewModel(
             getPokemonListUseCase: getPokemonListUseCase,
             searchPokemonUseCase: searchPokemonUseCase
         ))
     }
-    
+
     private let columns = [
         GridItem(.flexible()),
         GridItem(.flexible())
     ]
-    
+
     var body: some View {
         VStack(spacing: 0) {
             searchBar
-            
+
             if viewModel.error != nil {
                 errorContent
             } else {
@@ -46,16 +46,16 @@ struct PokemonListView: View {
             }
         }
     }
-    
+
     private var searchBar: some View {
         HStack {
             HStack {
                 Image(systemName: "magnifyingglass")
                     .foregroundColor(.secondary)
-                
+
                 TextField("Search Pokémon", text: $viewModel.searchText)
                     .textFieldStyle(PlainTextFieldStyle())
-                
+
                 if !viewModel.searchText.isEmpty {
                     Button(action: { viewModel.searchText = "" }) {
                         Image(systemName: "xmark.circle.fill")
@@ -76,7 +76,7 @@ struct PokemonListView: View {
         .padding(.top, 8)
         .padding(.bottom, 12)
     }
-    
+
     private var pokemonGrid: some View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: 16) {
@@ -93,7 +93,7 @@ struct PokemonListView: View {
                             viewModel.loadMoreIfNeeded(currentItem: pokemon)
                         }
                     }
-                    
+
                     if viewModel.isLoading && !viewModel.pokemonList.isEmpty {
                         ForEach(0..<6, id: \.self) { _ in
                             PokemonLoadingCard()
@@ -107,17 +107,17 @@ struct PokemonListView: View {
             viewModel.refreshData()
         }
     }
-    
+
     private var errorContent: some View {
         VStack {
             Spacer()
-            
+
             if let error = viewModel.error {
                 ErrorView(error: error) {
                     viewModel.retry()
                 }
             }
-            
+
             Spacer()
         }
     }

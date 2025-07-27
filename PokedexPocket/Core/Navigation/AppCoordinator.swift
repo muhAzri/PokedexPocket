@@ -21,7 +21,7 @@ class AppCoordinator: ObservableObject {
     @Published var favouritesNavigationPath = NavigationPath()
     @Published var aboutNavigationPath = NavigationPath()
     @Published var selectedTab: AppTab = .home
-    
+
     private var currentNavigationPath: NavigationPath {
         get {
             switch selectedTab {
@@ -44,7 +44,7 @@ class AppCoordinator: ObservableObject {
             }
         }
     }
-    
+
     func navigate(to destination: AppDestination) {
         switch selectedTab {
         case .home:
@@ -55,7 +55,7 @@ class AppCoordinator: ObservableObject {
             aboutNavigationPath.append(destination)
         }
     }
-    
+
     func navigateBack() {
         switch selectedTab {
         case .home:
@@ -72,7 +72,7 @@ class AppCoordinator: ObservableObject {
             }
         }
     }
-    
+
     func navigateToRoot() {
         switch selectedTab {
         case .home:
@@ -83,11 +83,11 @@ class AppCoordinator: ObservableObject {
             aboutNavigationPath.removeLast(aboutNavigationPath.count)
         }
     }
-    
+
     func switchTab(to tab: AppTab) {
         selectedTab = tab
     }
-    
+
     func navigateToPokemonDetail(pokemonId: Int, pokemonName: String) {
         navigate(to: .pokemonDetail(pokemonId: pokemonId, pokemonName: pokemonName))
     }
@@ -97,7 +97,7 @@ enum AppTab: CaseIterable {
     case home
     case favourites
     case about
-    
+
     var title: String {
         switch self {
         case .home:
@@ -108,7 +108,7 @@ enum AppTab: CaseIterable {
             return "About"
         }
     }
-    
+
     var icon: String {
         switch self {
         case .home:

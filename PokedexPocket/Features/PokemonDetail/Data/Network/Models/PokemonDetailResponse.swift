@@ -21,7 +21,7 @@ struct PokemonDetailResponse: Codable {
     let moves: [PokemonMoveSlot]
     let cries: PokemonCries?
     let species: PokemonSpecies
-    
+
     enum CodingKeys: String, CodingKey {
         case id, name, height, weight, types, stats, abilities, sprites, moves, species
         case baseExperience = "base_experience"
@@ -44,7 +44,7 @@ struct PokemonAbilitySlot: Codable {
     let ability: PokemonAbilityInfo
     let isHidden: Bool
     let slot: Int
-    
+
     enum CodingKeys: String, CodingKey {
         case ability
         case isHidden = "is_hidden"
@@ -60,7 +60,7 @@ struct PokemonAbilityInfo: Codable {
 struct PokemonMoveSlot: Codable {
     let move: PokemonMoveInfo
     let versionGroupDetails: [PokemonMoveVersionGroup]
-    
+
     enum CodingKeys: String, CodingKey {
         case move
         case versionGroupDetails = "version_group_details"
@@ -76,7 +76,7 @@ struct PokemonMoveVersionGroup: Codable {
     let levelLearnedAt: Int
     let moveLearnMethod: PokemonMoveLearnMethod
     let versionGroup: PokemonVersionGroup
-    
+
     enum CodingKeys: String, CodingKey {
         case levelLearnedAt = "level_learned_at"
         case moveLearnMethod = "move_learn_method"
@@ -108,7 +108,7 @@ struct PokemonStatResponse: Codable {
     let baseStat: Int
     let effort: Int
     let stat: PokemonStatInfo
-    
+
     enum CodingKeys: String, CodingKey {
         case baseStat = "base_stat"
         case effort
@@ -132,7 +132,7 @@ struct PokemonSprites: Codable {
     let frontShinyFemale: String?
     let other: PokemonOtherSprites?
     let versions: PokemonVersionSprites?
-    
+
     enum CodingKeys: String, CodingKey {
         case backDefault = "back_default"
         case backFemale = "back_female"
@@ -150,7 +150,7 @@ struct PokemonOtherSprites: Codable {
     let dreamWorld: PokemonDreamWorldSprites?
     let home: PokemonHomeSprites?
     let officialArtwork: PokemonOfficialArtwork?
-    
+
     enum CodingKeys: String, CodingKey {
         case dreamWorld = "dream_world"
         case home
@@ -161,7 +161,7 @@ struct PokemonOtherSprites: Codable {
 struct PokemonDreamWorldSprites: Codable {
     let frontDefault: String?
     let frontFemale: String?
-    
+
     enum CodingKeys: String, CodingKey {
         case frontDefault = "front_default"
         case frontFemale = "front_female"
@@ -173,7 +173,7 @@ struct PokemonHomeSprites: Codable {
     let frontFemale: String?
     let frontShiny: String?
     let frontShinyFemale: String?
-    
+
     enum CodingKeys: String, CodingKey {
         case frontDefault = "front_default"
         case frontFemale = "front_female"
@@ -185,13 +185,12 @@ struct PokemonHomeSprites: Codable {
 struct PokemonOfficialArtwork: Codable {
     let frontDefault: String?
     let frontShiny: String?
-    
+
     enum CodingKeys: String, CodingKey {
         case frontDefault = "front_default"
         case frontShiny = "front_shiny"
     }
 }
-
 
 struct PokemonVersionSprites: Codable {
 }
@@ -203,7 +202,7 @@ extension PokemonDetailResponse {
         let pokemonStats = stats.map { PokemonStat(name: $0.stat.name, value: $0.baseStat) }
         let pokemonAbilities = abilities.map { PokemonAbility(name: $0.ability.name, isHidden: $0.isHidden) }
         let pokemonMoves = moves.map { PokemonMove(name: $0.move.name, learnMethod: $0.versionGroupDetails.first?.moveLearnMethod.name ?? "unknown", level: $0.versionGroupDetails.first?.levelLearnedAt ?? 0) }
-        
+
         return PokemonDetail(
             id: id,
             name: name,

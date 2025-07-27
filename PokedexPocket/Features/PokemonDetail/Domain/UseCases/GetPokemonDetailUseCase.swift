@@ -15,15 +15,15 @@ protocol GetPokemonDetailUseCaseProtocol {
 
 class GetPokemonDetailUseCase: GetPokemonDetailUseCaseProtocol {
     private let repository: PokemonDetailRepositoryProtocol
-    
+
     init(repository: PokemonDetailRepositoryProtocol) {
         self.repository = repository
     }
-    
+
     func execute(id: Int) -> Observable<PokemonDetail> {
         return repository.getPokemonDetail(id: id)
     }
-    
+
     func execute(url: String) -> Observable<PokemonDetail> {
         return repository.getPokemonDetail(url: url)
     }
