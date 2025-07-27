@@ -118,7 +118,6 @@ struct PokemonCardButtonStyle: ButtonStyle {
     )
     
     PokemonCard(pokemon: samplePokemon) {
-        print("Pokemon card tapped")
     }
     .frame(width: 160, height: 200)
     .padding()

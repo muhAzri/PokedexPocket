@@ -194,7 +194,6 @@ struct PokemonOfficialArtwork: Codable {
 
 
 struct PokemonVersionSprites: Codable {
-    // Version-specific sprites - can be empty for now
 }
 
 extension PokemonDetailResponse {

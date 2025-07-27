@@ -215,9 +215,7 @@ struct FavouritePokemonCard: View {
     )
     
     FavouritePokemonCard(pokemon: samplePokemon, onTap: {
-        print("Pokemon tapped")
     }, onRemove: {
-        print("Remove tapped")
     })
     .frame(width: 160, height: 200)
     .padding()

@@ -63,5 +63,3 @@ struct AnimatedSpriteView: View {
     }
 }
 
-// Note: This component is tightly coupled to PokemonDetailView and may not be easily reusable
-// Consider keeping it in the PokemonDetail feature if it's not used elsewhere

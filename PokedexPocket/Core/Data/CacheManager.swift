@@ -30,7 +30,6 @@ final class CacheManager: CacheManagerProtocol {
             let object = try JSONDecoder().decode(type, from: data)
             return object
         } catch {
-            print("CacheManager: Failed to decode object for key \(key): \(error)")
             return nil
         }
     }
@@ -41,7 +40,6 @@ final class CacheManager: CacheManagerProtocol {
             userDefaults.set(data, forKey: key)
             userDefaults.set(Date().timeIntervalSince1970, forKey: cacheTimeKey + key)
         } catch {
-            print("CacheManager: Failed to encode object for key \(key): \(error)")
         }
     }
     

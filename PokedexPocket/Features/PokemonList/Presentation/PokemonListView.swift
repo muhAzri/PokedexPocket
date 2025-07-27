@@ -81,12 +81,11 @@ struct PokemonListView: View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: 16) {
                 if viewModel.pokemonList.isEmpty && viewModel.isLoading {
-                    // Initial loading state - show skeleton grid
+                     Initial loading state - show skeleton grid
                     ForEach(0..<12, id: \.self) { _ in
                         PokemonLoadingCard()
                     }
                 } else {
-                    // Show actual Pokemon cards
                     ForEach(viewModel.pokemonList) { pokemon in
                         PokemonCard(pokemon: pokemon) {
                             coordinator.navigate(to: .pokemonDetail(pokemonId: pokemon.pokemonId, pokemonName: pokemon.name))
@@ -96,7 +95,6 @@ struct PokemonListView: View {
                         }
                     }
                     
-                    // Pagination loading - show additional skeleton cards
                     if viewModel.isLoading && !viewModel.pokemonList.isEmpty {
                         ForEach(0..<6, id: \.self) { _ in
                             PokemonLoadingCard()

@@ -23,10 +23,9 @@ struct PokedexPocketApp: App {
     }
     
     private func configureImageCache() {
-        // Configure URLCache for better image caching
         let cache = URLCache(
-            memoryCapacity: 50 * 1024 * 1024, // 50 MB memory
-            diskCapacity: 200 * 1024 * 1024,  // 200 MB disk
+            memoryCapacity: 50 * 1024 * 1024,
+            diskCapacity: 200 * 1024 * 1024,
             diskPath: "image_cache"
         )
         URLCache.shared = cache
