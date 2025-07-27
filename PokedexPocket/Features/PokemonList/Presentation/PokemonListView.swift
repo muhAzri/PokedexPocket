@@ -107,7 +107,7 @@ struct PokemonListView: View {
             .padding(.horizontal)
         }
         .refreshable {
-            viewModel.loadInitialData()
+            viewModel.refreshData()
         }
     }
     

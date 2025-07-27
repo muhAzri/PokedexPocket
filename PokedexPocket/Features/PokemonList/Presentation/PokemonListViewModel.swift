@@ -54,6 +54,14 @@ class PokemonListViewModel: ObservableObject {
         loadPokemonList()
     }
     
+    func refreshData() {
+        currentOffset = 0
+        hasMoreData = false
+        allPokemon.removeAll()
+        pokemonList.removeAll()
+        loadPokemonList()
+    }
+    
     func loadMoreIfNeeded(currentItem: PokemonListItem) {
         // No pagination needed since we load all Pokemon at once
         return

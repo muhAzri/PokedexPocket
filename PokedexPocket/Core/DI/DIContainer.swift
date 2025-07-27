@@ -19,6 +19,7 @@ class DIContainer {
     private func registerDependencies() {
         registerConfiguration()
         registerNetworking()
+        registerCaching()
         registerRepositories()
         registerUseCases()
     }
@@ -36,10 +37,17 @@ class DIContainer {
         }.inObjectScope(.container)
     }
     
+    private func registerCaching() {
+        container.register(CacheManagerProtocol.self) { _ in
+            CacheManager.shared
+        }.inObjectScope(.container)
+    }
+    
     private func registerRepositories() {
         container.register(PokemonListRepositoryProtocol.self) { resolver in
             let networkService = resolver.resolve(NetworkServiceProtocol.self)!
-            return PokemonListRepository(networkService: networkService)
+            let cacheManager = resolver.resolve(CacheManagerProtocol.self)!
+            return PokemonListRepository(networkService: networkService, cacheManager: cacheManager)
         }.inObjectScope(.container)
         
         container.register(PokemonDetailRepositoryProtocol.self) { resolver in
