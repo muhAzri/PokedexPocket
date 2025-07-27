@@ -13,7 +13,8 @@
 ## 📋 Table of Contents
 
 - [🚀 Quick Start](#-quick-start)
-- [📱 Features](#-features)  
+- [📱 Features](#-features)
+- [🎨 App Wireframes](#-app-wireframes)
 - [🏗️ Architecture](#️-architecture)
 - [🛠️ Tech Stack](#️-tech-stack)
 - [📚 Project Structure](#-project-structure)
@@ -90,6 +91,60 @@ open PokedexPocket.xcodeproj
   - Connection status monitoring
 - **⚡ Debounced Search**: Optimized search to reduce API calls (500ms debounce)
 - **📦 Paginated Loading**: Efficient data loading with pagination support
+
+## 🎨 App Wireframes
+
+### Initial Design Concept
+
+The app's design follows a clean, modern approach inspired by the official Pokémon games while maintaining iOS design principles.
+
+![App Wireframes](Wireframes_1.png)
+
+The wireframes above showcase the complete user interface design for PokedexPocket, featuring:
+
+- **Pokemon List Screen**: Grid-based layout with search functionality and infinite scrolling
+- **Pokemon Detail Screen**: Comprehensive information display with stats, abilities, and sprite gallery
+- **Favorites Screen**: Personal collection management with easy removal options
+- **About Developer Screen**: Professional profile with skills and contact information
+
+#### Design System Elements
+
+**Color Palette**
+```
+Primary Colors:
+🔴 Fire:     #FF6B6B    🟢 Grass:    #4ECDC4
+🔵 Water:    #45B7D1    🟡 Electric: #F7DC6F
+🟣 Psychic:  #BB8FCE    🟤 Ground:   #D2B48C
+⚫ Dark:     #2C3E50    ⚪ Normal:    #BDC3C7
+
+System Colors:
+Background:  #F8F9FA (Light) / #1A1A1A (Dark)
+Card:        #FFFFFF (Light) / #2D2D2D (Dark)
+Text:        #2C3E50 (Light) / #FFFFFF (Dark)
+```
+
+**Typography Scale**
+```
+Large Title:  34pt (Pokémon Names)
+Title 1:      28pt (Section Headers)
+Title 2:      22pt (Card Titles)
+Headline:     17pt (Pokemon Numbers)
+Body:         16pt (Main Content)
+Caption:      12pt (Secondary Info)
+```
+
+**Component Patterns**
+- **Cards**: Rounded corners (16px), subtle shadows
+- **Buttons**: Type-based colors with haptic feedback  
+- **Loading**: Shimmer effects with skeleton screens
+- **Navigation**: Native iOS tab bar with custom icons
+- **Search**: Real-time filtering with debounced input
+
+#### Animation Guidelines
+- **Transitions**: Spring animations (0.4s duration, 0.8 damping)
+- **Micro-interactions**: Scale effects on tap (0.96x scale)
+- **Loading states**: Opacity and scale transitions
+- **List updates**: Smooth insertion/deletion animations
 
 ## 🏗️ Architecture
 
