@@ -81,7 +81,6 @@ struct PokemonListView: View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: 16) {
                 if viewModel.pokemonList.isEmpty && viewModel.isLoading {
-                     Initial loading state - show skeleton grid
                     ForEach(0..<12, id: \.self) { _ in
                         PokemonLoadingCard()
                     }

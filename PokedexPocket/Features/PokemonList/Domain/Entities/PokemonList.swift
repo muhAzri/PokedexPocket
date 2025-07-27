@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PokemonList: Equatable {
+struct PokemonList: Codable, Equatable {
     let count: Int
     let next: String?
     let previous: String?
@@ -22,7 +22,7 @@ struct PokemonList: Equatable {
     }
 }
 
-struct PokemonListItem: Identifiable, Equatable {
+struct PokemonListItem: Identifiable, Codable, Equatable {
     let id: String
     let name: String
     let url: String
@@ -33,6 +33,7 @@ struct PokemonListItem: Identifiable, Equatable {
         self.url = url
     }
     
+    // Computed properties below will be ignored during encoding/decoding
     var pokemonId: Int {
         guard let urlComponents = URLComponents(string: url),
               let pathComponents = urlComponents.path.split(separator: "/").last,
@@ -41,15 +42,15 @@ struct PokemonListItem: Identifiable, Equatable {
         }
         return id
     }
-    
+
     var imageURL: String {
         "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/\(pokemonId).png"
     }
-    
+
     var formattedName: String {
         name.capitalized
     }
-    
+
     var pokemonNumber: String {
         String(format: "#%03d", pokemonId)
     }
