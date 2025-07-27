@@ -12,6 +12,11 @@ struct FavouritePokemonCard: View {
     let onTap: () -> Void
     let onRemove: () -> Void
     @State private var isRemoving = false
+    @State private var heartBreakOffset: CGFloat = 0
+    @State private var heartBreakRotation: Double = 0
+    @State private var showHeartBreak = false
+    @State private var cardOpacity: Double = 1.0
+    @State private var cardOffset: CGFloat = 0
     
     var body: some View {
         VStack(spacing: 0) {
@@ -33,17 +38,31 @@ struct FavouritePokemonCard: View {
                     HStack {
                         Spacer()
                         Button(action: {
-                            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
-                                isRemoving = true
-                            }
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                onRemove()
-                            }
+                            performRemovalAnimation()
                         }) {
-                            Image(systemName: "heart.fill")
-                                .font(.caption)
-                                .foregroundColor(.red)
-                                .scaleEffect(isRemoving ? 0.8 : 1.0)
+                            ZStack {
+                                Image(systemName: "heart.fill")
+                                    .font(.caption)
+                                    .foregroundColor(.red)
+                                    .scaleEffect(isRemoving ? 0.8 : 1.0)
+                                    .opacity(showHeartBreak ? 0 : 1)
+                                
+                                if showHeartBreak {
+                                    HStack(spacing: 1) {
+                                        Image(systemName: "heart.slash")
+                                            .font(.caption2)
+                                            .foregroundColor(.red)
+                                            .offset(x: -heartBreakOffset, y: heartBreakOffset)
+                                            .rotationEffect(.degrees(-heartBreakRotation))
+                                        
+                                        Image(systemName: "heart.slash")
+                                            .font(.caption2)
+                                            .foregroundColor(.red)
+                                            .offset(x: heartBreakOffset, y: -heartBreakOffset)
+                                            .rotationEffect(.degrees(heartBreakRotation))
+                                    }
+                                }
+                            }
                         }
                     }
                     .padding(.top, 8)
@@ -112,6 +131,35 @@ struct FavouritePokemonCard: View {
             onTap()
         }
         .scaleEffect(isRemoving ? 0.95 : 1.0)
+        .opacity(cardOpacity)
+        .offset(x: cardOffset)
+        .rotationEffect(.degrees(isRemoving ? 5 : 0))
+    }
+    
+    private func performRemovalAnimation() {
+        let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+        impactFeedback.impactOccurred()
+        
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+            isRemoving = true
+        }
+        
+        withAnimation(.easeOut(duration: 0.3)) {
+            showHeartBreak = true
+            heartBreakOffset = 10
+            heartBreakRotation = 30
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            withAnimation(.easeInOut(duration: 0.4)) {
+                cardOffset = -300
+                cardOpacity = 0.0
+            }
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            onRemove()
+        }
     }
     
     private func typeColor(for type: String) -> Color {

@@ -13,6 +13,7 @@ struct FavouritePokemonView: View {
     @Query(sort: [SortDescriptor(\FavouritePokemon.dateAdded, order: .reverse)]) private var favouritePokemon: [FavouritePokemon]
     @EnvironmentObject private var coordinator: AppCoordinator
     @State private var showClearAllAlert = false
+    @State private var isClearingAll = false
     
     var body: some View {
         NavigationView {
@@ -28,6 +29,9 @@ struct FavouritePokemonView: View {
                                 } onRemove: {
                                     removeFavourite(pokemon)
                                 }
+                                .scaleEffect(isClearingAll ? 0.0 : 1.0)
+                                .opacity(isClearingAll ? 0.0 : 1.0)
+                                .animation(.spring(response: 0.6, dampingFraction: 0.8), value: isClearingAll)
                             }
                         }
                         .padding(.horizontal)
@@ -70,11 +74,19 @@ struct FavouritePokemonView: View {
     }
     
     private func clearAllFavourites() {
-        withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+        let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+        impactFeedback.impactOccurred()
+        
+        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
+            isClearingAll = true
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
             for pokemon in favouritePokemon {
                 modelContext.delete(pokemon)
             }
             try? modelContext.save()
+            isClearingAll = false
         }
     }
 }

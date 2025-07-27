@@ -26,6 +26,9 @@ struct PokemonDetailView: View {
     @State private var isFrontView = true
     @State private var spriteScale: CGFloat = 1.0
     @State private var animationTimer: Timer?
+    @State private var heartScale: CGFloat = 1.0
+    @State private var heartRotation: Double = 0
+    @State private var showHeartBurst = false
     
     enum SpriteStyle: String, CaseIterable {
         case officialArtwork = "Official Artwork"
@@ -111,11 +114,29 @@ struct PokemonDetailView: View {
                 Button(action: {
                     toggleFavourite(pokemon: pokemon)
                 }) {
-                    Image(systemName: isFavourite ? "heart.fill" : "heart")
-                        .font(.title2)
-                        .foregroundColor(isFavourite ? .red : .gray)
-                        .scaleEffect(isFavourite ? 1.2 : 1.0)
-                        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isFavourite)
+                    ZStack {
+                        Image(systemName: isFavourite ? "heart.fill" : "heart")
+                            .font(.title2)
+                            .foregroundColor(isFavourite ? .red : .gray)
+                            .scaleEffect(heartScale)
+                            .rotationEffect(.degrees(heartRotation))
+                            .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isFavourite)
+                        
+                        if showHeartBurst {
+                            ForEach(0..<8, id: \.self) { index in
+                                Image(systemName: "heart.fill")
+                                    .font(.caption2)
+                                    .foregroundColor(.red)
+                                    .offset(
+                                        x: cos(Double(index) * .pi / 4) * 30,
+                                        y: sin(Double(index) * .pi / 4) * 30
+                                    )
+                                    .scaleEffect(showHeartBurst ? 0.3 : 1.0)
+                                    .opacity(showHeartBurst ? 0.0 : 1.0)
+                                    .animation(.easeOut(duration: 0.6).delay(Double(index) * 0.05), value: showHeartBurst)
+                            }
+                        }
+                    }
                 }
             }
             .padding(.horizontal)
@@ -438,13 +459,36 @@ struct PokemonDetailView: View {
             imageURL: pokemon.sprites.bestQualityImage
         )
         
-        
         modelContext.insert(favourite)
         
         do {
             try modelContext.save()
+            
+            let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+            impactFeedback.impactOccurred()
+            
+            withAnimation(.spring(response: 0.2, dampingFraction: 0.5)) {
+                heartScale = 1.4
+                heartRotation = 360
+            }
+            
+            withAnimation(.easeOut(duration: 0.6)) {
+                showHeartBurst = true
+            }
+            
             withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
                 isFavourite = true
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                    heartScale = 1.2
+                    heartRotation = 0
+                }
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                showHeartBurst = false
             }
         } catch {
             print("Failed to save favourite: \(error)")
@@ -453,15 +497,27 @@ struct PokemonDetailView: View {
     
     private func removeFavourite(pokemon: PokemonDetail) {
         if let favouriteToRemove = favourites.first(where: { $0.pokemonId == pokemon.id }) {
-            modelContext.delete(favouriteToRemove)
+            let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+            impactFeedback.impactOccurred()
             
-            do {
-                try modelContext.save()
-                withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                    isFavourite = false
+            withAnimation(.easeInOut(duration: 0.2)) {
+                heartScale = 0.8
+                heartRotation = -15
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                modelContext.delete(favouriteToRemove)
+                
+                do {
+                    try modelContext.save()
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                        isFavourite = false
+                        heartScale = 1.0
+                        heartRotation = 0
+                    }
+                } catch {
+                    print("Failed to remove favourite: \(error)")
                 }
-            } catch {
-                print("Failed to remove favourite: \(error)")
             }
         }
     }
