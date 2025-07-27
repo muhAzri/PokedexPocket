@@ -3,7 +3,7 @@ import Combine
 
 enum AppDestination: Hashable {
     case pokemonList
-    case pokemonDetail(pokemonId: Int)
+    case pokemonDetail(pokemonName: String)
     case favouritePokemon
     case aboutDev
 }

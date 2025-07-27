@@ -63,7 +63,7 @@ struct PokemonListView: View {
             LazyVGrid(columns: columns, spacing: 16) {
                 ForEach(viewModel.pokemonList) { pokemon in
                     PokemonCard(pokemon: pokemon) {
-                        coordinator.navigate(to: .pokemonDetail(pokemonId: pokemon.pokemonId))
+                        coordinator.navigate(to: .pokemonDetail(pokemonName: pokemon.name))
                     }
                     .onAppear {
                         viewModel.loadMoreIfNeeded(currentItem: pokemon)

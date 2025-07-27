@@ -52,8 +52,11 @@ struct AppRouter: View {
         switch destination {
         case .pokemonList:
             PokemonListView()
-        case .pokemonDetail(let pokemonId):
-            PokemonDetailView(pokemonId: pokemonId)
+        case .pokemonDetail(let pokemonName):
+            PokemonDetailView(
+                pokemonName: pokemonName,
+                getPokemonDetailUseCase: DIContainer.shared.resolve(GetPokemonDetailUseCaseProtocol.self)
+            )
         case .favouritePokemon:
             FavouritePokemonView()
         case .aboutDev:
