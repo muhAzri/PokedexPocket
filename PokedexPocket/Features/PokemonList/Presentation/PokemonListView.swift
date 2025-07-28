@@ -9,18 +9,8 @@ import SwiftUI
 
 struct PokemonListView: View {
     @EnvironmentObject private var coordinator: AppCoordinator
-    @StateObject private var viewModel: PokemonListViewModel
-
-    init() {
-        let container = DIContainer.shared
-        let getPokemonListUseCase = container.resolve(GetPokemonListUseCaseProtocol.self)
-        let searchPokemonUseCase = container.resolve(SearchPokemonUseCaseProtocol.self)
-
-        _viewModel = StateObject(wrappedValue: PokemonListViewModel(
-            getPokemonListUseCase: getPokemonListUseCase,
-            searchPokemonUseCase: searchPokemonUseCase
-        ))
-    }
+    @EnvironmentObject private var viewModelFactory: DefaultViewModelFactory
+    @State private var viewModel: PokemonListViewModel?
 
     private let columns = [
         GridItem(.flexible()),
@@ -28,32 +18,44 @@ struct PokemonListView: View {
     ]
 
     var body: some View {
-        VStack(spacing: 0) {
-            searchBar
+        Group {
+            if let viewModel = viewModel {
+                VStack(spacing: 0) {
+                    searchBar(viewModel: viewModel)
 
-            if viewModel.error != nil {
-                errorContent
+                    if viewModel.error != nil {
+                        errorContent(viewModel: viewModel)
+                    } else {
+                        pokemonGrid(viewModel: viewModel)
+                    }
+                }
+                .navigationTitle("Pokédex")
+                .navigationBarTitleDisplayMode(.large)
+                .background(Color(.systemBackground))
+                .onAppear {
+                    if viewModel.pokemonList.isEmpty && !viewModel.isLoading {
+                        viewModel.loadInitialData()
+                    }
+                }
             } else {
-                pokemonGrid
-            }
-        }
-        .navigationTitle("Pokédex")
-        .navigationBarTitleDisplayMode(.large)
-        .background(Color(.systemBackground))
-        .onAppear {
-            if viewModel.pokemonList.isEmpty && !viewModel.isLoading {
-                viewModel.loadInitialData()
+                ProgressView()
+                    .onAppear {
+                        self.viewModel = viewModelFactory.makePokemonListViewModel()
+                    }
             }
         }
     }
 
-    private var searchBar: some View {
+    private func searchBar(viewModel: PokemonListViewModel) -> some View {
         HStack {
             HStack {
                 Image(systemName: "magnifyingglass")
                     .foregroundColor(.secondary)
 
-                TextField("Search Pokémon", text: $viewModel.searchText)
+                TextField("Search Pokémon", text: Binding(
+                    get: { viewModel.searchText },
+                    set: { viewModel.searchText = $0 }
+                ))
                     .textFieldStyle(PlainTextFieldStyle())
 
                 if !viewModel.searchText.isEmpty {
@@ -80,7 +82,7 @@ struct PokemonListView: View {
         .padding(.bottom, 12)
     }
 
-    private var pokemonGrid: some View {
+    private func pokemonGrid(viewModel: PokemonListViewModel) -> some View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: 16) {
                 if viewModel.pokemonList.isEmpty && viewModel.isLoading {
@@ -119,7 +121,7 @@ struct PokemonListView: View {
         }
     }
 
-    private var errorContent: some View {
+    private func errorContent(viewModel: PokemonListViewModel) -> some View {
         VStack {
             Spacer()
 
@@ -138,5 +140,6 @@ struct PokemonListView: View {
     NavigationView {
         PokemonListView()
             .environmentObject(AppCoordinator())
+            .environmentObject(DefaultViewModelFactory())
     }
 }

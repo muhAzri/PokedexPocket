@@ -31,15 +31,10 @@ struct PokemonDetailView: View {
     @State private var heartRotation: Double = 0
     @State private var showHeartBurst = false
 
-    init(pokemonId: Int, pokemonName: String, getPokemonDetailUseCase: GetPokemonDetailUseCaseProtocol) {
+    init(pokemonId: Int, pokemonName: String, viewModel: PokemonDetailViewModel) {
         self.pokemonId = pokemonId
         self.pokemonName = pokemonName
-        self._viewModel = StateObject(
-            wrappedValue: PokemonDetailViewModel(
-                pokemonId: pokemonId,
-                getPokemonDetailUseCase: getPokemonDetailUseCase
-            )
-        )
+        self._viewModel = StateObject(wrappedValue: viewModel)
     }
 
     var body: some View {
@@ -237,7 +232,7 @@ struct PokemonDetailView: View {
         PokemonDetailView(
             pokemonId: 25,
             pokemonName: "pikachu",
-            getPokemonDetailUseCase: DIContainer.shared.resolve(GetPokemonDetailUseCaseProtocol.self)
+            viewModel: DefaultViewModelFactory().makePokemonDetailViewModel(pokemonId: 25)
         )
         .environmentObject(AppCoordinator())
         .modelContainer(for: FavouritePokemon.self, inMemory: true)
