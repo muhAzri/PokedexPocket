@@ -54,6 +54,7 @@ struct AppRouter: View {
         }
         .environmentObject(coordinator)
         .environmentObject(viewModelFactory)
+        .environment(\.navigationHandler, coordinator)
     }
 
     @ViewBuilder

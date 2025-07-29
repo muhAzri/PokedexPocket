@@ -16,7 +16,7 @@ enum AppDestination: Hashable {
 }
 
 @MainActor
-class AppCoordinator: ObservableObject {
+class AppCoordinator: ObservableObject, NavigationHandler {
     @Published var navigationPath = NavigationPath()
     @Published var favouritesNavigationPath = NavigationPath()
     @Published var aboutNavigationPath = NavigationPath()

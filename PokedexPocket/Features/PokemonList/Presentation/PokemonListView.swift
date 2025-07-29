@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PokemonListView: View {
-    @EnvironmentObject private var coordinator: AppCoordinator
+    @Environment(\.navigationHandler) private var navigationHandler
     @EnvironmentObject private var viewModelFactory: DefaultViewModelFactory
     @State private var viewModel: PokemonListViewModel?
 
@@ -94,11 +94,9 @@ struct PokemonListView: View {
                         PokemonCard(
                             pokemon: pokemon,
                             onTap: {
-                                coordinator.navigate(
-                                    to: .pokemonDetail(
-                                        pokemonId: pokemon.pokemonId,
-                                        pokemonName: pokemon.name
-                                    )
+                                navigationHandler?.navigateToPokemonDetail(
+                                    pokemonId: pokemon.pokemonId,
+                                    pokemonName: pokemon.name
                                 )
                             }
                         )
@@ -139,7 +137,7 @@ struct PokemonListView: View {
 #Preview("Pokemon List View") {
     NavigationView {
         PokemonListView()
-            .environmentObject(AppCoordinator())
+            .environment(\.navigationHandler, AppCoordinator())
             .environmentObject(DefaultViewModelFactory())
     }
 }
