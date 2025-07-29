@@ -17,7 +17,7 @@ struct FavoritePokemonMapper {
             dateAdded: dataModel.dateAdded
         )
     }
-    
+
     static func toDataModel(_ domainEntity: FavoritePokemon) -> FavouritePokemonDataModel {
         return FavouritePokemonDataModel(
             pokemonId: domainEntity.id,
@@ -27,7 +27,7 @@ struct FavoritePokemonMapper {
             dateAdded: domainEntity.dateAdded
         )
     }
-    
+
     static func toDataModel(from pokemon: PokemonDetail) -> FavouritePokemonDataModel {
         return FavouritePokemonDataModel(
             pokemonId: pokemon.id,

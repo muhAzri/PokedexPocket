@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SwiftData
 import RxSwift
 import Combine
 
@@ -15,9 +14,6 @@ struct PokemonDetailView: View {
     let pokemonName: String
     @EnvironmentObject private var coordinator: AppCoordinator
     @StateObject private var viewModel: PokemonDetailViewModel
-    @Environment(\.modelContext) private var modelContext
-    @Query private var favourites: [FavouritePokemon]
-    @State private var isFavourite = false
     @State private var selectedSpriteStyle: SpriteStyle = .officialArtwork
     @State private var isShinyVariant = false
     @State private var selectedTab: DetailTab = .about
@@ -59,12 +55,6 @@ struct PokemonDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             viewModel.loadPokemonDetail()
-            updateFavouriteStatus()
-        }
-        .onChange(of: viewModel.pokemon) { _, newPokemon in
-            if newPokemon != nil {
-                updateFavouriteStatus()
-            }
         }
     }
 
@@ -79,11 +69,16 @@ struct PokemonDetailView: View {
             isFrontView: $isFrontView,
             rotationAngle: $rotationAngle,
             spriteScale: $spriteScale,
-            isFavourite: $isFavourite,
+            isFavourite: $viewModel.isFavorite,
             heartScale: $heartScale,
             heartRotation: $heartRotation,
             showHeartBurst: $showHeartBurst,
-            onToggleFavourite: { toggleFavourite(pokemon: pokemon) },
+            onToggleFavourite: {
+                if !viewModel.favoriteOperationInProgress {
+                    performFavoriteToggleAnimation()
+                    viewModel.toggleFavorite()
+                }
+            },
             onSpriteAppear: {
                 spriteScale = 1.05
                 startSpriteAnimation()
@@ -142,32 +137,25 @@ struct PokemonDetailView: View {
         animationTimer = nil
     }
 
-    private func updateFavouriteStatus() {
-        guard let pokemon = viewModel.pokemon else { return }
-        isFavourite = favourites.contains { $0.pokemonId == pokemon.id }
-    }
+    private func performFavoriteToggleAnimation() {
+        if viewModel.isFavorite {
+            // Remove animation
+            let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+            impactFeedback.impactOccurred()
 
-    private func toggleFavourite(pokemon: PokemonDetail) {
-        if isFavourite {
-            removeFavourite(pokemon: pokemon)
+            withAnimation(.easeInOut(duration: 0.2)) {
+                heartScale = 0.8
+                heartRotation = -15
+            }
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
+                    heartScale = 1.0
+                    heartRotation = 0
+                }
+            }
         } else {
-            addFavourite(pokemon: pokemon)
-        }
-    }
-
-    private func addFavourite(pokemon: PokemonDetail) {
-        let favourite = FavouritePokemon(
-            pokemonId: pokemon.id,
-            name: pokemon.name,
-            primaryType: pokemon.types.first?.name ?? "Unknown",
-            imageURL: pokemon.sprites.bestQualityImage
-        )
-
-        modelContext.insert(favourite)
-
-        do {
-            try modelContext.save()
-
+            // Add animation
             let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
             impactFeedback.impactOccurred()
 
@@ -180,10 +168,6 @@ struct PokemonDetailView: View {
                 showHeartBurst = true
             }
 
-            withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                isFavourite = true
-            }
-
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
                     heartScale = 1.2
@@ -194,37 +178,9 @@ struct PokemonDetailView: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
                 showHeartBurst = false
             }
-        } catch {
-            print("Failed to save favourite: \(error)")
         }
     }
 
-    private func removeFavourite(pokemon: PokemonDetail) {
-        if let favouriteToRemove = favourites.first(where: { $0.pokemonId == pokemon.id }) {
-            let impactFeedback = UIImpactFeedbackGenerator(style: .light)
-            impactFeedback.impactOccurred()
-
-            withAnimation(.easeInOut(duration: 0.2)) {
-                heartScale = 0.8
-                heartRotation = -15
-            }
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                modelContext.delete(favouriteToRemove)
-
-                do {
-                    try modelContext.save()
-                    withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) {
-                        isFavourite = false
-                        heartScale = 1.0
-                        heartRotation = 0
-                    }
-                } catch {
-                    print("Failed to remove favourite: \(error)")
-                }
-            }
-        }
-    }
 }
 
 #Preview("Pokemon Detail View") {
@@ -235,6 +191,5 @@ struct PokemonDetailView: View {
             viewModel: DefaultViewModelFactory().makePokemonDetailViewModel(pokemonId: 25)
         )
         .environmentObject(AppCoordinator())
-        .modelContainer(for: FavouritePokemon.self, inMemory: true)
     }
 }

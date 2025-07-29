@@ -9,7 +9,6 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-@MainActor
 class PokemonDetailViewModel: ObservableObject {
     @Published var pokemon: PokemonDetail?
     @Published var isLoading = false
@@ -36,7 +35,7 @@ class PokemonDetailViewModel: ObservableObject {
         self.addFavoriteUseCase = addFavoriteUseCase
         self.removeFavoriteUseCase = removeFavoriteUseCase
         self.checkIsFavoriteUseCase = checkIsFavoriteUseCase
-        
+
         checkFavoriteStatus()
     }
 
@@ -61,7 +60,7 @@ class PokemonDetailViewModel: ObservableObject {
             )
             .disposed(by: disposeBag)
     }
-    
+
     func checkFavoriteStatus() {
         checkIsFavoriteUseCase
             .execute(pokemonId: pokemonId)
@@ -76,23 +75,25 @@ class PokemonDetailViewModel: ObservableObject {
             )
             .disposed(by: disposeBag)
     }
-    
+
     func toggleFavorite() {
-        guard let pokemon = pokemon, !favoriteOperationInProgress else { return }
-        
+        guard let pokemon = pokemon, !favoriteOperationInProgress else {
+            return
+        }
+
         favoriteOperationInProgress = true
-        
+
         if isFavorite {
             removeFavorite(pokemon: pokemon)
         } else {
             addFavorite(pokemon: pokemon)
         }
     }
-    
+
     private func addFavorite(pokemon: PokemonDetail) {
         // Optimistic update
         isFavorite = true
-        
+
         addFavoriteUseCase
             .execute(pokemon: pokemon)
             .observe(on: MainScheduler.instance)
@@ -109,11 +110,11 @@ class PokemonDetailViewModel: ObservableObject {
             )
             .disposed(by: disposeBag)
     }
-    
+
     private func removeFavorite(pokemon: PokemonDetail) {
         // Optimistic update
         isFavorite = false
-        
+
         removeFavoriteUseCase
             .execute(pokemonId: pokemon.id)
             .observe(on: MainScheduler.instance)

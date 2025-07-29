@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FavouritePokemonCard: View {
-    let pokemon: FavouritePokemon
+    let pokemon: FavoritePokemon
     let onTap: () -> Void
     let onRemove: () -> Void
     @State private var isRemoving = false
@@ -108,12 +108,12 @@ struct FavouritePokemonCard: View {
                     .id(pokemon.imageURL)
 
                     VStack(spacing: 6) {
-                        Text("#\(String(format: "%03d", pokemon.pokemonId))")
+                        Text(pokemon.pokemonNumber)
                             .font(.caption2)
                             .fontWeight(.medium)
                             .foregroundColor(.secondary)
 
-                        Text(pokemon.name.capitalized)
+                        Text(pokemon.formattedName)
                             .font(.subheadline)
                             .fontWeight(.semibold)
                             .foregroundColor(.primary)
@@ -197,8 +197,8 @@ struct FavouritePokemonCard: View {
 }
 
 #Preview("Favourite Pokemon Card") {
-    let samplePokemon = FavouritePokemon(
-        pokemonId: 25,
+    let samplePokemon = FavoritePokemon(
+        id: 25,
         name: "pikachu",
         primaryType: "electric",
         imageURL: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" +

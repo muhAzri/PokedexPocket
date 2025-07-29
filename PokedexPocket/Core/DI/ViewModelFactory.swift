@@ -44,12 +44,12 @@ final class DefaultViewModelFactory: ViewModelFactory, ObservableObject {
             checkIsFavoriteUseCase: checkIsFavoriteUseCase
         )
     }
-    
+
     func makeFavoritePokemonViewModel() -> FavoritePokemonViewModel {
         let getFavoritesUseCase = container.resolve(GetFavoritesPokemonUseCaseProtocol.self)
         let removeFavoriteUseCase = container.resolve(RemoveFavoritePokemonUseCaseProtocol.self)
         let clearAllFavoritesUseCase = container.resolve(ClearAllFavoritesUseCaseProtocol.self)
-        
+
         return FavoritePokemonViewModel(
             getFavoritesUseCase: getFavoritesUseCase,
             removeFavoriteUseCase: removeFavoriteUseCase,
