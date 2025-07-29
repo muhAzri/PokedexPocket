@@ -13,8 +13,13 @@ class PokemonListViewModel: ObservableObject {
     @Published var pokemonList: [PokemonListItem] = []
     @Published var isLoading = false
     @Published var error: Error?
-    @Published var searchText = ""
     @Published var isSearching = false
+    private let searchTextSubject = BehaviorSubject<String>(value: "")
+    var searchText: String = "" {
+        didSet {
+            searchTextSubject.onNext(searchText)
+        }
+    }
 
     private let getPokemonListUseCase: GetPokemonListUseCaseProtocol
     private let searchPokemonUseCase: SearchPokemonUseCaseProtocol
@@ -37,16 +42,14 @@ class PokemonListViewModel: ObservableObject {
     }
 
     private func setupSearchBinding() {
-        $searchText
-            .debounce(for: .milliseconds(300), scheduler: DispatchQueue.main)
-            .removeDuplicates()
-            .sink { [weak self] query in
+        searchTextSubject
+            .debounce(.milliseconds(300), scheduler: MainScheduler.instance)
+            .distinctUntilChanged()
+            .subscribe(onNext: { [weak self] query in
                 self?.searchPokemon(query: query)
-            }
-            .store(in: &cancellables)
+            })
+            .disposed(by: disposeBag)
     }
-
-    private var cancellables = Set<AnyCancellable>()
 
     func loadInitialData() {
         currentOffset = 0
@@ -119,5 +122,3 @@ class PokemonListViewModel: ObservableObject {
         }
     }
 }
-
-import Combine
