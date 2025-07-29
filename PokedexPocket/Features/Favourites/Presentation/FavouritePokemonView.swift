@@ -6,69 +6,96 @@
 //
 
 import SwiftUI
-import SwiftData
 
 struct FavouritePokemonView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query(sort: [SortDescriptor(\FavouritePokemon.dateAdded, order: .reverse)])
-    private var favouritePokemon: [FavouritePokemon]
+    @StateObject private var viewModel: FavoritePokemonViewModel
     @EnvironmentObject private var coordinator: AppCoordinator
     @State private var showClearAllAlert = false
-    @State private var isClearingAll = false
+
+    init(viewModel: FavoritePokemonViewModel? = nil) {
+        if let viewModel = viewModel {
+            self._viewModel = StateObject(wrappedValue: viewModel)
+        } else {
+            let factory = DIContainer.shared.resolve(ViewModelFactory.self)
+            self._viewModel = StateObject(wrappedValue: factory.makeFavoritePokemonViewModel())
+        }
+    }
 
     var body: some View {
         NavigationView {
             Group {
-                if favouritePokemon.isEmpty {
+                if viewModel.isLoading {
+                    ProgressView("Loading favorites...")
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else if viewModel.favorites.isEmpty {
                     EmptyFavouritesView(coordinator: coordinator)
                 } else {
                     ScrollView {
                         LazyVGrid(columns: gridColumns, spacing: 16, pinnedViews: []) {
-                            ForEach(favouritePokemon, id: \.pokemonId) { pokemon in
+                            ForEach(viewModel.favorites, id: \.id) { pokemon in
                                 FavouritePokemonCard(
                                     pokemon: pokemon,
                                     onTap: {
                                         coordinator.navigateToPokemonDetail(
-                                            pokemonId: pokemon.pokemonId,
+                                            pokemonId: pokemon.id,
                                             pokemonName: pokemon.name
                                         )
                                     },
                                     onRemove: {
-                                        removeFavourite(pokemon)
+                                        viewModel.removeFavorite(pokemonId: pokemon.id)
                                     }
                                 )
-                                .scaleEffect(isClearingAll ? 0.0 : 1.0)
-                                .opacity(isClearingAll ? 0.0 : 1.0)
-                                .animation(.spring(response: 0.6, dampingFraction: 0.8), value: isClearingAll)
+                                .scaleEffect(viewModel.isClearingAll ? 0.0 : 1.0)
+                                .opacity(viewModel.isClearingAll ? 0.0 : 1.0)
+                                .animation(.spring(response: 0.6, dampingFraction: 0.8), value: viewModel.isClearingAll)
                             }
                         }
                         .padding(.horizontal)
+                    }
+                    .refreshable {
+                        viewModel.loadFavorites()
                     }
                 }
             }
             .navigationTitle("Favourites")
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
-                if !favouritePokemon.isEmpty {
+                if !viewModel.favorites.isEmpty {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button("Clear All") {
                             showClearAllAlert = true
                         }
                         .foregroundColor(.red)
+                        .disabled(viewModel.isClearingAll)
                     }
                 }
             }
             .alert("Clear All Favourites", isPresented: $showClearAllAlert) {
                 Button("Cancel", role: .cancel) { }
                 Button("Clear All", role: .destructive) {
-                    clearAllFavourites()
+                    viewModel.clearAllFavorites()
                 }
             } message: {
                 Text(
-                    "Are you sure you want to remove all \(favouritePokemon.count) favourite Pokémon? " +
+                    "Are you sure you want to remove all \(viewModel.favorites.count) favourite Pokémon? " +
                     "This action cannot be undone."
                 )
             }
+            .alert("Error", isPresented: .constant(viewModel.errorMessage != nil)) {
+                Button("Dismiss") {
+                    viewModel.dismissError()
+                }
+                Button("Retry") {
+                    viewModel.retry()
+                }
+            } message: {
+                if let errorMessage = viewModel.errorMessage {
+                    Text(errorMessage)
+                }
+            }
+        }
+        .onAppear {
+            viewModel.loadFavorites()
         }
     }
 
@@ -76,30 +103,6 @@ struct FavouritePokemonView: View {
         GridItem(.flexible()),
         GridItem(.flexible())
     ]
-
-    private func removeFavourite(_ pokemon: FavouritePokemon) {
-        withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
-            modelContext.delete(pokemon)
-            try? modelContext.save()
-        }
-    }
-
-    private func clearAllFavourites() {
-        let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
-        impactFeedback.impactOccurred()
-
-        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-            isClearingAll = true
-        }
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-            for pokemon in favouritePokemon {
-                modelContext.delete(pokemon)
-            }
-            try? modelContext.save()
-            isClearingAll = false
-        }
-    }
 }
 
 struct EmptyFavouritesView: View {
@@ -155,5 +158,4 @@ struct EmptyFavouritesView: View {
 #Preview("Favourite Pokemon View - Empty") {
     FavouritePokemonView()
         .environmentObject(AppCoordinator())
-        .modelContainer(for: FavouritePokemon.self, inMemory: true)
 }

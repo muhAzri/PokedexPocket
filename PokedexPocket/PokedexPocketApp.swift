@@ -18,7 +18,10 @@ struct PokedexPocketApp: App {
     var body: some Scene {
         WindowGroup {
             AppRouter()
-                .modelContainer(for: FavouritePokemon.self)
+                .modelContainer(for: FavouritePokemonDataModel.self)
+                .onAppear {
+                    setupModelContext()
+                }
         }
     }
 
@@ -29,5 +32,15 @@ struct PokedexPocketApp: App {
             diskPath: "image_cache"
         )
         URLCache.shared = cache
+    }
+
+    private func setupModelContext() {
+        do {
+            let container = try ModelContainer(for: FavouritePokemonDataModel.self)
+            let context = ModelContext(container)
+            DIContainer.shared.setModelContext(context)
+        } catch {
+            print("Failed to create ModelContext: \(error)")
+        }
     }
 }
