@@ -10,6 +10,7 @@ import Foundation
 protocol ViewModelFactory {
     func makePokemonListViewModel() -> PokemonListViewModel
     func makePokemonDetailViewModel(pokemonId: Int) -> PokemonDetailViewModel
+    func makeFavoritePokemonViewModel() -> FavoritePokemonViewModel
 }
 
 final class DefaultViewModelFactory: ViewModelFactory, ObservableObject {
@@ -31,10 +32,28 @@ final class DefaultViewModelFactory: ViewModelFactory, ObservableObject {
 
     func makePokemonDetailViewModel(pokemonId: Int) -> PokemonDetailViewModel {
         let getPokemonDetailUseCase = container.resolve(GetPokemonDetailUseCaseProtocol.self)
+        let addFavoriteUseCase = container.resolve(AddFavoritePokemonUseCaseProtocol.self)
+        let removeFavoriteUseCase = container.resolve(RemoveFavoritePokemonUseCaseProtocol.self)
+        let checkIsFavoriteUseCase = container.resolve(CheckIsFavoritePokemonUseCaseProtocol.self)
 
         return PokemonDetailViewModel(
             pokemonId: pokemonId,
-            getPokemonDetailUseCase: getPokemonDetailUseCase
+            getPokemonDetailUseCase: getPokemonDetailUseCase,
+            addFavoriteUseCase: addFavoriteUseCase,
+            removeFavoriteUseCase: removeFavoriteUseCase,
+            checkIsFavoriteUseCase: checkIsFavoriteUseCase
+        )
+    }
+    
+    func makeFavoritePokemonViewModel() -> FavoritePokemonViewModel {
+        let getFavoritesUseCase = container.resolve(GetFavoritesPokemonUseCaseProtocol.self)
+        let removeFavoriteUseCase = container.resolve(RemoveFavoritePokemonUseCaseProtocol.self)
+        let clearAllFavoritesUseCase = container.resolve(ClearAllFavoritesUseCaseProtocol.self)
+        
+        return FavoritePokemonViewModel(
+            getFavoritesUseCase: getFavoritesUseCase,
+            removeFavoriteUseCase: removeFavoriteUseCase,
+            clearAllFavoritesUseCase: clearAllFavoritesUseCase
         )
     }
 }
