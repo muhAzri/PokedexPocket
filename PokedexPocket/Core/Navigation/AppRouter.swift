@@ -9,6 +9,7 @@ import SwiftUI
 
 struct AppRouter: View {
     @StateObject private var coordinator = AppCoordinator()
+    @StateObject private var viewModelFactory = DefaultViewModelFactory()
 
     var body: some View {
         TabView(selection: $coordinator.selectedTab) {
@@ -52,6 +53,7 @@ struct AppRouter: View {
             .tag(AppTab.about)
         }
         .environmentObject(coordinator)
+        .environmentObject(viewModelFactory)
     }
 
     @ViewBuilder
@@ -63,7 +65,7 @@ struct AppRouter: View {
             PokemonDetailView(
                 pokemonId: pokemonId,
                 pokemonName: pokemonName,
-                getPokemonDetailUseCase: DIContainer.shared.resolve(GetPokemonDetailUseCaseProtocol.self)
+                viewModel: viewModelFactory.makePokemonDetailViewModel(pokemonId: pokemonId)
             )
         case .favouritePokemon:
             FavouritePokemonView()
