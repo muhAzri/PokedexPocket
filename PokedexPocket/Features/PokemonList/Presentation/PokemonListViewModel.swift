@@ -105,12 +105,20 @@ class PokemonListViewModel: ObservableObject {
 
         isSearching = true
 
-        let filteredResults = allPokemon.filter { pokemon in
-            pokemon.name.lowercased().contains(query.lowercased())
-        }
-
-        pokemonList = filteredResults
-        isSearching = false
+        searchPokemonUseCase
+            .execute(query: query)
+            .observe(on: MainScheduler.instance)
+            .subscribe(
+                onNext: { [weak self] filteredResults in
+                    self?.pokemonList = filteredResults
+                    self?.isSearching = false
+                },
+                onError: { [weak self] error in
+                    self?.error = error
+                    self?.isSearching = false
+                }
+            )
+            .disposed(by: disposeBag)
     }
 
     func retry() {
