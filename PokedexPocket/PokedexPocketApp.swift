@@ -33,7 +33,7 @@ struct PokedexPocketApp: App {
         )
         URLCache.shared = cache
     }
-    
+
     private func setupModelContext() {
         do {
             let container = try ModelContainer(for: FavouritePokemonDataModel.self)

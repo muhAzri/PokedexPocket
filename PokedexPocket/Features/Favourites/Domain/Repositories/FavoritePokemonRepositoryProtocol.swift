@@ -22,7 +22,7 @@ enum FavoritePokemonError: Error, LocalizedError {
     case fetchFailed
     case clearAllFailed
     case pokemonNotFound
-    
+
     var errorDescription: String? {
         switch self {
         case .addFailed:
