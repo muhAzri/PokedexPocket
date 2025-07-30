@@ -1,0 +1,154 @@
+name: Pull Request Checks
+
+on:
+  pull_request:
+    branches: [ main ]
+    types: [opened, synchronize, reopened]
+
+env:
+  SCHEME: PokedexPocket
+  CONFIGURATION: Debug
+  SIMULATOR_DEVICE: iPhone 15
+  SIMULATOR_OS: latest
+
+jobs:
+  pr-validation:
+    name: PR Validation
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Fetch full history for better diff analysis
+        
+    - name: Setup Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+        
+    - name: Cache Swift Package Manager dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/Library/Developer/Xcode/DerivedData/*/SourcePackages
+          .build
+        key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+        restore-keys: |
+          ${{ runner.os }}-spm-
+          
+    - name: Install dependencies
+      run: |
+        if ! which swiftlint >/dev/null; then
+          brew install swiftlint
+        fi
+        if ! which xcpretty >/dev/null; then
+          gem install xcpretty
+        fi
+        
+    - name: Clean DerivedData
+      run: |
+        rm -rf ~/Library/Developer/Xcode/DerivedData
+        
+    - name: Check for merge conflicts
+      run: |
+        if git merge-tree $(git merge-base HEAD main) HEAD main | grep -q '^<<<<<<<'; then
+          echo "❌ Merge conflicts detected"
+          exit 1
+        else
+          echo "✅ No merge conflicts detected"
+        fi
+        
+    - name: Resolve Package Dependencies
+      run: |
+        xcodebuild -resolvePackageDependencies -scheme $SCHEME
+        
+    - name: SwiftLint (Changed files only)
+      run: |
+        # Get list of changed Swift files
+        CHANGED_FILES=$(git diff --name-only --diff-filter=ACMR main...HEAD | grep '\.swift$' || true)
+        
+        if [ -n "$CHANGED_FILES" ]; then
+          echo "📝 Running SwiftLint on changed files:"
+          echo "$CHANGED_FILES"
+          echo "$CHANGED_FILES" | xargs swiftlint lint --strict --quiet
+        else
+          echo "ℹ️ No Swift files changed"
+        fi
+        
+    - name: Build and Test (Fast)
+      run: |
+        set -o pipefail && xcodebuild \
+          -scheme $SCHEME \
+          -destination 'platform=iOS Simulator,name=${{ env.SIMULATOR_DEVICE }},OS=${{ env.SIMULATOR_OS }}' \
+          -configuration $CONFIGURATION \
+          -quiet \
+          test \
+          -only-testing:PokedexPocketTests \
+          | xcpretty --report junit --output pr-test-results.xml
+          
+    - name: Test Coverage Check
+      run: |
+        set -o pipefail && xcodebuild \
+          -scheme $SCHEME \
+          -destination 'platform=iOS Simulator,name=${{ env.SIMULATOR_DEVICE }},OS=${{ env.SIMULATOR_OS }}' \
+          -configuration $CONFIGURATION \
+          -enableCodeCoverage YES \
+          test \
+          -only-testing:PokedexPocketTests \
+          | xcpretty
+          
+    - name: Upload PR test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: pr-test-results
+        path: pr-test-results.xml
+        
+    - name: Comment PR with test results
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: PR Test Results
+        path: pr-test-results.xml
+        reporter: java-junit
+        fail-on-error: true
+        
+    - name: PR Status Check
+      if: always()
+      run: |
+        if [ "${{ job.status }}" == "success" ]; then
+          echo "✅ All PR checks passed!"
+        else
+          echo "❌ PR checks failed!"
+          exit 1
+        fi
+
+  security-scan:
+    name: Security Scan
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Run security checks
+      run: |
+        echo "🔍 Scanning for sensitive information..."
+        
+        # Check for hardcoded secrets
+        if grep -r -i -E "(api[_-]?key|password|secret|token)" --include="*.swift" --exclude-dir=".git" . | grep -v -E "(test|mock|example|placeholder)" ; then
+          echo "❌ Potential hardcoded secrets found!"
+          exit 1
+        else
+          echo "✅ No hardcoded secrets detected"
+        fi
+        
+        # Check for debug code that shouldn't be in production
+        if grep -r -E "(print\(|NSLog|debugPrint)" --include="*.swift" --exclude-dir=".git" PokedexPocket/ ; then
+          echo "⚠️ Debug print statements found in production code"
+          echo "Please remove debug statements before merging"
+          exit 1
+        else
+          echo "✅ No debug statements in production code"
+        fi
