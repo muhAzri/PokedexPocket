@@ -43,7 +43,7 @@ jobs:
         
     - name: Run SwiftLint
       run: |
-        swiftlint lint --quiet --reporter compact
+        swiftlint lint --quiet
         
     - name: Resolve Package Dependencies
       run: |
@@ -103,7 +103,7 @@ jobs:
     - name: Run SwiftLint (Strict)
       run: |
         echo "🔍 Running SwiftLint analysis..."
-        swiftlint lint --strict --reporter compact
+        swiftlint lint --strict
         echo "✅ Code quality check passed!"
 
   pr-summary:
