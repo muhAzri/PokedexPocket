@@ -78,7 +78,7 @@ struct FavouritePokemonView: View {
             } message: {
                 Text(
                     "Are you sure you want to remove all \(viewModel.favorites.count) favourite Pokémon? " +
-                    "This action cannot be undone."
+                        "This action cannot be undone."
                 )
             }
             .alert("Error", isPresented: .constant(viewModel.errorMessage != nil)) {
@@ -123,13 +123,13 @@ struct EmptyFavouritesView: View {
 
                 Text(
                     "Start exploring Pokémon and add your favorites by tapping the heart icon on " +
-                    "any Pokémon detail page."
+                        "any Pokémon detail page."
                 )
-                    .font(.body)
-                    .foregroundColor(.secondary)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.horizontal, 24)
+                .font(.body)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.horizontal, 24)
             }
 
             Button(

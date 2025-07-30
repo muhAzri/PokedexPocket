@@ -56,7 +56,7 @@ struct PokemonListView: View {
                     get: { viewModel.searchText },
                     set: { viewModel.searchText = $0 }
                 ))
-                    .textFieldStyle(PlainTextFieldStyle())
+                .textFieldStyle(PlainTextFieldStyle())
 
                 if !viewModel.searchText.isEmpty {
                     Button(

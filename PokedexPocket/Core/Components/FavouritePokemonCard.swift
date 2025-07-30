@@ -45,31 +45,31 @@ struct FavouritePokemonCard: View {
                                 performRemovalAnimation()
                             },
                             label: {
-                            ZStack {
-                                Image(systemName: "heart.fill")
-                                    .font(.caption)
-                                    .foregroundColor(.red)
-                                    .scaleEffect(isRemoving ? 0.8 : 1.0)
-                                    .opacity(showHeartBreak ? 0 : 1)
+                                ZStack {
+                                    Image(systemName: "heart.fill")
+                                        .font(.caption)
+                                        .foregroundColor(.red)
+                                        .scaleEffect(isRemoving ? 0.8 : 1.0)
+                                        .opacity(showHeartBreak ? 0 : 1)
 
-                                if showHeartBreak {
-                                    HStack(spacing: 1) {
-                                        Image(systemName: "heart.slash")
-                                            .font(.caption2)
-                                            .foregroundColor(.red)
-                                            .offset(x: -heartBreakOffset, y: heartBreakOffset)
-                                            .rotationEffect(.degrees(-heartBreakRotation))
+                                    if showHeartBreak {
+                                        HStack(spacing: 1) {
+                                            Image(systemName: "heart.slash")
+                                                .font(.caption2)
+                                                .foregroundColor(.red)
+                                                .offset(x: -heartBreakOffset, y: heartBreakOffset)
+                                                .rotationEffect(.degrees(-heartBreakRotation))
 
-                                        Image(systemName: "heart.slash")
-                                            .font(.caption2)
-                                            .foregroundColor(.red)
-                                            .offset(x: heartBreakOffset, y: -heartBreakOffset)
-                                            .rotationEffect(.degrees(heartBreakRotation))
+                                            Image(systemName: "heart.slash")
+                                                .font(.caption2)
+                                                .foregroundColor(.red)
+                                                .offset(x: heartBreakOffset, y: -heartBreakOffset)
+                                                .rotationEffect(.degrees(heartBreakRotation))
+                                        }
                                     }
                                 }
                             }
-                        }
-                    )
+                        )
                     }
                     .padding(.top, 8)
                     .padding(.trailing, 8)
@@ -202,7 +202,7 @@ struct FavouritePokemonCard: View {
         name: "pikachu",
         primaryType: "electric",
         imageURL: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/" +
-                 "other/official-artwork/25.png"
+            "other/official-artwork/25.png"
     )
 
     FavouritePokemonCard(pokemon: samplePokemon, onTap: {

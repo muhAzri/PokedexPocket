@@ -260,7 +260,7 @@ struct PokemonSpriteControlsSection: View {
 
             Text(
                 selectedSpriteStyle.description +
-                (selectedSpriteStyle.supportsBackView ? " • Tap to flip" : "")
+                    (selectedSpriteStyle.supportsBackView ? " • Tap to flip" : "")
             )
             .font(.caption2)
             .foregroundColor(.secondary)

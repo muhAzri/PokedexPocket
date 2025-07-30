@@ -24,7 +24,7 @@ struct LoadingView: View {
                     .rotationEffect(Angle(degrees: isAnimating ? 360 : 0))
                     .animation(
                         .linear(duration: 1)
-                        .repeatForever(autoreverses: false),
+                            .repeatForever(autoreverses: false),
                         value: isAnimating
                     )
             }
@@ -118,7 +118,7 @@ struct ShimmerModifier: ViewModifier {
                     .offset(x: phase)
                     .animation(
                         .linear(duration: 1.5)
-                        .repeatForever(autoreverses: false),
+                            .repeatForever(autoreverses: false),
                         value: phase
                     )
             )
