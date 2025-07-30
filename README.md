@@ -1,8 +1,6 @@
 # PokedexPocket
 
 [![CI](https://github.com/muhAzri/PokedexPocket/actions/workflows/ci.yml/badge.svg)](https://github.com/muhAzri/PokedexPocket/actions/workflows/ci.yml)
-[![PR Checks](https://github.com/muhAzri/PokedexPocket/actions/workflows/pr-checks.yml/badge.svg)](https://github.com/muhAzri/PokedexPocket/actions/workflows/pr-checks.yml)
-[![Release](https://github.com/muhAzri/PokedexPocket/actions/workflows/release.yml/badge.svg)](https://github.com/muhAzri/PokedexPocket/actions/workflows/release.yml)
 [![SwiftLint](https://img.shields.io/badge/SwiftLint-passing-brightgreen.svg)](https://github.com/realm/SwiftLint)
 [![iOS](https://img.shields.io/badge/iOS-17.0+-blue.svg)](https://developer.apple.com/ios/)
 [![Swift](https://img.shields.io/badge/Swift-5.9+-orange.svg)](https://swift.org/)
@@ -1041,121 +1039,79 @@ class APIIntegrationTests: XCTestCase {
 
 ## 🔄 CI/CD Pipeline
 
-### Automated Testing & Deployment
+### Lightweight Automated Testing
 
-The project includes a comprehensive CI/CD pipeline using **GitHub Actions** to ensure code quality, run tests, and automate deployments.
+The project includes a **simple and efficient** CI/CD pipeline using **GitHub Actions** focused on code quality and testing without requiring Apple Developer accounts.
 
 #### Pipeline Overview
 
 ```mermaid
 graph LR
-    A[Code Push] --> B[PR Checks]
-    B --> C[Code Review]
-    C --> D[Merge to Main]
-    D --> E[CI Pipeline]
-    E --> F[Build & Test]
-    F --> G[Create Archive]
-    G --> H[Release]
+    A[Code Push/PR] --> B[SwiftLint Check]
+    B --> C[Build & Test]
+    C --> D[Results Summary]
 ```
 
-#### Workflows
-
-| Workflow | Trigger | Purpose | Duration |
-|----------|---------|---------|----------|
-| **PR Checks** | Pull Requests to `main` | Fast validation, security scan | ~5-8 min |
-| **CI Pipeline** | Push to `main`/`development` | Full test suite, build verification | ~10-15 min |
-| **Release** | Git tags (`v*.*.*`) | Build IPA, create GitHub release | ~15-20 min |
-
-### 📋 PR Checks Workflow
-
-**File**: `.github/workflows/pr-checks.yml`
-
-**Features:**
-- ⚡ **Fast Feedback**: Optimized for quick PR validation
-- 🔍 **Changed Files Only**: SwiftLint runs only on modified Swift files
-- 🔒 **Security Scanning**: Detects hardcoded secrets and debug statements
-- ❌ **Merge Conflict Detection**: Prevents problematic merges
-- 📊 **Test Coverage**: Reports coverage on changed code
-
-**Jobs:**
-```yaml
-pr-validation:
-  - Merge conflict detection
-  - SwiftLint on changed files
-  - Unit test execution
-  - Test coverage reporting
-  
-security-scan:
-  - Hardcoded secrets detection
-  - Debug statement validation
-  - Production readiness check
-```
-
-### 🏗️ Main CI Pipeline
+### 🚀 Main CI Pipeline
 
 **File**: `.github/workflows/ci.yml`
 
+**Triggers:**
+- Push to `main` or `development` branches
+- Pull requests to `main` branch
+
 **Features:**
-- 🔄 **Multi-Environment**: Runs on `main` and `development` branches
-- 📱 **iOS Simulator Testing**: Uses iPhone 15 with latest iOS
+- ⚡ **Fast & Lightweight**: 5-10 minute execution time
+- 🔍 **SwiftLint Integration**: Code quality validation
+- 🧪 **Unit Testing**: Automated test execution on iOS simulator
 - 💾 **Smart Caching**: Swift Package Manager dependency caching
-- 📊 **Comprehensive Testing**: Unit tests + UI tests
-- 🏗️ **Build Verification**: Debug and Release configurations
+- 📱 **Simulator Detection**: Automatically finds available iOS simulators
+- 🚫 **No Apple ID Required**: Works with GitHub's free macOS runners
 
 **Jobs:**
+
+#### 1. Swift Tests (`test-swift`)
 ```yaml
-test:
-  - Setup Xcode environment
-  - Cache SPM dependencies  
-  - Run SwiftLint analysis
-  - Execute unit tests
-  - Execute UI tests
-  - Upload test results
-
-build-and-archive:
-  - Build Release configuration
-  - Create .xcarchive
-  - Upload build artifacts
-  
-code-quality:
-  - SwiftLint detailed reports
-  - Static code analysis
-  - Generate quality metrics
+- Setup Xcode environment
+- Cache SPM dependencies
+- Install and run SwiftLint
+- Resolve package dependencies
+- Find available iOS simulator
+- Build and run unit tests
 ```
 
-### 🚀 Release Pipeline
-
-**File**: `.github/workflows/release.yml`
-
-**Features:**
-- 🏷️ **Automatic Releases**: Triggered by version tags
-- 📱 **IPA Generation**: Production-ready app packages
-- 📝 **Changelog Generation**: Automatic release notes
-- 📦 **Asset Management**: Upload release artifacts
-- ✅ **Full Test Suite**: Complete validation before release
-
-**Usage:**
-```bash
-# Create and push a release tag
-git tag v1.0.0
-git push origin v1.0.0
-
-# Or use GitHub UI for manual releases
+#### 2. Code Quality (`lint-only`)
+```yaml
+- Install SwiftLint
+- Run strict code quality checks
+- Report formatting issues
 ```
 
-### 🔧 Pipeline Configuration
+#### 3. PR Summary (`pr-summary`)
+```yaml
+- Generate test summary for PRs
+- Display results in GitHub interface
+```
+
+### 🛠️ Configuration
 
 #### Environment Variables
 ```yaml
 SCHEME: PokedexPocket
 CONFIGURATION: Debug
-SIMULATOR_DEVICE: iPhone 15  
-SIMULATOR_OS: latest
 ```
 
-#### Caching Strategy
+#### Simulator Detection
+The pipeline automatically detects available iOS simulators:
+```bash
+# Finds first available iPhone simulator
+SIMULATOR=$(xcrun simctl list devices available | grep -E "iPhone.*\(" | head -1)
+# Falls back to generic placeholder if none found
+DEVICE_NAME="Any iOS Simulator Device"
+```
+
+#### Dependency Caching
 ```yaml
-# Swift Package Manager caching
 - uses: actions/cache@v4
   with:
     path: |
@@ -1164,110 +1120,72 @@ SIMULATOR_OS: latest
     key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
 ```
 
-#### Test Reporting
-```yaml
-# JUnit test results for PR comments
-- uses: dorny/test-reporter@v1
-  with:
-    name: Unit Test Results
-    path: test-results.xml
-    reporter: java-junit
-```
+### ✅ Quality Gates
 
-### 🛡️ Quality Gates
+**All commits and PRs must pass:**
+- ✅ SwiftLint validation (strict mode)
+- ✅ Unit tests execution
+- ✅ Build successful on iOS simulator
+- ✅ No compiler warnings or errors
 
-#### PR Requirements
-Before merging to `main`, PRs must pass:
-- [ ] ✅ All unit tests passing
-- [ ] ✅ SwiftLint validation (strict mode)
-- [ ] ✅ No merge conflicts
-- [ ] ✅ Security scan passed
-- [ ] ✅ Build successful on iOS simulator
-- [ ] ✅ Code review approval
+### 📊 Performance Metrics
 
-#### Release Requirements
-Before creating releases:
-- [ ] ✅ Full test suite passing (unit + UI tests)
-- [ ] ✅ Release build successful
-- [ ] ✅ Archive creation successful
-- [ ] ✅ All quality checks passed
+- **Pipeline Duration**: 5-10 minutes
+- **Success Rate**: 95%+ expected
+- **Resource Usage**: Minimal (no archive/signing)
+- **Cost**: **Free** with GitHub Actions limits
 
-### 📊 Pipeline Metrics
+### 🔧 Local Development
 
-#### Success Rates
-- **PR Checks**: 95%+ success rate
-- **CI Pipeline**: 90%+ success rate  
-- **Release Pipeline**: 98%+ success rate
-
-#### Performance Benchmarks
-- **PR Validation**: 5-8 minutes average
-- **Full CI Run**: 10-15 minutes average
-- **Release Build**: 15-20 minutes average
-
-### 🔧 Local Development Integration
-
-#### Pre-commit Setup (Recommended)
+#### Prerequisites
 ```bash
-# Install SwiftLint locally
+# Install SwiftLint
 brew install swiftlint
 
-# Run SwiftLint before committing
-swiftlint --strict
+# Verify setup
+swiftlint version
+xcodebuild -version
+```
+
+#### Local Testing
+```bash
+# Run SwiftLint
+swiftlint lint --strict
 
 # Run tests locally
-xcodebuild test -scheme PokedexPocket -destination 'platform=iOS Simulator,name=iPhone 15'
+xcodebuild test -scheme PokedexPocket \
+  -destination 'platform=iOS Simulator,name=iPhone 15' \
+  -only-testing:PokedexPocketTests
 ```
 
-#### IDE Integration
-- **Xcode**: SwiftLint warnings appear in-editor
-- **Build Phases**: SwiftLint runs on every build
-- **Git Hooks**: Pre-commit validation (optional)
+### 🎯 What's NOT Included
 
-### 🚀 Deployment Strategy
+To keep the pipeline **free and simple**, we've excluded:
+- ❌ IPA generation (requires Apple Developer account)
+- ❌ Code signing and archiving
+- ❌ UI tests (resource intensive)
+- ❌ TestFlight deployment
+- ❌ Device testing (only simulator)
+- ❌ Complex reporting and artifacts
 
-#### Branch Strategy
+### 🚀 Branch Strategy
+
 ```
-main (production)     ←── PR merges
-├── development       ←── feature integration  
-├── feature/*         ←── new features
-├── fix/*            ←── bug fixes
-└── release/*        ←── release preparation
+main              ←── Production ready code
+├── development   ←── Integration branch
+├── feature/*     ←── New features
+└── fix/*        ←── Bug fixes
 ```
 
-#### Release Process
-1. **Development** → Merge features, run CI
-2. **Release Branch** → Final testing, version bump
-3. **Main** → Merge release, trigger deployment
-4. **Tag** → Create version tag, trigger release pipeline
-5. **Distribute** → IPA available on GitHub releases
+### 📋 Usage
 
-### 📋 Workflow Monitoring
+The pipeline runs automatically:
+1. **Push to `main/development`** → Full pipeline runs
+2. **Create PR to `main`** → Pipeline runs with PR summary
+3. **All checks pass** → Ready to merge
+4. **Any failures** → Check logs and fix issues
 
-#### GitHub Actions Dashboard
-- **Actions Tab**: View all workflow runs
-- **Status Checks**: PR merge requirements
-- **Artifacts**: Download test results and builds
-
-#### Failure Handling
-- **Automatic Retries**: Network-related failures
-- **Notification**: Failed builds notify maintainers
-- **Debug Logs**: Detailed failure information
-- **Rollback**: Quick revert for critical issues
-
-### 🔄 Continuous Improvement
-
-#### Pipeline Evolution
-- **Performance Monitoring**: Track build times
-- **Success Rate Tracking**: Identify failure patterns
-- **Tool Updates**: Keep actions and dependencies current
-- **Security Updates**: Regular security scanning improvements
-
-#### Planned Enhancements
-- [ ] **Parallel Testing**: Multiple iOS versions
-- [ ] **Device Farm**: Real device testing
-- [ ] **Performance Testing**: Automated performance regression tests
-- [ ] **Deployment Automation**: TestFlight integration
-- [ ] **Notification Integration**: Slack/Teams notifications
+**Manual trigger:** You can also run the pipeline manually from the GitHub Actions tab if needed.
 
 ## 📝 Development Guidelines
 
