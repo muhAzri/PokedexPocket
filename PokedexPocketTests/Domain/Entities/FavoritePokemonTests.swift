@@ -196,7 +196,8 @@ final class FavoritePokemonTests: XCTestCase {
     }
 
     func testInitializationWithLongURL() {
-        let longURL = "https://very-long-domain-name-for-testing-purposes.example.com/path/to/very/long/pokemon/image/url/that/might/be/used/in/production/environments/pokemon.png"
+        let longURL = "https://very-long-domain-name-for-testing-purposes.example.com" +
+            "/path/to/very/long/pokemon/image/url/that/might/be/used/in/production/environments/pokemon.png"
         let pokemon = FavoritePokemon(
             id: 1,
             name: "test",

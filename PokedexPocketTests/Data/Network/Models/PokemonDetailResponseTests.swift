@@ -70,8 +70,7 @@ final class PokemonDetailResponseTests: XCTestCase {
         XCTAssertEqual(domainModel.baseExperience, 0)
     }
 
-    func testToDomainImageURLPriority() {
-        // Test official artwork priority
+    func testToDomainImageURLOfficialArtworkPriority() {
         let responseWithOfficialArtwork = PokemonDetailResponse(
             id: 1,
             name: "test",
@@ -108,8 +107,9 @@ final class PokemonDetailResponseTests: XCTestCase {
 
         let domainModel = responseWithOfficialArtwork.toDomain()
         XCTAssertEqual(domainModel.imageURL, "official.png")
+    }
 
-        // Test fallback to front default
+    func testToDomainImageURLFrontDefaultFallback() {
         let responseWithoutOfficialArtwork = PokemonDetailResponse(
             id: 1,
             name: "test",
@@ -137,10 +137,11 @@ final class PokemonDetailResponseTests: XCTestCase {
             species: PokemonSpecies(name: "test", url: "test")
         )
 
-        let domainModel2 = responseWithoutOfficialArtwork.toDomain()
-        XCTAssertEqual(domainModel2.imageURL, "front.png")
+        let domainModel = responseWithoutOfficialArtwork.toDomain()
+        XCTAssertEqual(domainModel.imageURL, "front.png")
+    }
 
-        // Test empty fallback
+    func testToDomainImageURLEmptyFallback() {
         let responseWithoutImages = PokemonDetailResponse(
             id: 1,
             name: "test",
@@ -168,8 +169,8 @@ final class PokemonDetailResponseTests: XCTestCase {
             species: PokemonSpecies(name: "test", url: "test")
         )
 
-        let domainModel3 = responseWithoutImages.toDomain()
-        XCTAssertEqual(domainModel3.imageURL, "")
+        let domainModel = responseWithoutImages.toDomain()
+        XCTAssertEqual(domainModel.imageURL, "")
     }
 
     func testToDomainMovesMapping() {
@@ -298,7 +299,10 @@ final class PokemonAbilitySlotTests: XCTestCase {
 
     func testPokemonAbilitySlotCodable() throws {
         let abilitySlot = PokemonAbilitySlot(
-            ability: PokemonAbilityInfo(name: "static", url: "https://pokeapi.co/api/v2/ability/9/"),
+            ability: PokemonAbilityInfo(
+                name: "static",
+                url: "https://pokeapi.co/api/v2/ability/9/"
+            ),
             isHidden: false,
             slot: 1
         )
@@ -317,12 +321,21 @@ final class PokemonMoveSlotTests: XCTestCase {
 
     func testPokemonMoveSlotCodable() throws {
         let moveSlot = PokemonMoveSlot(
-            move: PokemonMoveInfo(name: "thunder-shock", url: "https://pokeapi.co/api/v2/move/84/"),
+            move: PokemonMoveInfo(
+                name: "thunder-shock",
+                url: "https://pokeapi.co/api/v2/move/84/"
+            ),
             versionGroupDetails: [
                 PokemonMoveVersionGroup(
                     levelLearnedAt: 1,
-                    moveLearnMethod: PokemonMoveLearnMethod(name: "level-up", url: "https://pokeapi.co/api/v2/move-learn-method/1/"),
-                    versionGroup: PokemonVersionGroup(name: "red-blue", url: "https://pokeapi.co/api/v2/version-group/1/")
+                    moveLearnMethod: PokemonMoveLearnMethod(
+                        name: "level-up",
+                        url: "https://pokeapi.co/api/v2/move-learn-method/1/"
+                    ),
+                    versionGroup: PokemonVersionGroup(
+                        name: "red-blue",
+                        url: "https://pokeapi.co/api/v2/version-group/1/"
+                    )
                 )
             ]
         )
@@ -333,7 +346,10 @@ final class PokemonMoveSlotTests: XCTestCase {
         XCTAssertEqual(moveSlot.move.name, decodedMoveSlot.move.name)
         XCTAssertEqual(moveSlot.move.url, decodedMoveSlot.move.url)
         XCTAssertEqual(moveSlot.versionGroupDetails.count, decodedMoveSlot.versionGroupDetails.count)
-        XCTAssertEqual(moveSlot.versionGroupDetails.first?.levelLearnedAt, decodedMoveSlot.versionGroupDetails.first?.levelLearnedAt)
+        XCTAssertEqual(
+            moveSlot.versionGroupDetails.first?.levelLearnedAt,
+            decodedMoveSlot.versionGroupDetails.first?.levelLearnedAt
+        )
     }
 }
 
@@ -370,7 +386,12 @@ final class PokemonSpritesTests: XCTestCase {
             frontShinyFemale: nil,
             other: PokemonOtherSprites(
                 dreamWorld: PokemonDreamWorldSprites(frontDefault: "dream.svg", frontFemale: nil),
-                home: PokemonHomeSprites(frontDefault: "home.png", frontFemale: nil, frontShiny: "home_shiny.png", frontShinyFemale: nil),
+                home: PokemonHomeSprites(
+                    frontDefault: "home.png",
+                    frontFemale: nil,
+                    frontShiny: "home_shiny.png",
+                    frontShinyFemale: nil
+                ),
                 officialArtwork: PokemonOfficialArtwork(frontDefault: "artwork.png", frontShiny: "artwork_shiny.png")
             ),
             versions: PokemonVersionSprites()
@@ -383,7 +404,10 @@ final class PokemonSpritesTests: XCTestCase {
         XCTAssertEqual(sprites.frontShiny, decodedSprites.frontShiny)
         XCTAssertEqual(sprites.backDefault, decodedSprites.backDefault)
         XCTAssertEqual(sprites.backShiny, decodedSprites.backShiny)
-        XCTAssertEqual(sprites.other?.officialArtwork?.frontDefault, decodedSprites.other?.officialArtwork?.frontDefault)
+        XCTAssertEqual(
+            sprites.other?.officialArtwork?.frontDefault,
+            decodedSprites.other?.officialArtwork?.frontDefault
+        )
     }
 }
 

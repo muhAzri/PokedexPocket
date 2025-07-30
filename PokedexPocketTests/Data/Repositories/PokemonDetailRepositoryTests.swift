@@ -338,7 +338,8 @@ final class PokemonDetailRepositoryTests: XCTestCase {
     func testGetPokemonDetailWithLongUrl() {
         let response = TestData.pokemonDetailResponse
         mockNetworkService.responseToReturn = response
-        let longUrl = "https://very-long-domain-name-for-testing-purposes.example.com/api/v2/pokemon/with/very/long/path/that/might/be/used/in/some/edge/cases/25/"
+        let longUrl = "https://very-long-domain-name-for-testing-purposes.example.com" +
+            "/api/v2/pokemon/with/very/long/path/that/might/be/used/in/some/edge/cases/25/"
 
         let expectation = XCTestExpectation(description: "Long URL")
 

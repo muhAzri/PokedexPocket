@@ -349,7 +349,9 @@ final class PokemonDetailSpritesTests: XCTestCase {
         XCTAssertEqual(officialArtworkNormal, sprites.officialArtwork ?? sprites.bestQualityImage)
 
         let officialArtworkShiny = sprites.getSpriteForStyle("Official Artwork", isShiny: true, isFront: true)
-        XCTAssertEqual(officialArtworkShiny, sprites.officialArtworkShiny ?? sprites.officialArtwork ?? sprites.bestQualityShinyImage)
+        let expectedOfficialArtworkShiny = sprites.officialArtworkShiny ??
+            sprites.officialArtwork ?? sprites.bestQualityShinyImage
+        XCTAssertEqual(officialArtworkShiny, expectedOfficialArtworkShiny)
 
         let homeStyleNormal = sprites.getSpriteForStyle("Home Style", isShiny: false, isFront: true)
         XCTAssertEqual(homeStyleNormal, sprites.home ?? sprites.bestQualityImage)
@@ -358,7 +360,9 @@ final class PokemonDetailSpritesTests: XCTestCase {
         XCTAssertEqual(gameSpriteFront, sprites.frontDefault ?? sprites.bestQualityImage)
 
         let gameSpriteFrontShiny = sprites.getSpriteForStyle("Game Sprites", isShiny: true, isFront: true)
-        XCTAssertEqual(gameSpriteFrontShiny, sprites.frontShiny ?? sprites.frontDefault ?? sprites.bestQualityShinyImage)
+        let expectedGameSpriteFrontShiny = sprites.frontShiny ??
+            sprites.frontDefault ?? sprites.bestQualityShinyImage
+        XCTAssertEqual(gameSpriteFrontShiny, expectedGameSpriteFrontShiny)
 
         let gameSpriteBack = sprites.getSpriteForStyle("Game Sprites", isShiny: false, isFront: false)
         XCTAssertEqual(gameSpriteBack, sprites.backDefault ?? sprites.frontDefault ?? sprites.bestQualityImage)

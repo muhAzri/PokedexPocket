@@ -9,6 +9,11 @@ import Foundation
 @testable import PokedexPocket
 
 struct TestData {
+    // MARK: - Constants
+    private static let baseSpritesURL = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon"
+    private static let officialArtworkURL = "\(baseSpritesURL)/other/official-artwork"
+    private static let criesURL = "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon"
+    private static let apiBaseURL = "https://pokeapi.co/api/v2"
     // MARK: - Pokemon Detail Test Data
     static let pikachu = PokemonDetail(
         id: 25,
@@ -36,21 +41,21 @@ struct TestData {
             PokemonMove(name: "thunder-shock", learnMethod: "level-up", level: 1),
             PokemonMove(name: "thunder-bolt", learnMethod: "machine", level: 0)
         ],
-        imageURL: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
+        imageURL: "\(officialArtworkURL)/25.png",
         sprites: PokemonDetailSprites(
-            frontDefault: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
-            frontShiny: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/shiny/25.png",
-            backDefault: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/25.png",
-            backShiny: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/shiny/25.png",
-            officialArtwork: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
-            officialArtworkShiny: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/shiny/25.png",
-            dreamWorld: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/dream-world/25.svg",
-            home: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/25.png",
-            homeShiny: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/home/shiny/25.png"
+            frontDefault: "\(baseSpritesURL)/25.png",
+            frontShiny: "\(baseSpritesURL)/shiny/25.png",
+            backDefault: "\(baseSpritesURL)/back/25.png",
+            backShiny: "\(baseSpritesURL)/back/shiny/25.png",
+            officialArtwork: "\(officialArtworkURL)/25.png",
+            officialArtworkShiny: "\(officialArtworkURL)/shiny/25.png",
+            dreamWorld: "\(baseSpritesURL)/other/dream-world/25.svg",
+            home: "\(baseSpritesURL)/other/home/25.png",
+            homeShiny: "\(baseSpritesURL)/other/home/shiny/25.png"
         ),
         cries: PokemonDetailCries(
-            latest: "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/25.ogg",
-            legacy: "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/legacy/25.ogg"
+            latest: "\(criesURL)/latest/25.ogg",
+            legacy: "\(criesURL)/legacy/25.ogg"
         ),
         species: "mouse"
     )
@@ -79,13 +84,13 @@ struct TestData {
             PokemonAbility(name: "solar-power", isHidden: true)
         ],
         moves: [],
-        imageURL: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",
+        imageURL: "\(officialArtworkURL)/6.png",
         sprites: PokemonDetailSprites(
-            frontDefault: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png",
+            frontDefault: "\(baseSpritesURL)/6.png",
             frontShiny: nil,
             backDefault: nil,
             backShiny: nil,
-            officialArtwork: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",
+            officialArtwork: "\(officialArtworkURL)/6.png",
             officialArtworkShiny: nil,
             dreamWorld: nil,
             home: nil,
@@ -128,7 +133,7 @@ struct TestData {
         id: 1,
         name: "bulbasaur",
         url: "https://pokeapi.co/api/v2/pokemon/1/",
-        imageURL: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
+        imageURL: "\(officialArtworkURL)/1.png",
         types: [PokemonType(name: "grass"), PokemonType(name: "poison")],
         height: 7,
         weight: 69,
@@ -139,7 +144,7 @@ struct TestData {
         id: 2,
         name: "ivysaur",
         url: "https://pokeapi.co/api/v2/pokemon/2/",
-        imageURL: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/2.png",
+        imageURL: "\(officialArtworkURL)/2.png",
         types: [PokemonType(name: "grass"), PokemonType(name: "poison")],
         height: 10,
         weight: 130,
@@ -168,7 +173,7 @@ struct TestData {
         id: 25,
         name: "pikachu",
         primaryType: "electric",
-        imageURL: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
+        imageURL: "\(officialArtworkURL)/25.png",
         dateAdded: Date(timeIntervalSince1970: 1627689600) // Fixed date for testing
     )
 
@@ -176,7 +181,7 @@ struct TestData {
         id: 6,
         name: "charizard",
         primaryType: "fire",
-        imageURL: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",
+        imageURL: "\(officialArtworkURL)/6.png",
         dateAdded: Date(timeIntervalSince1970: 1627776000) // Fixed date for testing
     )
 
@@ -219,28 +224,31 @@ struct TestData {
             frontShinyFemale: nil,
             other: PokemonOtherSprites(
                 dreamWorld: PokemonDreamWorldSprites(frontDefault: "dream.svg", frontFemale: nil),
-                home: PokemonHomeSprites(frontDefault: "home.png", frontFemale: nil, frontShiny: "home_shiny.png", frontShinyFemale: nil),
-                officialArtwork: PokemonOfficialArtwork(frontDefault: "artwork.png", frontShiny: "artwork_shiny.png")
+                home: PokemonHomeSprites(frontDefault: "home.png", frontFemale: nil,
+                                         frontShiny: "home_shiny.png", frontShinyFemale: nil),
+                officialArtwork: PokemonOfficialArtwork(frontDefault: "artwork.png",
+                                                        frontShiny: "artwork_shiny.png")
             ),
             versions: PokemonVersionSprites()
         ),
         moves: [
             PokemonMoveSlot(
-                move: PokemonMoveInfo(name: "thunder-shock", url: "https://pokeapi.co/api/v2/move/84/"),
+                move: PokemonMoveInfo(name: "thunder-shock", url: "\(apiBaseURL)/move/84/"),
                 versionGroupDetails: [
                     PokemonMoveVersionGroup(
                         levelLearnedAt: 1,
-                        moveLearnMethod: PokemonMoveLearnMethod(name: "level-up", url: "https://pokeapi.co/api/v2/move-learn-method/1/"),
-                        versionGroup: PokemonVersionGroup(name: "red-blue", url: "https://pokeapi.co/api/v2/version-group/1/")
+                        moveLearnMethod: PokemonMoveLearnMethod(name: "level-up",
+                                                                url: "\(apiBaseURL)/move-learn-method/1/"),
+                        versionGroup: PokemonVersionGroup(name: "red-blue", url: "\(apiBaseURL)/version-group/1/")
                     )
                 ]
             )
         ],
         cries: PokemonCries(
-            latest: "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/25.ogg",
-            legacy: "https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/legacy/25.ogg"
+            latest: "\(criesURL)/latest/25.ogg",
+            legacy: "\(criesURL)/legacy/25.ogg"
         ),
-        species: PokemonSpecies(name: "pikachu", url: "https://pokeapi.co/api/v2/pokemon-species/25/")
+        species: PokemonSpecies(name: "pikachu", url: "\(apiBaseURL)/pokemon-species/25/")
     )
 
     // MARK: - Network Errors

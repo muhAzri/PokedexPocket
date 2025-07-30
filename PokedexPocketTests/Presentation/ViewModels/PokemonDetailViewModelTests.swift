@@ -61,7 +61,7 @@ final class PokemonDetailViewModelTests: XCTestCase {
     }
 
     func testInitializationWithDifferentPokemonId() {
-        let differentSut = PokemonDetailViewModel(
+        _ = PokemonDetailViewModel(
             pokemonId: 150,
             getPokemonDetailUseCase: mockGetPokemonDetailUseCase,
             addFavoriteUseCase: mockAddFavoriteUseCase,
@@ -69,7 +69,8 @@ final class PokemonDetailViewModelTests: XCTestCase {
             checkIsFavoriteUseCase: mockCheckIsFavoriteUseCase
         )
 
-        XCTAssertEqual(mockCheckIsFavoriteUseCase.executeCallCount, 2) // Called once in setUp and once here
+        // Called once in setUp and once here
+        XCTAssertEqual(mockCheckIsFavoriteUseCase.executeCallCount, 2)
         XCTAssertEqual(mockCheckIsFavoriteUseCase.lastCheckedId, 150)
     }
 
@@ -273,13 +274,19 @@ final class PokemonDetailViewModelTests: XCTestCase {
     func testCheckFavoriteStatus_IsNotFavorite() {
         mockCheckIsFavoriteUseCase.isFavoriteToReturn = false
 
+        let expectation = XCTestExpectation(description: "Check favorite status completed")
+        
+        // Since isFavorite starts as false and remains false, we need to wait for the operation to complete
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            expectation.fulfill()
+        }
+
         sut.checkFavoriteStatus()
 
-        // Give some time for the async operation
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            XCTAssertEqual(self.mockCheckIsFavoriteUseCase.executeCallCount, 2)
-            XCTAssertFalse(self.sut.isFavorite)
-        }
+        wait(for: [expectation], timeout: 1.0)
+        
+        XCTAssertEqual(mockCheckIsFavoriteUseCase.executeCallCount, 2)
+        XCTAssertFalse(sut.isFavorite)
     }
 
     func testCheckFavoriteStatus_Error() {
@@ -410,7 +417,11 @@ final class PokemonDetailViewModelTests: XCTestCase {
 
         sut.toggleFavorite()
 
-        wait(for: [errorExpectation, favoriteRevertExpectation], timeout: 1.0, enforceOrder: false)
+        wait(
+            for: [errorExpectation, favoriteRevertExpectation],
+            timeout: 1.0,
+            enforceOrder: false
+        )
 
         XCTAssertEqual(mockAddFavoriteUseCase.executeCallCount, 1)
         XCTAssertFalse(sut.isFavorite) // Should be reverted
@@ -449,7 +460,11 @@ final class PokemonDetailViewModelTests: XCTestCase {
 
         sut.toggleFavorite()
 
-        wait(for: [errorExpectation, favoriteRevertExpectation], timeout: 1.0, enforceOrder: false)
+        wait(
+            for: [errorExpectation, favoriteRevertExpectation],
+            timeout: 1.0,
+            enforceOrder: false
+        )
 
         XCTAssertEqual(mockRemoveFavoriteUseCase.executeCallCount, 1)
         XCTAssertTrue(sut.isFavorite) // Should be reverted
@@ -469,7 +484,8 @@ final class PokemonDetailViewModelTests: XCTestCase {
         sut.$isFavorite
             .sink { isFavorite in
                 favoriteStates.append(isFavorite)
-                if favoriteStates.count == 2 && isFavorite { // Initial false, then optimistic true
+                // Initial false, then optimistic true
+                if favoriteStates.count == 2 && isFavorite {
                     expectation.fulfill()
                 }
             }
@@ -485,7 +501,7 @@ final class PokemonDetailViewModelTests: XCTestCase {
 
     // MARK: - Edge Cases
     func testInitializationWithZeroId() {
-        let zeroIdSut = PokemonDetailViewModel(
+        _ = PokemonDetailViewModel(
             pokemonId: 0,
             getPokemonDetailUseCase: mockGetPokemonDetailUseCase,
             addFavoriteUseCase: mockAddFavoriteUseCase,
@@ -497,7 +513,7 @@ final class PokemonDetailViewModelTests: XCTestCase {
     }
 
     func testInitializationWithNegativeId() {
-        let negativeIdSut = PokemonDetailViewModel(
+        _ = PokemonDetailViewModel(
             pokemonId: -1,
             getPokemonDetailUseCase: mockGetPokemonDetailUseCase,
             addFavoriteUseCase: mockAddFavoriteUseCase,
@@ -513,20 +529,28 @@ final class PokemonDetailViewModelTests: XCTestCase {
         sut.pokemon = pokemon
         sut.isFavorite = false
 
+        let firstToggleExpectation = XCTestExpectation(description: "First toggle completed")
+        let secondToggleExpectation = XCTestExpectation(description: "Second toggle completed")
+
         // First toggle (add)
         sut.toggleFavorite()
 
-        // Wait for operation to complete
+        // Wait for first operation to complete
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             self.sut.favoriteOperationInProgress = false
+            firstToggleExpectation.fulfill()
 
             // Second toggle (remove)
             self.sut.toggleFavorite()
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                XCTAssertEqual(self.mockAddFavoriteUseCase.executeCallCount, 1)
-                XCTAssertEqual(self.mockRemoveFavoriteUseCase.executeCallCount, 1)
+                secondToggleExpectation.fulfill()
             }
         }
+
+        wait(for: [firstToggleExpectation, secondToggleExpectation], timeout: 1.0)
+        
+        XCTAssertEqual(mockAddFavoriteUseCase.executeCallCount, 1)
+        XCTAssertEqual(mockRemoveFavoriteUseCase.executeCallCount, 1)
     }
 }

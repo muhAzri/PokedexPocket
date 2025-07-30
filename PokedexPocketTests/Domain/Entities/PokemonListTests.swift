@@ -197,19 +197,25 @@ final class PokemonListItemTests: XCTestCase {
 
     func testImageURL() {
         let item1 = TestData.pokemonListItemBulbasaur
-        XCTAssertEqual(item1.imageURL, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png")
+        let expectedURL1 = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites" +
+            "/pokemon/other/official-artwork/1.png"
+        XCTAssertEqual(item1.imageURL, expectedURL1)
 
         let item25 = PokemonListItem(
             name: "pikachu",
             url: "https://pokeapi.co/api/v2/pokemon/25/"
         )
-        XCTAssertEqual(item25.imageURL, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png")
+        let expectedURL25 = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites" +
+            "/pokemon/other/official-artwork/25.png"
+        XCTAssertEqual(item25.imageURL, expectedURL25)
 
         let invalidItem = PokemonListItem(
             name: "invalid",
             url: "invalid-url"
         )
-        XCTAssertEqual(invalidItem.imageURL, "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/0.png")
+        let expectedInvalidURL = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites" +
+            "/pokemon/other/official-artwork/0.png"
+        XCTAssertEqual(invalidItem.imageURL, expectedInvalidURL)
     }
 
     func testFormattedName() {

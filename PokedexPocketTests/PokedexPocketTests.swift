@@ -162,7 +162,8 @@ final class PokedexPocketTests: XCTestCase {
     }
 
     func testPokemonTypeColorLookupPerformance() {
-        let typeNames = ["fire", "water", "grass", "electric", "psychic", "ice", "dragon", "dark", "fairy", "normal", "fighting", "poison", "ground", "flying", "bug", "rock", "ghost", "steel", "unknown"]
+        let typeNames = ["fire", "water", "grass", "electric", "psychic", "ice", "dragon", "dark", "fairy",
+                         "normal", "fighting", "poison", "ground", "flying", "bug", "rock", "ghost", "steel", "unknown"]
 
         measure {
             for _ in 0..<10000 {
@@ -201,11 +202,11 @@ final class PokedexPocketTests: XCTestCase {
 
         let queue = DispatchQueue(label: "test.concurrent", attributes: .concurrent)
 
-        for i in 0..<100 {
+        for index in 0..<100 {
             queue.async {
                 let pokemon = PokemonDetail(
-                    id: i,
-                    name: "pokemon-\(i)",
+                    id: index,
+                    name: "pokemon-\(index)",
                     height: 10,
                     weight: 100,
                     baseExperience: 50,
@@ -227,7 +228,7 @@ final class PokedexPocketTests: XCTestCase {
                     species: ""
                 )
 
-                XCTAssertEqual(pokemon.id, i)
+                XCTAssertEqual(pokemon.id, index)
                 expectation.fulfill()
             }
         }

@@ -60,11 +60,13 @@ final class NetworkErrorTests: XCTestCase {
     func testNetworkErrorLocalizedDescription() {
         XCTAssertEqual(NetworkError.invalidURL.errorDescription, "Invalid URL")
         XCTAssertEqual(NetworkError.noData.errorDescription, "No data received")
-        XCTAssertEqual(NetworkError.decodingError(TestError.decodingFailed).errorDescription, "Failed to decode response")
+        XCTAssertEqual(NetworkError.decodingError(TestError.decodingFailed).errorDescription,
+                       "Failed to decode response")
         XCTAssertEqual(NetworkError.unknown.errorDescription, "Unknown error occurred")
 
         let testError = TestError.networkFailed
-        XCTAssertEqual(NetworkError.networkError(testError).errorDescription, "Network error: \(testError.localizedDescription)")
+        XCTAssertEqual(NetworkError.networkError(testError).errorDescription,
+                       "Network error: \(testError.localizedDescription)")
 
         XCTAssertEqual(NetworkError.serverError(404).errorDescription, "Server error with code: 404")
         XCTAssertEqual(NetworkError.serverError(500).errorDescription, "Server error with code: 500")
