@@ -8,6 +8,7 @@
 import Foundation
 import RxSwift
 import PokedexPocketCore
+import PokedexPocketPokemon
 @testable import PokedexPocket
 
 class MockNetworkService: NetworkServiceProtocol {

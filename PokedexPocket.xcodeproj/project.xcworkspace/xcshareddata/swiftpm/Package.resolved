@@ -1,5 +1,5 @@
 {
-  "originHash" : "1652747e5471d72444fb35afbd05994c3733b88ce35a79d60823d225b248c92c",
+  "originHash" : "38a2fc2c847bb36ed5a3b6651ddf92d95280c546e009c1f48fc5f4292b85590b",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -17,6 +17,15 @@
       "state" : {
         "branch" : "main",
         "revision" : "0290ae1dd998e8ae42a7ce9909ec8e1e26d29456"
+      }
+    },
+    {
+      "identity" : "pokedexpocketpokemon",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/muhAzri/PokedexPocketPokemon.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "b5405773f581d171fbb3d14ab18afc24d28045f2"
       }
     },
     {

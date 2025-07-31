@@ -8,6 +8,7 @@
 import Foundation
 import SwiftData
 import RxSwift
+import PokedexPocketPokemon
 
 class FavoritePokemonRepository: FavoritePokemonRepositoryProtocol {
     private let modelContext: ModelContext

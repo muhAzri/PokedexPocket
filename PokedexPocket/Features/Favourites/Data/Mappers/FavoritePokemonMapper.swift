@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import PokedexPocketPokemon
 
 struct FavoritePokemonMapper {
     static func toDomain(_ dataModel: FavouritePokemonDataModel) -> FavoritePokemon {

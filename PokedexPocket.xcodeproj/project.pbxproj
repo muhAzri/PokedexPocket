@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		6394BBD22E3A43AF005C4BCA /* PokedexPocketCore in Frameworks */ = {isa = PBXBuildFile; productRef = 6394BBD12E3A43AF005C4BCA /* PokedexPocketCore */; };
 		6394BC9B2E3A610B005C4BCA /* PokedexPocketCore in Frameworks */ = {isa = PBXBuildFile; productRef = 6394BC9A2E3A610B005C4BCA /* PokedexPocketCore */; };
+		6394BFC72E3B30EC005C4BCA /* PokedexPocketPokemon in Frameworks */ = {isa = PBXBuildFile; productRef = 6394BFC62E3B30EC005C4BCA /* PokedexPocketPokemon */; };
+		6394C0A62E3B3542005C4BCA /* PokedexPocketPokemon in Frameworks */ = {isa = PBXBuildFile; productRef = 6394C0A52E3B3542005C4BCA /* PokedexPocketPokemon */; };
+		6394C25F2E3B6E50005C4BCA /* PokedexPocketPokemon in Frameworks */ = {isa = PBXBuildFile; productRef = 6394C25E2E3B6E50005C4BCA /* PokedexPocketPokemon */; };
+		6394C2622E3B74EC005C4BCA /* PokedexPocketPokemon in Frameworks */ = {isa = PBXBuildFile; productRef = 6394C2612E3B74EC005C4BCA /* PokedexPocketPokemon */; };
 		639759A82E34D7A6007A8ECC /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 639759A72E34D7A6007A8ECC /* Alamofire */; };
 		639759AD2E34D7C2007A8ECC /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = 639759AC2E34D7C2007A8ECC /* Swinject */; };
 		639759B22E34D7E4007A8ECC /* RxBlocking in Frameworks */ = {isa = PBXBuildFile; productRef = 639759B12E34D7E4007A8ECC /* RxBlocking */; };
@@ -63,11 +67,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				639759BA2E34D7E4007A8ECC /* RxRelay in Frameworks */,
+				6394C25F2E3B6E50005C4BCA /* PokedexPocketPokemon in Frameworks */,
 				639759A82E34D7A6007A8ECC /* Alamofire in Frameworks */,
 				6394BC9B2E3A610B005C4BCA /* PokedexPocketCore in Frameworks */,
+				6394BFC72E3B30EC005C4BCA /* PokedexPocketPokemon in Frameworks */,
 				6394BBD22E3A43AF005C4BCA /* PokedexPocketCore in Frameworks */,
 				639759B62E34D7E4007A8ECC /* RxCocoa in Frameworks */,
 				639759AD2E34D7C2007A8ECC /* Swinject in Frameworks */,
+				6394C0A62E3B3542005C4BCA /* PokedexPocketPokemon in Frameworks */,
+				6394C2622E3B74EC005C4BCA /* PokedexPocketPokemon in Frameworks */,
 				639759B22E34D7E4007A8ECC /* RxBlocking in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -145,6 +153,10 @@
 				639759B92E34D7E4007A8ECC /* RxRelay */,
 				6394BBD12E3A43AF005C4BCA /* PokedexPocketCore */,
 				6394BC9A2E3A610B005C4BCA /* PokedexPocketCore */,
+				6394BFC62E3B30EC005C4BCA /* PokedexPocketPokemon */,
+				6394C0A52E3B3542005C4BCA /* PokedexPocketPokemon */,
+				6394C25E2E3B6E50005C4BCA /* PokedexPocketPokemon */,
+				6394C2612E3B74EC005C4BCA /* PokedexPocketPokemon */,
 			);
 			productName = PokedexPocket;
 			productReference = 6397596C2E34D742007A8ECC /* PokedexPocket.app */;
@@ -234,6 +246,7 @@
 				639759B02E34D7E4007A8ECC /* XCRemoteSwiftPackageReference "RxSwift" */,
 				639759BB2E34D7FE007A8ECC /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
 				6394BC992E3A610B005C4BCA /* XCRemoteSwiftPackageReference "PokedexPocketCore" */,
+				6394C2602E3B74EC005C4BCA /* XCRemoteSwiftPackageReference "PokedexPocketPokemon" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6397596D2E34D742007A8ECC /* Products */;
@@ -614,6 +627,14 @@
 				kind = branch;
 			};
 		};
+		6394C2602E3B74EC005C4BCA /* XCRemoteSwiftPackageReference "PokedexPocketPokemon" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/muhAzri/PokedexPocketPokemon.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		639759A62E34D7A6007A8ECC /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
@@ -657,6 +678,23 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6394BC992E3A610B005C4BCA /* XCRemoteSwiftPackageReference "PokedexPocketCore" */;
 			productName = PokedexPocketCore;
+		};
+		6394BFC62E3B30EC005C4BCA /* PokedexPocketPokemon */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PokedexPocketPokemon;
+		};
+		6394C0A52E3B3542005C4BCA /* PokedexPocketPokemon */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PokedexPocketPokemon;
+		};
+		6394C25E2E3B6E50005C4BCA /* PokedexPocketPokemon */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PokedexPocketPokemon;
+		};
+		6394C2612E3B74EC005C4BCA /* PokedexPocketPokemon */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6394C2602E3B74EC005C4BCA /* XCRemoteSwiftPackageReference "PokedexPocketPokemon" */;
+			productName = PokedexPocketPokemon;
 		};
 		639759A72E34D7A6007A8ECC /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;

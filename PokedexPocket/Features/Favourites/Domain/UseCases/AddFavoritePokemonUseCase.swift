@@ -7,6 +7,7 @@
 
 import Foundation
 import RxSwift
+import PokedexPocketPokemon
 
 protocol AddFavoritePokemonUseCaseProtocol {
     func execute(pokemon: PokemonDetail) -> Observable<Void>

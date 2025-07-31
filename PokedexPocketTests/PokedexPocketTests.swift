@@ -6,6 +6,8 @@
 //
 
 import XCTest
+import PokedexPocketCore
+import PokedexPocketPokemon
 @testable import PokedexPocket
 
 final class PokedexPocketTests: XCTestCase {
@@ -19,93 +21,57 @@ final class PokedexPocketTests: XCTestCase {
     }
 
     // MARK: - Architecture Tests
-    func testCleanArchitectureLayerSeparation() {
-        // Test that Domain layer doesn't depend on Data or Presentation layers
-        // This is a compile-time check - if it compiles, the architecture is correct
-
-        // Domain entities should be pure Swift without external dependencies
-        let pokemon = PokemonDetail(
-            id: 1,
-            name: "test",
-            height: 10,
-            weight: 100,
-            baseExperience: 50,
-            types: [],
-            stats: [],
-            abilities: [],
-            imageURL: "",
-            sprites: PokemonDetailSprites(
-                frontDefault: nil,
-                frontShiny: nil,
-                backDefault: nil,
-                backShiny: nil,
-                officialArtwork: nil,
-                officialArtworkShiny: nil,
-                dreamWorld: nil,
-                home: nil,
-                homeShiny: nil
-            ),
-            species: ""
+    func testFavoritePokemonEntityCreation() {
+        // Test that favorite Pokemon entities can be created properly
+        let favorite = FavoritePokemon(
+            id: 25,
+            name: "pikachu",
+            primaryType: "electric",
+            imageURL: "https://example.com/pikachu.png",
+            dateAdded: Date()
         )
 
-        XCTAssertEqual(pokemon.id, 1)
-        XCTAssertEqual(pokemon.name, "test")
+        XCTAssertEqual(favorite.id, 25)
+        XCTAssertEqual(favorite.name, "pikachu")
+        XCTAssertEqual(favorite.primaryType, "electric")
     }
 
     func testDependencyInjectionPattern() {
-        // Test that all use cases depend on abstractions (protocols) not concretions
+        // Test that favorite Pokemon use cases depend on abstractions (protocols) not concretions
         // This ensures proper dependency inversion
 
-        let mockRepository = MockPokemonDetailRepository()
-        let useCase = GetPokemonDetailUseCase(repository: mockRepository)
+        let mockRepository = MockFavoritePokemonRepository()
+        let addUseCase = MockAddFavoritePokemonUseCase()
+        let removeUseCase = MockRemoveFavoritePokemonUseCase()
+        let getFavoritesUseCase = MockGetFavoritesPokemonUseCase()
+        let checkIsFavoriteUseCase = MockCheckIsFavoritePokemonUseCase()
 
-        XCTAssertNotNil(useCase)
-
-        // Test that we can inject different implementations
-        let anotherMockRepository = MockPokemonDetailRepository()
-        let anotherUseCase = GetPokemonDetailUseCase(repository: anotherMockRepository)
-
-        XCTAssertNotNil(anotherUseCase)
+        XCTAssertNotNil(mockRepository)
+        XCTAssertNotNil(addUseCase)
+        XCTAssertNotNil(removeUseCase)
+        XCTAssertNotNil(getFavoritesUseCase)
+        XCTAssertNotNil(checkIsFavoriteUseCase)
     }
 
-    func testEntityImmutability() {
-        // Test that domain entities are immutable
-        let pokemon = TestData.pikachu
-        let originalName = pokemon.name
+    func testFavoritePokemonEntityImmutability() {
+        // Test that favorite Pokemon entities are immutable
+        let favorite = TestData.favoritePikachu
+        let originalName = favorite.name
 
         // Since properties are let constants, this ensures immutability
-        XCTAssertEqual(pokemon.name, originalName)
+        XCTAssertEqual(favorite.name, originalName)
 
         // Creating new instance should not affect original
-        let newPokemon = PokemonDetail(
-            id: pokemon.id,
+        let newFavorite = FavoritePokemon(
+            id: favorite.id,
             name: "changed",
-            height: pokemon.height,
-            weight: pokemon.weight,
-            baseExperience: pokemon.baseExperience,
-            types: pokemon.types,
-            stats: pokemon.stats,
-            abilities: pokemon.abilities,
-            imageURL: pokemon.imageURL,
-            sprites: pokemon.sprites,
-            species: pokemon.species
+            primaryType: favorite.primaryType,
+            imageURL: favorite.imageURL,
+            dateAdded: favorite.dateAdded
         )
 
-        XCTAssertEqual(pokemon.name, originalName)
-        XCTAssertEqual(newPokemon.name, "changed")
-    }
-
-    // MARK: - Integration Tests
-    func testPokemonDetailMappingIntegration() {
-        // Test that network response correctly maps to domain entity
-        let response = TestData.pokemonDetailResponse
-        let domainEntity = response.toDomain()
-
-        XCTAssertEqual(domainEntity.id, response.id)
-        XCTAssertEqual(domainEntity.name, response.name)
-        XCTAssertEqual(domainEntity.height, response.height)
-        XCTAssertEqual(domainEntity.weight, response.weight)
-        XCTAssertEqual(domainEntity.species, response.species.name)
+        XCTAssertEqual(favorite.name, originalName)
+        XCTAssertEqual(newFavorite.name, "changed")
     }
 
     func testErrorHandlingIntegration() {
@@ -131,104 +97,60 @@ final class PokedexPocketTests: XCTestCase {
     }
 
     // MARK: - Performance Tests
-    func testPokemonDetailCreationPerformance() {
+    func testFavoritePokemonCreationPerformance() {
         measure {
-            for _ in 0..<1000 {
-                _ = PokemonDetail(
-                    id: Int.random(in: 1...1000),
-                    name: "test-pokemon",
-                    height: 10,
-                    weight: 100,
-                    baseExperience: 50,
-                    types: [PokemonType(name: "electric")],
-                    stats: [PokemonStat(name: "hp", value: 35)],
-                    abilities: [PokemonAbility(name: "static")],
+            for index in 0..<1000 {
+                _ = FavoritePokemon(
+                    id: index,
+                    name: "test-pokemon-\(index)",
+                    primaryType: "electric",
                     imageURL: "https://example.com/image.png",
-                    sprites: PokemonDetailSprites(
-                        frontDefault: nil,
-                        frontShiny: nil,
-                        backDefault: nil,
-                        backShiny: nil,
-                        officialArtwork: nil,
-                        officialArtworkShiny: nil,
-                        dreamWorld: nil,
-                        home: nil,
-                        homeShiny: nil
-                    ),
-                    species: "test"
+                    dateAdded: Date()
                 )
             }
         }
     }
 
-    func testPokemonTypeColorLookupPerformance() {
-        let typeNames = ["fire", "water", "grass", "electric", "psychic", "ice", "dragon", "dark", "fairy",
-                         "normal", "fighting", "poison", "ground", "flying", "bug", "rock", "ghost", "steel", "unknown"]
-
-        measure {
-            for _ in 0..<10000 {
-                let randomType = typeNames.randomElement()!
-                _ = PokemonType.colorForType(randomType)
-            }
-        }
-    }
-
     // MARK: - Memory Tests
-    func testMemoryManagement() {
+    func testFavoritePokemonMemoryManagement() {
         // Test that structs are properly managed by value semantics
-        // Since PokemonDetail is a struct, it uses value semantics and doesn't need weak references
+        // Since FavoritePokemon is a struct, it uses value semantics and doesn't need weak references
 
-        var pokemon: PokemonDetail? = TestData.pikachu
-        XCTAssertNotNil(pokemon)
+        var favorite: FavoritePokemon? = TestData.favoritePikachu
+        XCTAssertNotNil(favorite)
 
-        pokemon = nil
-        XCTAssertNil(pokemon)
+        favorite = nil
+        XCTAssertNil(favorite)
 
         // Test that copying structs creates independent instances
-        let originalPokemon = TestData.pikachu
-        var copiedPokemon = originalPokemon
+        let originalFavorite = TestData.favoritePikachu
+        var copiedFavorite = originalFavorite
 
-        XCTAssertEqual(originalPokemon.id, copiedPokemon.id)
-        XCTAssertEqual(originalPokemon.name, copiedPokemon.name)
+        XCTAssertEqual(originalFavorite.id, copiedFavorite.id)
+        XCTAssertEqual(originalFavorite.name, copiedFavorite.name)
 
-        copiedPokemon = TestData.charizard
-        XCTAssertNotEqual(originalPokemon.id, copiedPokemon.id)
+        copiedFavorite = TestData.favoriteCharizard
+        XCTAssertNotEqual(originalFavorite.id, copiedFavorite.id)
     }
 
     // MARK: - Thread Safety Tests
-    func testConcurrentAccess() {
-        let expectation = XCTestExpectation(description: "Concurrent access")
+    func testConcurrentFavoriteAccess() {
+        let expectation = XCTestExpectation(description: "Concurrent favorite access")
         expectation.expectedFulfillmentCount = 100
 
         let queue = DispatchQueue(label: "test.concurrent", attributes: .concurrent)
 
         for index in 0..<100 {
             queue.async {
-                let pokemon = PokemonDetail(
+                let favorite = FavoritePokemon(
                     id: index,
                     name: "pokemon-\(index)",
-                    height: 10,
-                    weight: 100,
-                    baseExperience: 50,
-                    types: [],
-                    stats: [],
-                    abilities: [],
-                    imageURL: "",
-                    sprites: PokemonDetailSprites(
-                        frontDefault: nil,
-                        frontShiny: nil,
-                        backDefault: nil,
-                        backShiny: nil,
-                        officialArtwork: nil,
-                        officialArtworkShiny: nil,
-                        dreamWorld: nil,
-                        home: nil,
-                        homeShiny: nil
-                    ),
-                    species: ""
+                    primaryType: "electric",
+                    imageURL: "https://example.com/image.png",
+                    dateAdded: Date()
                 )
 
-                XCTAssertEqual(pokemon.id, index)
+                XCTAssertEqual(favorite.id, index)
                 expectation.fulfill()
             }
         }

@@ -7,6 +7,7 @@
 
 import Foundation
 import RxSwift
+import PokedexPocketPokemon
 
 protocol FavoritePokemonRepositoryProtocol {
     func addFavorite(pokemon: PokemonDetail) -> Observable<Void>

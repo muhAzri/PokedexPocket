@@ -9,6 +9,7 @@ import Foundation
 import Swinject
 import SwiftData
 import PokedexPocketCore
+import PokedexPocketPokemon
 
 class DIContainer {
     static let shared = DIContainer()
@@ -55,12 +56,15 @@ class DIContainer {
         container.register(PokemonListRepositoryProtocol.self) { resolver in
             let networkService = resolver.resolve(NetworkServiceProtocol.self)!
             let cacheManager = resolver.resolve(CacheManagerProtocol.self)!
-            return PokemonListRepository(networkService: networkService, cacheManager: cacheManager)
+            return PokedexPocketPokemon.PokemonListRepository(
+                networkService: networkService, 
+                cacheManager: cacheManager
+            )
         }.inObjectScope(.container)
 
         container.register(PokemonDetailRepositoryProtocol.self) { resolver in
             let networkService = resolver.resolve(NetworkServiceProtocol.self)!
-            return PokemonDetailRepository(networkService: networkService)
+            return PokedexPocketPokemon.PokemonDetailRepository(networkService: networkService)
         }.inObjectScope(.container)
 
         container.register(FavoritePokemonRepositoryProtocol.self) { [weak self] _ in
@@ -74,17 +78,17 @@ class DIContainer {
     private func registerUseCases() {
         container.register(GetPokemonListUseCaseProtocol.self) { resolver in
             let repository = resolver.resolve(PokemonListRepositoryProtocol.self)!
-            return GetPokemonListUseCase(repository: repository)
+            return PokedexPocketPokemon.GetPokemonListUseCase(repository: repository)
         }
 
         container.register(GetPokemonDetailUseCaseProtocol.self) { resolver in
             let repository = resolver.resolve(PokemonDetailRepositoryProtocol.self)!
-            return GetPokemonDetailUseCase(repository: repository)
+            return PokedexPocketPokemon.GetPokemonDetailUseCase(repository: repository)
         }
 
         container.register(SearchPokemonUseCaseProtocol.self) { resolver in
             let repository = resolver.resolve(PokemonListRepositoryProtocol.self)!
-            return SearchPokemonUseCase(repository: repository)
+            return PokedexPocketPokemon.SearchPokemonUseCase(repository: repository)
         }
 
         // Favorite Pokemon Use Cases

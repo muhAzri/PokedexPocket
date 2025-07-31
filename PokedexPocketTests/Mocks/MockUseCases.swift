@@ -8,58 +8,8 @@
 import Foundation
 import RxSwift
 import PokedexPocketCore
+import PokedexPocketPokemon
 @testable import PokedexPocket
-
-// MARK: - Mock Get Pokemon Detail Use Case
-class MockGetPokemonDetailUseCase: GetPokemonDetailUseCaseProtocol {
-    var shouldReturnError = false
-    var errorToReturn: Error = NetworkError.unknown
-    var pokemonDetailToReturn: PokemonDetail?
-    var executeWithIdCallCount = 0
-    var executeWithUrlCallCount = 0
-    var lastRequestedId: Int?
-    var lastRequestedUrl: String?
-
-    func execute(id: Int) -> Observable<PokemonDetail> {
-        executeWithIdCallCount += 1
-        lastRequestedId = id
-
-        if shouldReturnError {
-            return Observable.error(errorToReturn)
-        }
-
-        if let pokemon = pokemonDetailToReturn {
-            return Observable.just(pokemon)
-        }
-
-        return Observable.error(NetworkError.noData)
-    }
-
-    func execute(url: String) -> Observable<PokemonDetail> {
-        executeWithUrlCallCount += 1
-        lastRequestedUrl = url
-
-        if shouldReturnError {
-            return Observable.error(errorToReturn)
-        }
-
-        if let pokemon = pokemonDetailToReturn {
-            return Observable.just(pokemon)
-        }
-
-        return Observable.error(NetworkError.noData)
-    }
-
-    func reset() {
-        shouldReturnError = false
-        errorToReturn = NetworkError.unknown
-        pokemonDetailToReturn = nil
-        executeWithIdCallCount = 0
-        executeWithUrlCallCount = 0
-        lastRequestedId = nil
-        lastRequestedUrl = nil
-    }
-}
 
 // MARK: - Mock Add Favorite Pokemon Use Case
 class MockAddFavoritePokemonUseCase: AddFavoritePokemonUseCaseProtocol {

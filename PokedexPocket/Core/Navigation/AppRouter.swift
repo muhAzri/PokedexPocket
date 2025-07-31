@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PokedexPocketPokemon
 
 struct AppRouter: View {
     @StateObject private var coordinator = AppCoordinator()
@@ -14,7 +15,12 @@ struct AppRouter: View {
     var body: some View {
         TabView(selection: $coordinator.selectedTab) {
             NavigationStack(path: $coordinator.navigationPath) {
-                PokemonListView()
+                PokedexPocketPokemon.PokemonListView(
+                    viewModel: viewModelFactory.makePokemonListViewModel(),
+                    onPokemonTap: { pokemonId, pokemonName in
+                        coordinator.navigateToPokemonDetail(pokemonId: pokemonId, pokemonName: pokemonName)
+                    }
+                )
                     .navigationDestination(for: AppDestination.self) { destination in
                         destinationView(for: destination)
                             .toolbar(.hidden, for: .tabBar)
@@ -61,9 +67,14 @@ struct AppRouter: View {
     private func destinationView(for destination: AppDestination) -> some View {
         switch destination {
         case .pokemonList:
-            PokemonListView()
+            PokedexPocketPokemon.PokemonListView(
+                viewModel: viewModelFactory.makePokemonListViewModel(),
+                onPokemonTap: { pokemonId, pokemonName in
+                    coordinator.navigateToPokemonDetail(pokemonId: pokemonId, pokemonName: pokemonName)
+                }
+            )
         case .pokemonDetail(let pokemonId, let pokemonName):
-            PokemonDetailView(
+            PokedexPocketPokemon.PokemonDetailView(
                 pokemonId: pokemonId,
                 pokemonName: pokemonName,
                 viewModel: viewModelFactory.makePokemonDetailViewModel(pokemonId: pokemonId)

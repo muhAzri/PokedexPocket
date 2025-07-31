@@ -6,10 +6,11 @@
 //
 
 import Foundation
+import PokedexPocketPokemon
 
 protocol ViewModelFactory {
-    func makePokemonListViewModel() -> PokemonListViewModel
-    func makePokemonDetailViewModel(pokemonId: Int) -> PokemonDetailViewModel
+    func makePokemonListViewModel() -> PokedexPocketPokemon.PokemonListViewModel
+    func makePokemonDetailViewModel(pokemonId: Int) -> PokedexPocketPokemon.PokemonDetailViewModel
     func makeFavoritePokemonViewModel() -> FavoritePokemonViewModel
 }
 
@@ -20,28 +21,22 @@ final class DefaultViewModelFactory: ViewModelFactory, ObservableObject {
         self.container = container
     }
 
-    func makePokemonListViewModel() -> PokemonListViewModel {
+    func makePokemonListViewModel() -> PokedexPocketPokemon.PokemonListViewModel {
         let getPokemonListUseCase = container.resolve(GetPokemonListUseCaseProtocol.self)
         let searchPokemonUseCase = container.resolve(SearchPokemonUseCaseProtocol.self)
 
-        return PokemonListViewModel(
+        return PokedexPocketPokemon.PokemonListViewModel(
             getPokemonListUseCase: getPokemonListUseCase,
             searchPokemonUseCase: searchPokemonUseCase
         )
     }
 
-    func makePokemonDetailViewModel(pokemonId: Int) -> PokemonDetailViewModel {
+    func makePokemonDetailViewModel(pokemonId: Int) -> PokedexPocketPokemon.PokemonDetailViewModel {
         let getPokemonDetailUseCase = container.resolve(GetPokemonDetailUseCaseProtocol.self)
-        let addFavoriteUseCase = container.resolve(AddFavoritePokemonUseCaseProtocol.self)
-        let removeFavoriteUseCase = container.resolve(RemoveFavoritePokemonUseCaseProtocol.self)
-        let checkIsFavoriteUseCase = container.resolve(CheckIsFavoritePokemonUseCaseProtocol.self)
 
-        return PokemonDetailViewModel(
+        return PokedexPocketPokemon.PokemonDetailViewModel(
             pokemonId: pokemonId,
-            getPokemonDetailUseCase: getPokemonDetailUseCase,
-            addFavoriteUseCase: addFavoriteUseCase,
-            removeFavoriteUseCase: removeFavoriteUseCase,
-            checkIsFavoriteUseCase: checkIsFavoriteUseCase
+            getPokemonDetailUseCase: getPokemonDetailUseCase
         )
     }
 
