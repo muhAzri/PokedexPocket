@@ -60,7 +60,7 @@ workflows:
     publishing:
       email:
         recipients:
-          - your-email@example.com # Replace with your email
+          - muhammad.azri.f.s@gmail.com
         notify:
           success: true
           failure: true
