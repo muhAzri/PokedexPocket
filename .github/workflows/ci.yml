@@ -51,17 +51,22 @@ jobs:
         
     - name: Boot iOS Simulator
       run: |
-        # Find and boot an iPhone 16 Pro simulator
-        SIMULATOR_ID=$(xcrun simctl list devices | grep -E "iPhone 16 Pro \(" | grep -E "iOS 18\." | head -1 | grep -oE '\([^)]+\)' | tr -d '()')
-        if [ -n "$SIMULATOR_ID" ]; then
-          echo "Found iPhone 16 Pro simulator: $SIMULATOR_ID"
+        # Find iPhone 16 Pro first, then fallback to any iPhone
+        SIMULATOR_LINE=$(xcrun simctl list devices | grep -A 20 "iOS 18\." | grep "iPhone 16 Pro" | head -1)
+        if [ -z "$SIMULATOR_LINE" ]; then
+          echo "iPhone 16 Pro not found, trying any iPhone"
+          SIMULATOR_LINE=$(xcrun simctl list devices | grep -A 20 "iOS 18\." | grep "iPhone" | head -1)
+        fi
+        
+        if [ -n "$SIMULATOR_LINE" ]; then
+          SIMULATOR_ID=$(echo "$SIMULATOR_LINE" | sed -n 's/.*(\([^)]*\)).*/\1/p')
+          SIMULATOR_NAME=$(echo "$SIMULATOR_LINE" | sed -n 's/[[:space:]]*\([^(]*\).*/\1/p' | xargs)
+          echo "Found simulator: $SIMULATOR_NAME ($SIMULATOR_ID)"
           xcrun simctl boot "$SIMULATOR_ID"
           echo "SIMULATOR_ID=$SIMULATOR_ID" >> $GITHUB_ENV
         else
-          echo "iPhone 16 Pro not found, using any iPhone simulator"
-          SIMULATOR_ID=$(xcrun simctl list devices | grep -E "iPhone.*\(" | grep -E "iOS 18\." | head -1 | grep -oE '\([^)]+\)' | tr -d '()')
-          xcrun simctl boot "$SIMULATOR_ID"
-          echo "SIMULATOR_ID=$SIMULATOR_ID" >> $GITHUB_ENV
+          echo "No suitable simulator found"
+          exit 1
         fi
         
     - name: Build and Test
