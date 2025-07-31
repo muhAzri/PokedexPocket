@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6394BBD22E3A43AF005C4BCA /* PokedexPocketCore in Frameworks */ = {isa = PBXBuildFile; productRef = 6394BBD12E3A43AF005C4BCA /* PokedexPocketCore */; };
+		6394BC9B2E3A610B005C4BCA /* PokedexPocketCore in Frameworks */ = {isa = PBXBuildFile; productRef = 6394BC9A2E3A610B005C4BCA /* PokedexPocketCore */; };
 		639759A82E34D7A6007A8ECC /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 639759A72E34D7A6007A8ECC /* Alamofire */; };
 		639759AD2E34D7C2007A8ECC /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = 639759AC2E34D7C2007A8ECC /* Swinject */; };
 		639759B22E34D7E4007A8ECC /* RxBlocking in Frameworks */ = {isa = PBXBuildFile; productRef = 639759B12E34D7E4007A8ECC /* RxBlocking */; };
@@ -62,6 +64,8 @@
 			files = (
 				639759BA2E34D7E4007A8ECC /* RxRelay in Frameworks */,
 				639759A82E34D7A6007A8ECC /* Alamofire in Frameworks */,
+				6394BC9B2E3A610B005C4BCA /* PokedexPocketCore in Frameworks */,
+				6394BBD22E3A43AF005C4BCA /* PokedexPocketCore in Frameworks */,
 				639759B62E34D7E4007A8ECC /* RxCocoa in Frameworks */,
 				639759AD2E34D7C2007A8ECC /* Swinject in Frameworks */,
 				639759B22E34D7E4007A8ECC /* RxBlocking in Frameworks */,
@@ -85,12 +89,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6394BBD42E3A4597005C4BCA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		639759632E34D742007A8ECC = {
 			isa = PBXGroup;
 			children = (
 				6397596E2E34D742007A8ECC /* PokedexPocket */,
 				6397597E2E34D744007A8ECC /* PokedexPocketTests */,
 				639759882E34D744007A8ECC /* PokedexPocketUITests */,
+				6394BBD42E3A4597005C4BCA /* Frameworks */,
 				6397596D2E34D742007A8ECC /* Products */,
 			);
 			sourceTree = "<group>";
@@ -131,6 +143,8 @@
 				639759B12E34D7E4007A8ECC /* RxBlocking */,
 				639759B52E34D7E4007A8ECC /* RxCocoa */,
 				639759B92E34D7E4007A8ECC /* RxRelay */,
+				6394BBD12E3A43AF005C4BCA /* PokedexPocketCore */,
+				6394BC9A2E3A610B005C4BCA /* PokedexPocketCore */,
 			);
 			productName = PokedexPocket;
 			productReference = 6397596C2E34D742007A8ECC /* PokedexPocket.app */;
@@ -219,6 +233,7 @@
 				639759AB2E34D7C1007A8ECC /* XCRemoteSwiftPackageReference "Swinject" */,
 				639759B02E34D7E4007A8ECC /* XCRemoteSwiftPackageReference "RxSwift" */,
 				639759BB2E34D7FE007A8ECC /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
+				6394BC992E3A610B005C4BCA /* XCRemoteSwiftPackageReference "PokedexPocketCore" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6397596D2E34D742007A8ECC /* Products */;
@@ -434,6 +449,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -462,6 +478,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -589,6 +606,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		6394BC992E3A610B005C4BCA /* XCRemoteSwiftPackageReference "PokedexPocketCore" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/muhAzri/PokedexPocketCore.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		639759A62E34D7A6007A8ECC /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
@@ -624,6 +649,15 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		6394BBD12E3A43AF005C4BCA /* PokedexPocketCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PokedexPocketCore;
+		};
+		6394BC9A2E3A610B005C4BCA /* PokedexPocketCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6394BC992E3A610B005C4BCA /* XCRemoteSwiftPackageReference "PokedexPocketCore" */;
+			productName = PokedexPocketCore;
+		};
 		639759A72E34D7A6007A8ECC /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 639759A62E34D7A6007A8ECC /* XCRemoteSwiftPackageReference "Alamofire" */;

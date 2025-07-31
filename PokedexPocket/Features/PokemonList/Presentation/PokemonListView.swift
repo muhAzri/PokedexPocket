@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PokedexPocketCore
 
 struct PokemonListView: View {
     @Environment(\.navigationHandler) private var navigationHandler
@@ -56,7 +57,7 @@ struct PokemonListView: View {
                     get: { viewModel.searchText },
                     set: { viewModel.searchText = $0 }
                 ))
-                    .textFieldStyle(PlainTextFieldStyle())
+                .textFieldStyle(PlainTextFieldStyle())
 
                 if !viewModel.searchText.isEmpty {
                     Button(

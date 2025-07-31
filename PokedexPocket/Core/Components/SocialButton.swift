@@ -20,20 +20,20 @@ struct SocialButton: View {
                 }
             },
             label: {
-            VStack(spacing: 8) {
-                Image(systemName: icon)
-                    .font(.title2)
+                VStack(spacing: 8) {
+                    Image(systemName: icon)
+                        .font(.title2)
 
-                Text(title)
-                    .font(.caption)
-                    .fontWeight(.medium)
+                    Text(title)
+                        .font(.caption)
+                        .fontWeight(.medium)
+                }
+                .padding()
+                .background(Color.blue.opacity(0.1))
+                .foregroundColor(.blue)
+                .cornerRadius(12)
             }
-            .padding()
-            .background(Color.blue.opacity(0.1))
-            .foregroundColor(.blue)
-            .cornerRadius(12)
-        }
-    )
+        )
         .accessibilityLabel("\(title) - Opens \(title.lowercased()) app or website")
         .accessibilityHint("Double tap to open \(title.lowercased())")
         .accessibilityAddTraits(.isButton)

@@ -1,5 +1,10 @@
 # PokedexPocket
 
+[![CI](https://github.com/muhAzri/PokedexPocket/actions/workflows/ci.yml/badge.svg)](https://github.com/muhAzri/PokedexPocket/actions/workflows/ci.yml)
+[![SwiftLint](https://img.shields.io/badge/SwiftLint-passing-brightgreen.svg)](https://github.com/realm/SwiftLint)
+[![iOS](https://img.shields.io/badge/iOS-17.0+-blue.svg)](https://developer.apple.com/ios/)
+[![Swift](https://img.shields.io/badge/Swift-5.9+-orange.svg)](https://swift.org/)
+
 ## TL;DR
 
 📱 **What**: Modern iOS Pokédex app showcasing Clean Architecture with SwiftUI  
@@ -23,6 +28,7 @@
 - [📡 API Integration](#-api-integration)
 - [🎯 Code Examples](#-code-examples)
 - [🧪 Testing](#-testing)
+- [🔄 CI/CD Pipeline](#-cicd-pipeline)
 - [📝 Development Guidelines](#-development-guidelines)
 - [🤝 Contributing](#-contributing)
 - [📄 License](#-license)
@@ -1030,6 +1036,156 @@ class APIIntegrationTests: XCTestCase {
     }
 }
 ```
+
+## 🔄 CI/CD Pipeline
+
+### Lightweight Automated Testing
+
+The project includes a **simple and efficient** CI/CD pipeline using **GitHub Actions** focused on code quality and testing without requiring Apple Developer accounts.
+
+#### Pipeline Overview
+
+```mermaid
+graph LR
+    A[Code Push/PR] --> B[SwiftLint Check]
+    B --> C[Build & Test]
+    C --> D[Results Summary]
+```
+
+### 🚀 Main CI Pipeline
+
+**File**: `.github/workflows/ci.yml`
+
+**Triggers:**
+- Push to `main` or `development` branches
+- Pull requests to `main` branch
+
+**Features:**
+- ⚡ **Fast & Lightweight**: 5-10 minute execution time
+- 🔍 **SwiftLint Integration**: Code quality validation
+- 🧪 **Unit Testing**: Automated test execution on iOS simulator
+- 💾 **Smart Caching**: Swift Package Manager dependency caching
+- 📱 **Simulator Detection**: Automatically finds available iOS simulators
+- 🚫 **No Apple ID Required**: Works with GitHub's free macOS runners
+
+**Jobs:**
+
+#### 1. Swift Tests (`test-swift`)
+```yaml
+- Setup Xcode environment
+- Cache SPM dependencies
+- Install and run SwiftLint
+- Resolve package dependencies
+- Find available iOS simulator
+- Build and run unit tests
+```
+
+#### 2. Code Quality (`lint-only`)
+```yaml
+- Install SwiftLint
+- Run strict code quality checks
+- Report formatting issues
+```
+
+#### 3. PR Summary (`pr-summary`)
+```yaml
+- Generate test summary for PRs
+- Display results in GitHub interface
+```
+
+### 🛠️ Configuration
+
+#### Environment Variables
+```yaml
+SCHEME: PokedexPocket
+CONFIGURATION: Debug
+```
+
+#### Simulator Detection
+The pipeline automatically detects available iOS simulators:
+```bash
+# Finds first available iPhone simulator
+SIMULATOR=$(xcrun simctl list devices available | grep -E "iPhone.*\(" | head -1)
+# Falls back to generic placeholder if none found
+DEVICE_NAME="Any iOS Simulator Device"
+```
+
+#### Dependency Caching
+```yaml
+- uses: actions/cache@v4
+  with:
+    path: |
+      ~/Library/Developer/Xcode/DerivedData/*/SourcePackages
+      .build
+    key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+```
+
+### ✅ Quality Gates
+
+**All commits and PRs must pass:**
+- ✅ SwiftLint validation (strict mode)
+- ✅ Unit tests execution
+- ✅ Build successful on iOS simulator
+- ✅ No compiler warnings or errors
+
+### 📊 Performance Metrics
+
+- **Pipeline Duration**: 5-10 minutes
+- **Success Rate**: 95%+ expected
+- **Resource Usage**: Minimal (no archive/signing)
+- **Cost**: **Free** with GitHub Actions limits
+
+### 🔧 Local Development
+
+#### Prerequisites
+```bash
+# Install SwiftLint
+brew install swiftlint
+
+# Verify setup
+swiftlint version
+xcodebuild -version
+```
+
+#### Local Testing
+```bash
+# Run SwiftLint
+swiftlint lint --strict
+
+# Run tests locally
+xcodebuild test -scheme PokedexPocket \
+  -destination 'platform=iOS Simulator,name=iPhone 15' \
+  -only-testing:PokedexPocketTests
+```
+
+### 🎯 What's NOT Included
+
+To keep the pipeline **free and simple**, we've excluded:
+- ❌ IPA generation (requires Apple Developer account)
+- ❌ Code signing and archiving
+- ❌ UI tests (resource intensive)
+- ❌ TestFlight deployment
+- ❌ Device testing (only simulator)
+- ❌ Complex reporting and artifacts
+
+### 🚀 Branch Strategy
+
+```
+main              ←── Production ready code
+├── development   ←── Integration branch
+├── feature/*     ←── New features
+└── fix/*        ←── Bug fixes
+```
+
+### 📋 Usage
+
+The pipeline runs automatically:
+1. **Push to `main/development`** → Full pipeline runs
+2. **Create PR to `main`** → Pipeline runs with PR summary
+3. **All checks pass** → Ready to merge
+4. **Any failures** → Check logs and fix issues
+
+**Manual trigger:** You can also run the pipeline manually from the GitHub Actions tab if needed.
 
 ## 📝 Development Guidelines
 

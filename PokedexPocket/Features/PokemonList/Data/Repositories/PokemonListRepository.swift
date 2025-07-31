@@ -7,6 +7,7 @@
 
 import Foundation
 import RxSwift
+import PokedexPocketCore
 
 class PokemonListRepository: PokemonListRepositoryProtocol {
     private let networkService: NetworkServiceProtocol
@@ -33,7 +34,7 @@ class PokemonListRepository: PokemonListRepositoryProtocol {
             forKey: CacheManager.CacheKey.pokemonList,
             maxAge: CacheManager.CacheMaxAge.pokemonList
         ),
-           let cachedList = cacheManager.get(CacheManager.CacheKey.pokemonList, type: PokemonList.self) {
+        let cachedList = cacheManager.get(CacheManager.CacheKey.pokemonList, type: PokemonList.self) {
             return Observable.just(cachedList)
         }
 

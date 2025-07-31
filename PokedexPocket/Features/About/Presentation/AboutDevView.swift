@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PokedexPocketCore
 
 struct AboutDevView: View {
     var body: some View {
@@ -50,9 +51,9 @@ struct AboutDevView: View {
                         mobile development practices.
                         """
                     )
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
+                    .font(.body)
+                    .foregroundColor(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
                 }
                 .padding(.horizontal)
 
