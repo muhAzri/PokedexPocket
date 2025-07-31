@@ -57,7 +57,7 @@ jobs:
         echo "🔨 Building and testing with any available iOS Simulator"
         set -o pipefail && xcodebuild \
           -scheme $SCHEME \
-          -destination 'platform=iOS Simulator' \
+          -destination 'platform=iOS Simulator,OS=18.2,name=iPhone 16 Pro' \
           -configuration $CONFIGURATION \
           -quiet \
           test \
