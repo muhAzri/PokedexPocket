@@ -83,10 +83,9 @@ jobs:
 
     - name: Build and Test
       run: |
-        echo "🔨 Building and testing with simulator: iPhone 14, iOS 17.4"
+        echo "🔨 Building and testing with default destination"
         set -o pipefail && xcodebuild \
           -scheme $SCHEME \
-          -destination "platform=iOS Simulator,name=iPhone 14,OS=17.4" \
           -configuration $CONFIGURATION \
           -quiet \
           test \
