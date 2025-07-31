@@ -3,6 +3,13 @@ workflows:
     name: PokedexPocket iOS Native
     max_build_duration: 120
     instance_type: mac_mini_m2
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: 'main'
+          include: true
+          source: true
     environment:
       vars:
         XCODE_PROJECT: "PokedexPocket.xcodeproj"
