@@ -49,6 +49,9 @@ jobs:
       run: |
         xcodebuild -resolvePackageDependencies -scheme $SCHEME -quiet
         
+    - name: List available simulators (debug)
+      run: xcrun simctl list devices
+        
     - name: Build and Test
       run: |
         echo "🔨 Building and testing with any available iOS Simulator"
