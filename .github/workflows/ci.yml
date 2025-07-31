@@ -69,12 +69,24 @@ jobs:
           exit 1
         fi
         
+    # - name: Build and Test
+    #   run: |
+    #     echo "🔨 Building and testing with simulator: $SIMULATOR_ID"
+    #     set -o pipefail && xcodebuild \
+    #       -scheme $SCHEME \
+    #       -destination "platform=iOS Simulator,id=$SIMULATOR_ID" \
+    #       -configuration $CONFIGURATION \
+    #       -quiet \
+    #       test \
+    #       -only-testing:PokedexPocketTests \
+    #       | xcpretty
+
     - name: Build and Test
       run: |
-        echo "🔨 Building and testing with simulator: $SIMULATOR_ID"
+        echo "🔨 Building and testing with simulator: iPhone 14, iOS 17.4"
         set -o pipefail && xcodebuild \
           -scheme $SCHEME \
-          -destination "platform=iOS Simulator,id=$SIMULATOR_ID" \
+          -destination "platform=iOS Simulator,name=iPhone 14,OS=17.4" \
           -configuration $CONFIGURATION \
           -quiet \
           test \
