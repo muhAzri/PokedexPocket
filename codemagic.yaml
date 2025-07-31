@@ -37,13 +37,13 @@ workflows:
           
       - name: Run tests
         script: |
-          echo "Skipping tests temporarily due to SwiftLint plugin issues..."
-          echo "Tests will be re-enabled after removing SwiftLint plugin dependency"
-          # xcodebuild test \
-          #   -project "$XCODE_PROJECT" \
-          #   -scheme "$XCODE_SCHEME" \
-          #   -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.5' \
-          #   -only-testing:PokedexPocketTests
+          echo "Running tests..."
+          xcodebuild test \
+            -project "$XCODE_PROJECT" \
+            -scheme "$XCODE_SCHEME" \
+            -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.5' \
+            -only-testing:PokedexPocketTests \
+            -skipPackagePluginValidation
             
       - name: Build for simulator (no signing required)
         script: | 
@@ -52,7 +52,8 @@ workflows:
             -project "$XCODE_PROJECT" \
             -scheme "$XCODE_SCHEME" \
             -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.5' \
-            -configuration Debug
+            -configuration Debug \
+            -skipPackagePluginValidation
             
     artifacts:
       - /tmp/xcodebuild_logs/*.log
