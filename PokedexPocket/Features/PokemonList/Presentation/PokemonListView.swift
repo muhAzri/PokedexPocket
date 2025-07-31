@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PokedexPocketCore
 
 struct PokemonListView: View {
     @Environment(\.navigationHandler) private var navigationHandler

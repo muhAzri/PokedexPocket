@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PokedexPocketCore
 
 struct AboutDevView: View {
     var body: some View {

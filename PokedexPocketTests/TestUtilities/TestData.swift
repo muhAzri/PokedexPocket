@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import PokedexPocketCore
 @testable import PokedexPocket
 
 struct TestData {

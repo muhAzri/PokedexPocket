@@ -7,6 +7,7 @@
 
 import Foundation
 import RxSwift
+import PokedexPocketCore
 
 class PokemonDetailRepository: PokemonDetailRepositoryProtocol {
     private let networkService: NetworkServiceProtocol

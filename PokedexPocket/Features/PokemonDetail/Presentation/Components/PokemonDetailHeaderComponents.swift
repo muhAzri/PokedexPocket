@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PokedexPocketCore
 
 struct PokemonDetailHeaderSection: View {
     let pokemon: PokemonDetail

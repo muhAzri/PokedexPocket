@@ -8,6 +8,7 @@
 import Foundation
 import Swinject
 import SwiftData
+import PokedexPocketCore
 
 class DIContainer {
     static let shared = DIContainer()
