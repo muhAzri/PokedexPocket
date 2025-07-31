@@ -49,15 +49,27 @@ jobs:
       run: |
         xcodebuild -resolvePackageDependencies -scheme $SCHEME -quiet
         
-    - name: List available simulators (debug)
-      run: xcrun simctl list devices
+    - name: Boot iOS Simulator
+      run: |
+        # Find and boot an iPhone 16 Pro simulator
+        SIMULATOR_ID=$(xcrun simctl list devices | grep -E "iPhone 16 Pro \(" | grep -E "iOS 18\." | head -1 | grep -oE '\([^)]+\)' | tr -d '()')
+        if [ -n "$SIMULATOR_ID" ]; then
+          echo "Found iPhone 16 Pro simulator: $SIMULATOR_ID"
+          xcrun simctl boot "$SIMULATOR_ID"
+          echo "SIMULATOR_ID=$SIMULATOR_ID" >> $GITHUB_ENV
+        else
+          echo "iPhone 16 Pro not found, using any iPhone simulator"
+          SIMULATOR_ID=$(xcrun simctl list devices | grep -E "iPhone.*\(" | grep -E "iOS 18\." | head -1 | grep -oE '\([^)]+\)' | tr -d '()')
+          xcrun simctl boot "$SIMULATOR_ID"
+          echo "SIMULATOR_ID=$SIMULATOR_ID" >> $GITHUB_ENV
+        fi
         
     - name: Build and Test
       run: |
-        echo "🔨 Building and testing with any available iOS Simulator"
+        echo "🔨 Building and testing with simulator: $SIMULATOR_ID"
         set -o pipefail && xcodebuild \
           -scheme $SCHEME \
-          -destination 'platform=iOS Simulator,id=9399BB58-82E0-4138-9E22-3C1C47778F50' \
+          -destination "platform=iOS Simulator,id=$SIMULATOR_ID" \
           -configuration $CONFIGURATION \
           -quiet \
           test \
