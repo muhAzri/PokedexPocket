@@ -49,26 +49,12 @@ jobs:
       run: |
         xcodebuild -resolvePackageDependencies -scheme $SCHEME -quiet
         
-    - name: Find Available Simulator
-      id: simulator
-      run: |
-        # Get any available iOS simulator
-        SIMULATOR=$(xcrun simctl list devices available | grep -E "iPhone.*\(" | head -1)
-        if [ -n "$SIMULATOR" ]; then
-          DEVICE_NAME=$(echo "$SIMULATOR" | sed -E 's/^[[:space:]]*([^(]+).*/\1/' | xargs)
-          echo "DEVICE_NAME=$DEVICE_NAME" >> $GITHUB_OUTPUT
-          echo "✅ Found simulator: $DEVICE_NAME"
-        else
-          echo "DEVICE_NAME=Any iOS Simulator Device" >> $GITHUB_OUTPUT
-          echo "⚠️ Using generic simulator placeholder"
-        fi
-        
     - name: Build and Test
       run: |
-        echo "🔨 Building and testing with simulator: ${{ steps.simulator.outputs.DEVICE_NAME }}"
+        echo "🔨 Building and testing with generic iOS Simulator"
         set -o pipefail && xcodebuild \
           -scheme $SCHEME \
-          -destination 'platform=iOS Simulator,name=${{ steps.simulator.outputs.DEVICE_NAME }}' \
+          -destination 'platform=iOS Simulator,OS=latest' \
           -configuration $CONFIGURATION \
           -quiet \
           test \
