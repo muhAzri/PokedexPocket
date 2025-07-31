@@ -59,8 +59,8 @@ jobs:
         fi
         
         if [ -n "$SIMULATOR_LINE" ]; then
-          SIMULATOR_ID=$(echo "$SIMULATOR_LINE" | sed -n 's/.*(\([^)]*\)).*/\1/p')
-          SIMULATOR_NAME=$(echo "$SIMULATOR_LINE" | sed -n 's/[[:space:]]*\([^(]*\).*/\1/p' | xargs)
+          SIMULATOR_ID=$(echo "$SIMULATOR_LINE" | grep -oE '[A-F0-9]{8}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{12}')
+          SIMULATOR_NAME=$(echo "$SIMULATOR_LINE" | sed 's/^[[:space:]]*//' | sed 's/ (.*//')
           echo "Found simulator: $SIMULATOR_NAME ($SIMULATOR_ID)"
           xcrun simctl boot "$SIMULATOR_ID"
           echo "SIMULATOR_ID=$SIMULATOR_ID" >> $GITHUB_ENV
