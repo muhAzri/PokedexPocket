@@ -83,9 +83,10 @@ jobs:
 
     - name: Build and Test
       run: |
-        echo "🔨 Building and testing with default destination"
+        echo "🔨 Building and testing on iOS Simulator"
         set -o pipefail && xcodebuild \
           -scheme $SCHEME \
+          -destination "generic/platform=iOS Simulator" \
           -configuration $CONFIGURATION \
           -quiet \
           test \
