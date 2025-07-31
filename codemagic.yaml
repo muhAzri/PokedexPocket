@@ -1,0 +1,58 @@
+workflows:
+  ios-native-workflow:
+    name: PokedexPocket iOS Native
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+    environment:
+      vars:
+        XCODE_PROJECT: "PokedexPocket.xcodeproj"
+        XCODE_SCHEME: "PokedexPocket"
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Install dependencies
+        script: | 
+          echo "Installing dependencies..."
+          # Resolve Swift Package Manager dependencies
+          xcodebuild -resolvePackageDependencies -project "$XCODE_PROJECT"
+          
+      - name: Run SwiftLint
+        script: |
+          if which swiftlint >/dev/null; then
+            echo "Running SwiftLint..."
+            swiftlint lint --quiet
+          else
+            echo "SwiftLint not found, installing..."
+            brew install swiftlint
+            swiftlint lint --quiet
+          fi
+          
+      - name: Run tests
+        script: |
+          echo "Running tests..."
+          xcodebuild test \
+            -project "$XCODE_PROJECT" \
+            -scheme "$XCODE_SCHEME" \
+            -destination 'platform=iOS Simulator,name=iPhone 15 Pro' \
+            -only-testing:PokedexPocketTests
+            
+      - name: Build for simulator (no signing required)
+        script: | 
+          echo "Building for iOS Simulator..."
+          xcodebuild build \
+            -project "$XCODE_PROJECT" \
+            -scheme "$XCODE_SCHEME" \
+            -destination 'platform=iOS Simulator,name=iPhone 15 Pro' \
+            -configuration Debug
+            
+    artifacts:
+      - /tmp/xcodebuild_logs/*.log
+      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.app
+      
+    publishing:
+      email:
+        recipients:
+          - your-email@example.com # Replace with your email
+        notify:
+          success: true
+          failure: true
