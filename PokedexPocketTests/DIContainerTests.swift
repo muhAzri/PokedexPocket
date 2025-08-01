@@ -120,10 +120,10 @@ final class DIContainerTests: XCTestCase {
         XCTAssertNotNil(clearAllFavoritesUseCase, "Should be able to resolve ClearAllFavoritesUseCaseProtocol")
     }
     
-    func testSetModelContextUpdatesContext() {
+    func testSetModelContextUpdatesContext() throws {
         // Given
         let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
-        let newModelContainer = try! ModelContainer(for: FavouritePokemonDataModel.self, configurations: configuration)
+        let newModelContainer = try ModelContainer(for: FavouritePokemonDataModel.self, configurations: configuration)
         let newModelContext = ModelContext(newModelContainer)
         
         // When
