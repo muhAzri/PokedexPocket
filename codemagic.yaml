@@ -21,6 +21,10 @@ workflows:
       - name: Install dependencies
         script: | 
           echo "Installing dependencies..."
+          # Install xcpretty for better test output formatting
+          gem install xcpretty
+          # Create reports directory
+          mkdir -p reports
           # Resolve Swift Package Manager dependencies
           xcodebuild -resolvePackageDependencies -project "$XCODE_PROJECT"
           
@@ -43,7 +47,9 @@ workflows:
             -scheme "$XCODE_SCHEME" \
             -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.5' \
             -only-testing:PokedexPocketTests \
-            -skipPackagePluginValidation
+            -skipPackagePluginValidation \
+            -resultBundlePath TestResults \
+            | xcpretty --report junit --output reports/junit.xml --report html --output reports/index.html
             
       - name: Build for simulator (no signing required)
         script: | 
@@ -58,11 +64,36 @@ workflows:
     artifacts:
       - /tmp/xcodebuild_logs/*.log
       - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.app
+      - TestResults/
+      - reports/
       
     publishing:
+      # Test reports
+      tests:
+        - reports/junit.xml
+      
+      # Email notifications
       email:
         recipients:
           - muhammad.azri.f.s@gmail.com
         notify:
           success: true
           failure: true
+      
+      # Slack notifications (optional - you can configure if you have Slack webhook)
+      # slack:
+      #   channel: '#builds'
+      #   notify_on_build_start: true
+      #   notify:
+      #     success: true
+      #     failure: true
+      
+      # GitHub status checks
+      github_releases:
+        # This will make build status visible on GitHub PRs
+        # Repository must be public or you need proper permissions
+        prerelease: false
+        
+    # Make builds publicly accessible
+    # This allows anyone to view build logs and results
+    public: true
