@@ -7,10 +7,11 @@
 
 import SwiftUI
 import PokedexPocketPokemon
+import PokedexPocketFavourite
 
 struct AppRouter: View {
     @StateObject private var coordinator = AppCoordinator()
-    @StateObject private var viewModelFactory = DefaultViewModelFactory()
+    private let viewModelFactory = DefaultViewModelFactory()
 
     var body: some View {
         TabView(selection: $coordinator.selectedTab) {
@@ -33,7 +34,16 @@ struct AppRouter: View {
             .tag(AppTab.home)
 
             NavigationStack(path: $coordinator.favouritesNavigationPath) {
-                FavouritePokemonView()
+                FavouritePokemonView(
+                    viewModel: viewModelFactory.makeFavoritePokemonViewModel(),
+                    coordinator: coordinator,
+                    onSwitchTab: {
+                        coordinator.selectedTab = .home
+                    },
+                    onNavigateToPokemonDetail: { pokemonId, pokemonName in
+                        coordinator.navigateToPokemonDetail(pokemonId: pokemonId, pokemonName: pokemonName)
+                    }
+                )
                     .navigationDestination(for: AppDestination.self) { destination in
                         destinationView(for: destination)
                             .toolbar(.hidden, for: .tabBar)
@@ -59,7 +69,6 @@ struct AppRouter: View {
             .tag(AppTab.about)
         }
         .environmentObject(coordinator)
-        .environmentObject(viewModelFactory)
         .environment(\.navigationHandler, coordinator)
     }
 
@@ -80,7 +89,16 @@ struct AppRouter: View {
                 viewModel: viewModelFactory.makePokemonDetailViewModel(pokemonId: pokemonId)
             )
         case .favouritePokemon:
-            FavouritePokemonView()
+            FavouritePokemonView(
+                viewModel: viewModelFactory.makeFavoritePokemonViewModel(),
+                coordinator: coordinator,
+                onSwitchTab: {
+                    coordinator.selectedTab = .home
+                },
+                onNavigateToPokemonDetail: { pokemonId, pokemonName in
+                    coordinator.navigateToPokemonDetail(pokemonId: pokemonId, pokemonName: pokemonName)
+                }
+            )
         case .aboutDev:
             AboutDevView()
         }

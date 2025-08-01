@@ -8,21 +8,20 @@
 import SwiftUI
 import SwiftData
 import PokedexPocketCore
+import PokedexPocketFavourite
 
 @main
 struct PokedexPocketApp: App {
 
     init() {
         configureImageCache()
+        setupModelContext()
     }
 
     var body: some Scene {
         WindowGroup {
             AppRouter()
                 .modelContainer(for: FavouritePokemonDataModel.self)
-                .onAppear {
-                    setupModelContext()
-                }
         }
     }
 

@@ -10,6 +10,7 @@ import Swinject
 import SwiftData
 import PokedexPocketCore
 import PokedexPocketPokemon
+import PokedexPocketFavourite
 
 class DIContainer {
     static let shared = DIContainer()

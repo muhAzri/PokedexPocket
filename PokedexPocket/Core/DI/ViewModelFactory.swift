@@ -7,6 +7,7 @@
 
 import Foundation
 import PokedexPocketPokemon
+import PokedexPocketFavourite
 
 protocol ViewModelFactory {
     func makePokemonListViewModel() -> PokedexPocketPokemon.PokemonListViewModel
@@ -33,10 +34,16 @@ final class DefaultViewModelFactory: ViewModelFactory, ObservableObject {
 
     func makePokemonDetailViewModel(pokemonId: Int) -> PokedexPocketPokemon.PokemonDetailViewModel {
         let getPokemonDetailUseCase = container.resolve(GetPokemonDetailUseCaseProtocol.self)
+        let addFavoriteUseCase = container.resolve(AddFavoritePokemonUseCaseProtocol.self)
+        let removeFavoriteUseCase = container.resolve(RemoveFavoritePokemonUseCaseProtocol.self)
+        let checkIsFavoriteUseCase = container.resolve(CheckIsFavoritePokemonUseCaseProtocol.self)
 
         return PokedexPocketPokemon.PokemonDetailViewModel(
             pokemonId: pokemonId,
-            getPokemonDetailUseCase: getPokemonDetailUseCase
+            getPokemonDetailUseCase: getPokemonDetailUseCase,
+            addFavoriteUseCase: addFavoriteUseCase,
+            removeFavoriteUseCase: removeFavoriteUseCase,
+            checkIsFavoriteUseCase: checkIsFavoriteUseCase
         )
     }
 

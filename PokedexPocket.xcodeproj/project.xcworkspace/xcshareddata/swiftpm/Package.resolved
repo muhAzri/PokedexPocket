@@ -1,5 +1,5 @@
 {
-  "originHash" : "38a2fc2c847bb36ed5a3b6651ddf92d95280c546e009c1f48fc5f4292b85590b",
+  "originHash" : "ece0e64162ef3b1afae003ca7683a8f20ea8683ae1be3633eae6143d98eece8d",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -13,19 +13,28 @@
     {
       "identity" : "pokedexpocketcore",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/muhAzri/PokedexPocketCore.git",
+      "location" : "https://github.com/muhAzri/PokedexPocketCore",
       "state" : {
         "branch" : "main",
-        "revision" : "0290ae1dd998e8ae42a7ce9909ec8e1e26d29456"
+        "revision" : "ebb65afa67fce591bcfefcc0d94e868fc7cce8ce"
+      }
+    },
+    {
+      "identity" : "pokedexpocketfavourite",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/muhAzri/PokedexPocketFavourite.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "106d9355c0f5b133f3bd19a39b5cca3f80f323e1"
       }
     },
     {
       "identity" : "pokedexpocketpokemon",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/muhAzri/PokedexPocketPokemon.git",
+      "location" : "https://github.com/muhAzri/PokedexPocketPokemon",
       "state" : {
         "branch" : "main",
-        "revision" : "b5405773f581d171fbb3d14ab18afc24d28045f2"
+        "revision" : "202bbe1494c48264bdbc6336f41345f3b03117e1"
       }
     },
     {
