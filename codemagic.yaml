@@ -68,10 +68,6 @@ workflows:
       - reports/
       
     publishing:
-      # Test reports
-      tests:
-        - reports/junit.xml
-      
       # Email notifications
       email:
         recipients:
@@ -79,21 +75,3 @@ workflows:
         notify:
           success: true
           failure: true
-      
-      # Slack notifications (optional - you can configure if you have Slack webhook)
-      # slack:
-      #   channel: '#builds'
-      #   notify_on_build_start: true
-      #   notify:
-      #     success: true
-      #     failure: true
-      
-      # GitHub status checks
-      github_releases:
-        # This will make build status visible on GitHub PRs
-        # Repository must be public or you need proper permissions
-        prerelease: false
-        
-    # Make builds publicly accessible
-    # This allows anyone to view build logs and results
-    public: true

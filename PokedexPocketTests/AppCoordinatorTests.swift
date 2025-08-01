@@ -28,8 +28,14 @@ final class AppCoordinatorTests: XCTestCase {
         // Then
         XCTAssertEqual(coordinator.selectedTab, .home, "Should start with home tab selected")
         XCTAssertEqual(coordinator.navigationPath.count, 0, "Home navigation path should be empty initially")
-        XCTAssertEqual(coordinator.favouritesNavigationPath.count, 0, "Favorites navigation path should be empty initially")
-        XCTAssertEqual(coordinator.aboutNavigationPath.count, 0, "About navigation path should be empty initially")
+        XCTAssertEqual(
+            coordinator.favouritesNavigationPath.count, 0,
+            "Favorites navigation path should be empty initially"
+        )
+        XCTAssertEqual(
+            coordinator.aboutNavigationPath.count, 0,
+            "About navigation path should be empty initially"
+        )
     }
     
     // MARK: - Tab Switching Tests
@@ -86,7 +92,10 @@ final class AppCoordinatorTests: XCTestCase {
         coordinator.navigate(to: destination)
         
         // Then
-        XCTAssertEqual(coordinator.favouritesNavigationPath.count, 1, "Should add destination to favorites navigation path")
+        XCTAssertEqual(
+            coordinator.favouritesNavigationPath.count, 1,
+            "Should add destination to favorites navigation path"
+        )
         XCTAssertEqual(coordinator.navigationPath.count, 0, "Should not affect home navigation path")
         XCTAssertEqual(coordinator.aboutNavigationPath.count, 0, "Should not affect about navigation path")
     }
@@ -100,9 +109,15 @@ final class AppCoordinatorTests: XCTestCase {
         coordinator.navigate(to: destination)
         
         // Then
-        XCTAssertEqual(coordinator.aboutNavigationPath.count, 1, "Should add destination to about navigation path")
+        XCTAssertEqual(
+            coordinator.aboutNavigationPath.count, 1,
+            "Should add destination to about navigation path"
+        )
         XCTAssertEqual(coordinator.navigationPath.count, 0, "Should not affect home navigation path")
-        XCTAssertEqual(coordinator.favouritesNavigationPath.count, 0, "Should not affect favorites navigation path")
+        XCTAssertEqual(
+            coordinator.favouritesNavigationPath.count, 0,
+            "Should not affect favorites navigation path"
+        )
     }
     
     func testNavigateToPokemonDetailHelper() {
@@ -144,7 +159,10 @@ final class AppCoordinatorTests: XCTestCase {
         coordinator.navigateBack()
         
         // Then
-        XCTAssertEqual(coordinator.favouritesNavigationPath.count, 0, "Should remove last item from favorites navigation path")
+        XCTAssertEqual(
+            coordinator.favouritesNavigationPath.count, 0,
+            "Should remove last item from favorites navigation path"
+        )
     }
     
     func testNavigateBackFromAboutTab() {
@@ -194,13 +212,19 @@ final class AppCoordinatorTests: XCTestCase {
         coordinator.selectedTab = .favourites
         coordinator.navigate(to: .pokemonDetail(pokemonId: 1, pokemonName: "Bulbasaur"))
         coordinator.navigate(to: .aboutDev)
-        XCTAssertEqual(coordinator.favouritesNavigationPath.count, 2, "Should have 2 items in favorites navigation path")
+        XCTAssertEqual(
+            coordinator.favouritesNavigationPath.count, 2,
+            "Should have 2 items in favorites navigation path"
+        )
         
         // When
         coordinator.navigateToRoot()
         
         // Then
-        XCTAssertEqual(coordinator.favouritesNavigationPath.count, 0, "Should clear all items from favorites navigation path")
+        XCTAssertEqual(
+            coordinator.favouritesNavigationPath.count, 0,
+            "Should clear all items from favorites navigation path"
+        )
     }
     
     func testNavigateToRootFromAboutTab() {
@@ -208,7 +232,10 @@ final class AppCoordinatorTests: XCTestCase {
         coordinator.selectedTab = .about
         coordinator.navigate(to: .pokemonList)
         coordinator.navigate(to: .favouritePokemon)
-        XCTAssertEqual(coordinator.aboutNavigationPath.count, 2, "Should have 2 items in about navigation path")
+        XCTAssertEqual(
+            coordinator.aboutNavigationPath.count, 2,
+            "Should have 2 items in about navigation path"  
+        )
         
         // When
         coordinator.navigateToRoot()
@@ -294,7 +321,10 @@ final class AppDestinationTests: XCTestCase {
         let aboutDev = AppDestination.aboutDev
         
         XCTAssertEqual(pokemonList, AppDestination.pokemonList, "Pokemon list destinations should be equal")
-        XCTAssertEqual(favouritePokemon, AppDestination.favouritePokemon, "Favorite pokemon destinations should be equal")
+        XCTAssertEqual(
+            favouritePokemon, AppDestination.favouritePokemon,
+            "Favorite pokemon destinations should be equal"
+        )
         XCTAssertEqual(aboutDev, AppDestination.aboutDev, "About dev destinations should be equal")
         
         XCTAssertNotEqual(pokemonList, favouritePokemon, "Different destination types should not be equal")
